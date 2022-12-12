@@ -5,7 +5,7 @@ toc: true
 layout: page
 ---
 
-Versjon 0.2 - Bjørn Dybvik Langfors
+Versjon 0.2 - Bjørn Dybvik Langfors, sist endret: {{ page.last_modified_at  | date: '%d. %b %Y, kl. %H:%M:%S' }} [(se git-historikk)](https://github.com/elsand/elsand.github.io/commits/master/dialogporten.md)
 
 # Introduksjon
 

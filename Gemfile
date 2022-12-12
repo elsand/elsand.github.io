@@ -21,6 +21,7 @@ group :jekyll_plugins do
   # gem "jekyll-feed", "~> 0.12"
   gem 'jekyll-toc'
   gem 'jekyll-spaceship'
+  gem 'jekyll-last-modified-at'
 end
 
 # Windows and JRuby does not include zoneinfo files, so bundle the tzinfo-data gem
