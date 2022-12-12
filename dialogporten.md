@@ -145,7 +145,9 @@ Under følger punktvis beskrivelser av fire ulike sekvenser. Det er to måter en
 
 ## Tjenestetilbyder-initiert dialog
 
-### Opprettelse av dialogbokselement - sekvensdiagram
+### Opprettelse av dialogbokselement 
+
+#### Sekvensdiagram
 
 ```mermaid!
 sequenceDiagram
@@ -190,7 +192,7 @@ par
 end
 ```
 
-### Opprettelse av dialogbokselement - tekstlig beskrivelse av trinn
+#### Tekstlig beskrivelse av trinn
 
 1.  Tjenestetilbyder oppretter tjenesteressurs i Altinn Resource Registry som refererer den aktuelle tjenesten
 2.  Tjenestetilbyder oppretter dialogbokselement som    
@@ -238,7 +240,9 @@ end
     *  Genereres hendelser som vil kunne konsumeres av parten
     * Disse kan igjen være koblet til brukerstyrt varsling på e-post/SMS andre push-kanaler 
 
-### Konsum gjennom GUI (portal) - sekvensdiagram
+### Konsum gjennom GUI (portal)
+
+#### Sekvensdiagram
 
 ```mermaid!
 sequenceDiagram
@@ -265,7 +269,7 @@ API->>TEGUI: Oppdatering OK
 TEGUI->>SB: Vis arbeidsflate med oppdatert tilstand
 ```
 
-### Konsum gjennom GUI (portal) - tekstlig beskrivelse av trinn
+#### Tekstlig beskrivelse av trinn
 
 1.  Bruker mottar varsling på en eller annen kanal, og logger inn i Dialogboksen
 2.  Elementet ligger i dialogboksen og viser overskrift, status og andre metadata
@@ -284,7 +288,9 @@ TEGUI->>SB: Vis arbeidsflate med oppdatert tilstand
 6.  Hvis brukeren fullfører dialogen, kan tjenestetilbyder gjøre et bakkanal-kall for å indikere til Dialogboksen at dialogbokselementet skal arkiveres. Elementet blir da flyttet til sluttbrukers arkiv. Merk at det fremdeles kun ligger da (ikke lenger muterbare) metadata på elementet i Dialogboksen.
 7.  Når brukeren senere ekspanderer elementet i arkivet, gjøres det samme kallet for å hente siste oppdaterte (altså arkiverte) element fra tjenestetilbyder. Typisk vises da bare en kort tekst og et vedlegg til en PDF-versjon av en kvittering/gjenpart el.l.
 
-### Konsum gjennom API - sekvensdiagram
+### Konsum gjennom API
+
+#### Sekvensdiagram
 
 ```mermaid!
 sequenceDiagram
@@ -309,7 +315,7 @@ end
 TEAPI->>SBS: Oppdatering OK
 ```
 
-### Konsum gjennom API - tekstlig beskrivelse av trinn
+#### Tekstlig beskrivelse av trinn
 
 1.  SBS abonnerer på hendelser knyttet til opprettelse av dialogbokselementer av en eller flere typer, og mottar en notifikasjon om at et nytt dialogbokselement er opprettet. Notifikasjonen inneholder en URI til dialogbokselementet i Dialogboksens API. Alternativt kan liste med dialogbokselementer hentes gjennom standard dialogboks-API-er
 2.  Avhengig av autorisasjonspolicy tilhørende tjenesteressursen, autoriserer SBS-et seg. Dette kan være gjennom brukerstyrt datadeling i ID-porten (OAuth2/OIDC) eller ved hjelp av Maskinporten (ren OAuth2). Tokenet kan også inneholde scopes som kreves av tjenestetilbyderen, og tokenet bør da utstedes med både Dialogboksen og tjenestetilbyder som i "aud"-claim. Hvis Maskinporten-token, kan policyen ha rettighetskrav som krever at det i tillegg autentiseres en virksomhetsbruker (systemidentitet i Altinn med tildelte rettigheter som gir tilgang til tjenesteressursen), som innbærer en tokenutveksling og utstedelse av et beriket Maskinporten-token. Dette resulterer i ett (eller to, hvis også beriket Altinn-token) access token som brukes i alle påfølgende kall.
@@ -318,7 +324,9 @@ TEAPI->>SBS: Oppdatering OK
 
 ## Sluttbruker-initiert dialog
 
-### Gjennom GUI (portal) - sekvensdiagram
+### Gjennom GUI (portal) 
+
+#### Sekvensdiagram
 
 ```mermaid!
 sequenceDiagram
@@ -352,7 +360,7 @@ and
 end
 ```
 
-### Gjennom GUI (portal) - tekstlig beskrivelse av trinn
+#### Tekstlig beskrivelse av trinn
 
 1.  Bruker oppdager tjeneste gjennom tjenestekatalog, søkemotor, etatenes nettsider el.l.
 2.  Bruker starter tjenesten og blir umiddelbart tatt inn i brukerflaten hos tjenestetilbyderen, og velger aktør avhengig av tjenestens natur (via autorisasjonskall mot Altinn Autorisasjon for å bygge aktørliste)
@@ -361,22 +369,23 @@ end
 4.  Sluttbruker interagerer med tjenesten, og tjenestetilbyder gjør kall til Dialogboksen for å oppdatere dialogboksinstansen.
 5.  Hvis bruker avslutter økten før dialogen er ferdigstilt, kan han/hun (eller andre autoriserte) fortsette å jobbe med dialogen gjennom å aksessere dialogbokseelementet i Dialogboksen. Prosessen blir da som "tjenestetilbyder-initiert dialog / Konsum gjennom GUI (portal)" steg 2. 
   
-### Gjennom API - sekvensdiagram
+### Gjennom API
 
 *  Her er det to nærliggende alternativer - skal tjenester kunne "instansieres"
-    *  gjennom et felles "instansierings"-API i Dialogboksen som gjør bakkanal-kall til tjenestetilbyder og returnerer et dialogbokselement med liste over handlinger/endepunkter?
-    *  direkte mot tjenestetilbyders API-er som da kan gjøre bakkanal-kall til Dialogboksen for å oppgi dialogbokselementet?
+    a) gjennom et felles "instansierings"-API i Dialogboksen som gjør bakkanal-kall til tjenestetilbyder og returnerer et dialogbokselement med liste over handlinger/endepunkter?
+    b)  direkte mot tjenestetilbyders API-er som da kan gjøre bakkanal-kall til Dialogboksen for å oppgi dialogbokselementet?
 
 *  Begge deler bør kanskje kunne støttes? Førstnevnte gir en mer homogen løsning sett fra SBS-ene sin side; selv om all kommunikasjon går direkte mot tjenestetilbyder etter instansiering, er dialogbokselementet et som vil kunne reflektere gjeldende tilstand/status og aktuelle handlinger. Det andre løsningen gir en løsere kobling til Dialogboksen, men gjør at SBS-et i mindre grad kan forholde seg til en felles brukerflate.
 *  Under skisseres en løsning med felles instansierings-API
+
+#### Variant med instansierings-API 
 
 ```mermaid!
 sequenceDiagram
     participant SBS as Sluttbrukersystem
     participant EID as Maskinporten/ID-porten/Altinn Token Exchange
     participant API as Dialogboksen API for Innboks
-    participant TEAPI as tjenestetilbyders API
-note over SBS,TEAPI: SBS abonnerer på hendelser for opprettelse av dialogbokselementer<br>og mottar URI til nytt dialogbokselement.
+    participant TEAPI as Tjenestetilbyders API
 SBS->>EID: Autentisering/autorisering
 EID->>SBS: access_token
 SBS->>API: Opprett dialogbokselement
@@ -395,8 +404,6 @@ end
 TEAPI->>SBS: Return av oppslag/oppdatering OK
 ```
 
-### Gjennom API - tekstlig beskrivelse av trinn
-
 1.  ("Design-time") SBS oppdager API gjennom API-katalog eller annen dokumentasjon, og foretar merkantil og teknisk onboarding (setter opp Maskinporten-klient med rette scopes, oppretter virksomhetsbruker etc)
 2.  SBS autoriserer seg (tilsvarende "tjenestetilbyder-initiert dialog / Konsum gjennom API", trinn 2.
 3.  SBS gjør et kall til et standard API i Dialogboksen ("createinstance" el.l) som oppgir aktør og tjenesteressurs
@@ -406,6 +413,46 @@ TEAPI->>SBS: Return av oppslag/oppdatering OK
 7.  Tjenestetilbyder returnerer identifikator til dialogbokselement til Dialogboksen
 8.  Dialogboksen laster det nyopprettede dialogbokselementet, og returner dette til SBS
 9.  SBS interagerer med tjenestetilbyders API-er som beskrevet i "tjenestetilbyder-initiert dialog / Konsum gjennom API", trinn 4
+
+#### Variant uten instansierings-API 
+
+```mermaid!
+sequenceDiagram
+    participant SBS as Sluttbrukersystem
+    participant EID as Maskinporten/ID-porten/Altinn Token Exchange
+    participant API as Dialogboksen API for Innboks
+    participant TEAPI as Tjenestetilbyders API
+note over SBS,TEAPI: SBS abonnerer på hendelser for opprettelse av dialogbokselementer<br>og mottar URI til nytt dialogbokselement.    
+SBS->>EID: Autentisering/autorisering
+EID->>SBS: access_token
+SBS->>TEAPI: Initier dialogtjeneste
+TEAPI->>TEAPI: Opprette tjenesteinstans
+TEAPI-->>API: Opprette dialogbokselement med referanse til tjenesteinstans
+API-->>TEAPI: Opprettelse OK, returner dialogbokselement-ID
+TEAPI->>TEAPI: Knytt dialogbokselement-ID til tjenesteinstans
+API->>SBS: Send notifikasjon om hendelse som genereres ved opprettelse av dialogbokselement
+opt
+    SBS->>API: Hent liste over aktuelle handlinger
+    API->>SBS: Returner liste over aktuelle handlinger
+end
+SBS->>TEAPI: Foreta oppslag/endringer
+opt
+    TEAPI->>API: Oppdater dialogbokselement for å reflektere ny tilstand
+    API->>TEAPI: Oppdatering OK
+end
+TEAPI->>SBS: Return av oppslag/oppdatering OK
+```
+
+1.  SBS abonnerer på hendelser knyttet til opprettelse av dialogbokselementer av en eller flere typer
+2.  SBS autoriserer seg med de mekanismer som kreves av tjenesten
+3.  SBS gjør et eller annet kall for å initiere (og potensielt samtidig fullføre) en dialogtjeneste hos tjenestetilbyder
+4.  Tjenestetilbyder oppretter instans (el.l) i egne systemer, og gjør bakkanal-kall tilbake til Dialogboksen for å opprette dialogbokselement som beskrevet i "tjenestetilbyder-initert dialog", trinn 2.
+5.  Tjenestetilbyder mottar fra Dialogboksen identifikator til dialogbokselement, som da kan knyttes til egen tjenesteinstans
+6. Gjennom abonnementet på hendelser knyttet til opprettelse av dialogbokselementer mottar SBS-et en notifikasjon om at dialogbokselementet for dialogtjenesten nå finnes
+7.  Hvis aktuelt, kan SBS-et hente ned dialogbokselementet for å få se en liste over autoriserte handlinger som kan foretas. Dette forutsetter at SBS-et har autorisert seg mot Dialoboksen i trinn 2.
+8.  SBS interagerer med tjenestetilbyders API-er som beskrevet i "tjenestetilbyder-initiert dialog / Konsum gjennom API", trinn 4
+9. Tjenestetilbyder oppdaterer dialogbokselementet for å reflektere tilstanden på dialogen
+
 
 # Eksempel-modeller
 
