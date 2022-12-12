@@ -1,0 +1,97 @@
+div.issue-container {
+    position: absolute;
+    right: 0;
+    background: #b2daf9;
+    padding: 0.5rem;
+    margin-right: 4px;
+    max-width: 280px;
+    min-width: 280px;
+    font-size: 80%;
+    border-radius: 6px;
+    box-shadow: 3px 2px 4px 0px #c9c9c9;
+    margin-top: 10px;
+
+    .title {
+        display: block;
+        border-bottom: 1px solid #aaa;
+    }
+
+    .body {
+        display: block;
+    }
+
+    .date {
+        display: none;
+        /*display: block;
+        font-style: italic;
+        font-size: 80%;
+        text-align: right;*/
+    }
+
+    .author {
+        font-weight: bold;
+    }
+
+    .comments-container {
+        margin-left: 1rem;
+
+        .comment {
+            border-bottom: 1px solid #aaa;
+            margin-bottom: .5rem;
+        }
+    }
+
+    .add-comment {
+        display: block;
+        margin-top: .3rem;
+    }   
+
+
+    .showhide {
+        float: right;
+        margin-top: -20px;
+    }
+
+    &.hidden {
+        height: 17px;
+        overflow: hidden;
+        min-width: 0;
+
+        * {
+           display:none; 
+        }
+
+        .showhide, .showhideanchor {
+            display: block !important;
+            margin-top:auto;
+        }
+    }
+}
+
+div.issue-container + h1, 
+div.issue-container + h2,
+div.issue-container + h3, 
+div.issue-container + h4 {
+    background-color: #ffff99;
+
+    a.anchor {
+        &:after {
+            content: "";
+        }
+    }
+}
+
+.post-content {
+    h1, h2, h3, h4 {
+        a.anchor {
+            &:after {
+                content: "+ issue";
+                float: right;
+                font-size: 12px;
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+

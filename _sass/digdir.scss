@@ -84,7 +84,7 @@
         list-style: none;
         &:before {
             content: "＋";
-            margin: 7px 2px 0 -24px;
+            margin: 7px 2px 0 -26px;
             font-size: 24px;
             line-height: 10px;
             position: absolute;
@@ -94,7 +94,7 @@
         &.active:before {
             content: "‒";
             font-size: 21px;
-            margin-left: -19px;
+            margin-left: -20px;
             cursor: pointer;
             font-weight: bold;
         }
