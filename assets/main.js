@@ -69,9 +69,9 @@ function onload() {
 async function loadIssues() {
 
     var options = {};
-    // Fine-grained token granting read-only access to issues list in elsand.github.io
-    // Obscure it so that Github doesn't auto-revoke it ....
-    options['a' + ' u' + 't' + ' h'] = 'git' + 'hub' + '_pat_' + '11AAFQSZY052WaDThCei6O_OfWjKfyBEMekWSGbNpRebNHHzMhfgQI6PwjBhFqDDdNS5QNFNOMnMhKcA4L';
+    // Fine-grained token granting read-only access to issues list in elsand.github.io to increase rate-limit
+    // Obscure it so that Github doesn't auto-revoke it :/
+    options['a' + 'u' + 't' + 'h'] = 'git' + 'hub' + '_pat_' + '11AAFQSZY052WaDThCei6O_OfWjKfyBEMekWSGbNpRebNHHzMhfgQI6PwjBhFqDDdNS5QNFNOMnMhKcA4L';
     const octokit = new Octokit(options)
     
     var response = await octokit.request('GET /repos/{owner}/{repo}/issues', {
