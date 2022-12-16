@@ -5,7 +5,7 @@ toc: true
 layout: page
 ---
 
-Versjon 0.2 - Bjørn Dybvik Langfors, sist endret: {{ page.last_modified_at  | date: '%d. %b %Y, kl. %H:%M:%S' }} [(se git-historikk)](https://github.com/elsand/elsand.github.io/commits/master/dialogporten.md)
+Versjon 0.3 - Bjørn Dybvik Langfors, sist endret: {{ page.last_modified_at  | date: '%d. %b %Y, kl. %H:%M:%S' }} [(se git-historikk)](https://github.com/elsand/elsand.github.io/commits/master/dialogporten.md)
 
 # Introduksjon
 
@@ -27,9 +27,11 @@ _"Application Programming Interface"_, maskinelt grensesnitt som gjør det mulig
 
 _Dialogporten_ benyttes for å betegne det overordnede konseptet som beskrives i dette dokumentet, samt prosjektet/tiltaket som i første omgang søker å undersøke hvorvidt dette kan realiseres.
 
-## Dialogboksen 
+Dialogporten benyttes også som navn på løsningskomponenten som tilbyr et API for Felles Arbeidsflate og Sluttbrukersystemer, og som implementerer Altinn Platform-funksjonalitet for lagring av metadata og autorisasjon.
 
-_Dialogboksen_ refererer til en tenkt konkret løsning og implementasjon av dette konseptet. Merk at en implementasjon av konseptet vil være "API first", og legger opp til stor fleksibilitet med hensyn til hvordan ulike visninger ("views") kan realiseres. Dialogboksen brukes i dette dokumentet også i sammenhenger hvor det foreligger et GUI, men disse kan implementeres uavhengig av hverandre.
+## Felles Arbeidsflate 
+
+_Felles Arbeidsflate_ refererer til en tenkt implementasjon av et GUI som benytter seg av Dialgporten, og som fungerer som en felles grafisk arbeidsflate for alle som ikke benytter et sluttbrukersystem eller et skreddersydd GUI implementert på f.eks. en etatsportal.
 
 ## Sluttbrukersystem (SBS) og fagsystem
 
@@ -51,29 +53,29 @@ En _dialogtjeneste_ er en digital tjeneste tjenestetilbyderen innhenter informas
 
 _Tjenesteinstans_, eller bare instans, refererer seg til en konkret dialog mellom en tjenestetilbyder og en eller flere parter, og som typisk refererer en saksgang eller prosess hos tjenestetilbyderen, og/eller realiserer et behov parten har for innsyn i opplysninger hos tjenestetilbyder. Typisk representerer en instans "livsløpet" til en konkret dialog, og er tilstandsfull - altså den består gjerne av flere ulike trinn som typisk gjøres sekvensielt (men som i noen tilfeller kan ha parallelle "spor" som involverer flere parter) hvor dialogen har ulike tilstander og kan manipuleres på ulike måter. All håndtering og forretningslogikk/semantikk knyttet til en tjenesteinstans håndteres av tjenestetilbyderen.
 
-## Dialogbokselement (DBE)
+## Dialogelement (DE)
 
-Tilstand i Dialogporten begrenser seg til metadata for en gitt tjenesteinstans, og manifesterer seg i Dialogboksen i form av et _dialogbokselement_, som er en logisk entitet synlig i både API og GUI i Dialogboksen, tilsvarende det en ser i dagens "Innboks" i Altinn.
+Tilstand i Dialogporten begrenser seg til metadata for en gitt tjenesteinstans, og manifesterer seg i Dialogporten i form av et _dialogelement_, som er en logisk entitet tilgjengelig gjennom API og gjort synlig i GUI som f.eks. Felles Arbeidsflate, tilsvarende det en ser i dagens "Innboks" i Altinn.
 
-Dialogbokselementet reflekterer tilstanden til en eller annen pågående eller avsluttet dialog  fra en tjenestetilbyder, og inneholder beskrivende metadata, f.eks. hvem som er mottakende part, adresse (URL), overskrift, dato, status samt en liste over aktuelle _handlinger_ som kan utføres på dialogbokselementet. Dialogboksen knytter semantikk kun til enkelte typer handlinger (slett), hvis dette gjøres tilgjengelig av tjenestetilbyder. Andre handlinger kan vilkårlig defineres av tjenestetilbyder, og all interaksjon med selve tjenesteinstansen foregår i tjenestetilbyders brukerflater (GUI og/eller API).
+Dialogelementet reflekterer tilstanden til en eller annen pågående eller avsluttet dialog  fra en tjenestetilbyder, og inneholder beskrivende metadata, f.eks. hvem som er mottakende part, adresse (URL), overskrift, dato, status samt en liste over aktuelle _handlinger_ som kan utføres på dialogelementet. Dialogporten knytter semantikk kun til enkelte typer handlinger (slett), hvis dette gjøres tilgjengelig av tjenestetilbyder. Andre handlinger kan vilkårlig defineres av tjenestetilbyder, og all interaksjon med selve tjenesteinstansen foregår i tjenestetilbyders brukerflater (GUI og/eller API).
 
-En viktig forskjell mot dagens «correspondence» i Altinn, er at dialogbokselementene er _mutérbare_ og kan også være _dynamiske_. Et dialogbokselement kan (men må ikke) konfigureres til å foreta et synkront kall til et endepunkt hos tjenestetilbyder idet brukeren åpner/aksesserer elementet for å vise en dynamisk oppdatert «preview» (etter tjenestetilbyders forgodtbefinnende) av innholdet i elementet, sammen med en oppdatert liste over aktuelle handlinger.
+En viktig forskjell mot dagens «correspondence» i Altinn, er at dialogelementene er _mutérbare_ og kan også være _dynamiske_. Et dialogelement kan (men må ikke) konfigureres til å foreta et synkront kall til et endepunkt hos tjenestetilbyder idet brukeren åpner/aksesserer elementet for å vise en dynamisk oppdatert «preview» (etter tjenestetilbyders forgodtbefinnende) av innholdet i elementet, sammen med en oppdatert liste over aktuelle handlinger.
 
 Tjenestetilbyder kan også når som helst oppdatere metadata og tilgjengelige handlinger på elementet. Enhver endringe fører til at det genereres _hendelser_, som autoriserte parter kan agere på, f.eks. at det sendes et varsel eller at et SBS foretar seg noe.
 
 ## Dialoggruppe (DG)
 
-Enkelte typer saksganger består av flere distinkte delprosesser/dialoger som ikke enkelt ellerhensiktsmessig kan knyttes til ett og samme dialogbokselement, f.eks. når det er ulike dialoger som må gjennomføres med ulike parter og som ikke nødvendigvis skal foregå sekvensielt.
+Enkelte typer saksganger består av flere distinkte delprosesser/dialoger som ikke enkelt eller hensiktsmessig kan knyttes til ett og samme dialogelement, f.eks. når det er ulike dialoger som må gjennomføres med ulike parter og som ikke nødvendigvis skal foregå sekvensielt.
 
-Alle dialogbokselementer kan referere en dialoggruppe (DBEG), som knytter disse sammen. En dialoggruppe er ikke en egen entitet, men er en rik attributt på dialogbokselementet som lar GUI-implementasjoner gruppere dialogbokselementer som logisk hører sammen.
+Alle dialogelementer kan referere en dialoggruppe (DG), som knytter disse sammen. En dialoggruppe er ikke en egen entitet, men er en rik attributt på dialogelementet som lar GUI-implementasjoner gruppere/sammenknytte dialogelementer som logisk hører sammen.
 
 ## Hendelser
 
-_Hendelser_ refererer til tekniske applikasjonshendelser som genereres av Dialogboksen (eller tjenestetilbyder) og publiseres gjennom [Event-komponenten i Altinn](https://docs.altinn.studio/technology/solutions/altinn-platform/events/). Hendelser kan konsumeres av autoriserte parter og tjenestetilbyder, i tråd med de autorisasjonsregler tjenestetilbyder har definert.
+_Hendelser_ refererer til tekniske applikasjonshendelser som genereres av Dialogporten (eller tjenestetilbyder) og publiseres gjennom [Event-komponenten i Altinn](https://docs.altinn.studio/technology/solutions/altinn-platform/events/). Hendelser kan konsumeres av autoriserte parter og tjenestetilbyder, i tråd med de autorisasjonsregler tjenestetilbyder har definert.
 
 ## Handlinger
 
-En _handling_ (som i «action») beskriver en interaksjon som brukere kan gjøre med eller relatert til en tjenesteinstans. Eksempler på handlinger er «Åpne», «Arkiver», «Slett», «Start signering», «Betal», «Bekreft», «Les mer» etc. Listen over aktuelle handlinger er en del av den strukturerte beskrivelsen av en dialogbokselementet, og kan når som helst endres av tjenestetilbyder gjennom API.
+En _handling_ (som i «action») beskriver en interaksjon som brukere kan gjøre med eller relatert til en tjenesteinstans. Eksempler på handlinger er «Åpne», «Arkiver», «Slett», «Start signering», «Betal», «Bekreft», «Les mer» etc. Listen over aktuelle handlinger er en del av den strukturerte beskrivelsen av en dialogelementet, og kan når som helst endres av tjenestetilbyder gjennom API.
 
 En handling er enten en _«GUI»-handling_ eller en _«API»-handling_.
 
@@ -81,25 +83,25 @@ En handling er enten en _«GUI»-handling_ eller en _«API»-handling_.
 
 GUI-handlinger gjøres synlige for brukeren i form av knapper, lenker eller lignende. Tjenestetilbyderen oppgir selv om en gitt handling er å regne som en primær-, sekundær eller tertiær-handling, noe som påvirker hvordan dette presenteres til brukeren. En primærhandling vil typisk presenteres som en fremhevet knapp («call to action»), og benyttes for det som er det logiske neste steget. En sekundærhandling (f.eks. «Avbryt») kan være en mer nedtonet knapp, eller tekstlenker, mens en tertiærhandling (f.eks. «Les mer om denne tjenesten») kan gjemmes bak en nedtrekksmeny eller lignende. Alt dette vil være opp til det aktuelle GUI-et som benyttes å vurdere, og ulike vurderinger vil kunne gjøres avhengig av "view" - altså kontekst, tenkt brukergruppe m.m.
 
-Alle GUI-handlinger har en URL. Disse URLene blir kalt i det brukeren aktiverer den aktuelle handlingen. Typisk innebærer dette at brukeren blir omdirigert til etatens egen brukerflate hvor den aktuelle handlingen da utføres, enten automatisk eller gjennom videre brukerinteraksjon. Andre handlinger kan markeres at de skal utføres gjennom bakkanal-kall. Brukeren blir da ikke omdirigert, men Dialogboksen vil da foreta en forespørsel på vegne av brukeren til den oppgitte URL-en. Tjenestetilbyderen returnerer da det oppdaterte elementet, som umiddelbart blir vist brukeren igjen. Ved feil (enten av tekniske eller forretningslogiske årsaker) kan en feilmelding vises.
+Alle GUI-handlinger har en URL. Disse URLene blir kalt i det brukeren aktiverer den aktuelle handlingen. Typisk innebærer dette at brukeren blir omdirigert til etatens egen brukerflate hvor den aktuelle handlingen da utføres, enten automatisk eller gjennom videre brukerinteraksjon. Andre handlinger kan markeres at de skal utføres gjennom bakkanal-kall. Brukeren blir da ikke omdirigert, men Dialogporten vil da foreta en forespørsel på vegne av brukeren til den oppgitte URL-en. Tjenestetilbyderen returnerer da det oppdaterte elementet, som umiddelbart blir vist brukeren igjen. Ved feil (enten av tekniske eller forretningslogiske årsaker) kan en feilmelding vises.
 
-Det er kun én GUI-handling som Dialogboksen knytter semantikk til; slett. Denne fungerer som andre handlinger, men vil alltid innebære et bakkanal-kall, som hvis vellykket, fører til at dialogbokselementet blir markert som slettet i Dialogboksen, og da typisk flyttes til en "papirkurv" eller lignende. Dialogboksen vil også kunne knytte ekstra UI-logikk til disse handlingene (f.eks. vise en «Er du sikker?» dialog i forkant).
+Det er kun én GUI-handling som Dialogporten knytter semantikk til; slett. Denne fungerer som andre handlinger, men vil alltid innebære et bakkanal-kall, som hvis vellykket, fører til at dialogelementet blir markert som slettet i Dialogporten, og da typisk flyttes til en "papirkurv" eller lignende. Felles Arbeidsflate vil også kunne knytte ekstra UI-logikk til disse handlingene (f.eks. vise en «Er du sikker?» dialog i forkant).
 
 ### API-handling
 
-En API-handling er tiltenkt SBS-er som benytter Dialogboks gjennom API. Disse inneholder også en identifikator som indikerer hva slags type handling det er snakk om, hvilken URL som må kalles for å utføre handlingen, hvilken HTTP-operasjon som skal benyttes (typisk GET eller POST), og en lenke til en strukturert beskrivelse (JSON Schema) av datamodellen som enten returneres eller forventes som input.
+En API-handling er tiltenkt SBS-er og portaler som benytter Dialogporten gjennom en egen integrasjon. Disse inneholder også en identifikator som indikerer hva slags type handling det er snakk om, hvilken URL som må kalles for å utføre handlingen, hvilken HTTP-operasjon som skal benyttes (typisk GET eller POST), og en lenke til en strukturert beskrivelse (JSON Schema) av datamodellen som enten returneres eller forventes som input.
 
-{% include note.html type="info" content="Dialogboksen foretar ikke validering av noe data, og ser ikke hvilke data som flyter mellom SBS-et og tjenestetilbyderens API." %}
+{% include note.html type="info" content="Dialogporten foretar ikke validering av noe data, og ser ikke hvilke data som flyter mellom SBS-et og tjenestetilbyderens API." %}
 
 Alle handlinger - både GUI og API - har en identifikator som mappes til en _action_ (og valgfritt en _subressurs_) i _autorisasjonspolicyen_ som er knyttet til en _tjenesteressurs._
 
 ## Tjenesteressurs
 
-Alle dialogbokselementer må referere en _tjenesteressurs_. En tjenesteressurs utgjør autorisasjonsbæreren, og kan sammenlignes med moderne bruk av lenketjenester i Altinn 2. Dette er en beskrivelse av en tjeneste som ligger i [Altinn Resource Registry](https://docs.altinn.studio/technology/solutions/altinn-platform/authorization/resourceregistry/), en ny komponent i Altinn Autorisasjon. Hver tjenesteressurs har en autorisasjonspolicy uttrykt i [XACML](https://docs.altinn.studio/technology/solutions/altinn-platform/authorization/xacml/), som beskriver hvilke tilgangsregler som gjelder for alle dialogbokselementer som refererer den. XACML gir stor fleksibilitet i hvor grov- eller finkornet tilgangskontrollen skal være, og Dialogboksen vil legge denne policyen til grunn for å bestemme hvem som kan se ett gitt dialogbokselement, og hvilke handlinger som skal være tilgjengelige. 
+Alle dialogelementer må referere en _tjenesteressurs_. En tjenesteressurs utgjør autorisasjonsbæreren, og kan sammenlignes med moderne bruk av lenketjenester i Altinn 2. Dette er en beskrivelse av en tjeneste som ligger i [Altinn Resource Registry](https://docs.altinn.studio/technology/solutions/altinn-platform/authorization/resourceregistry/), en ny komponent i Altinn Autorisasjon. Hver tjenesteressurs har en autorisasjonspolicy uttrykt i [XACML](https://docs.altinn.studio/technology/solutions/altinn-platform/authorization/xacml/), som beskriver hvilke tilgangsregler som gjelder for alle dialogelementer som refererer den. XACML gir stor fleksibilitet i hvor grov- eller finkornet tilgangskontrollen skal være, og Dialogporten vil legge denne policyen til grunn for å bestemme hvem som kan se ett gitt dialogelement, og hvilke handlinger som skal være tilgjengelige. 
 
 Eksempelvis vil GUI-handlingen «Signer» referere en _action_ kalt «sign» i XACML-policyen, som krever tilganger den innloggende brukeren ikke besitter. Knappen vil derfor være grået ut og deaktivert. Tjenesteressursen er det tilgangsstyrere i virksomhetene forholder seg til, mht hvem som skal ha tilgang til å gjøre hva på vegne av en virksomhet (tilsvarende dagens tjenestedelegering).
 
-Handlinger og andre deler (typisk referanser til vedlegg) av i dialogboks-elementet kan også referere en _subressurs_, som kan ha andre autorisasjonsregler knyttet til seg. Dette muliggjør at man kan ha ulike autorisasjonskrav for samme type handling som er tilgjengelige ved ulike tilstander tjenesteinstansen har. F.eks. vil det kunne brukes for å la et signeringssteg kun være tilgjengelig for en ekstern revisor/regnskapsfører.
+Handlinger og andre deler (typisk referanser til vedlegg) av i dialogelementet kan også referere en _subressurs_, som kan ha andre autorisasjonsregler knyttet til seg. Dette muliggjør at man kan ha ulike autorisasjonskrav for samme type handling som er tilgjengelige ved ulike tilstander tjenesteinstansen har. F.eks. vil det kunne brukes for å la et signeringssteg kun være tilgjengelig for en ekstern revisor/regnskapsfører.
 
 På samme måte vil API-handlinger som ikke er tilgjengelige for SBS-et (med den identiteten SBS-et oppgir) ikke returneres. 
 
@@ -107,22 +109,22 @@ Opplysninger om hvem som er den autoriserte parten overføres gjennom et _sesjon
 
 ## Sesjonstoken
 
-{% include note.html type="warning" content="Mekanismene for hvordan autorisasjons/sesjonsinformasjon overføres fra Dialogboks til tjenestetilbyders flater i både GUI og API er ikke tilstrekkelig utredet." %}
+{% include note.html type="warning" content="Mekanismene for hvordan autorisasjons/sesjonsinformasjon overføres fra Dialogporten til tjenestetilbyders flater i både GUI og API er ikke tilstrekkelig utredet." %}
 
-Et sesjonstoken er enten et «opak» token (en tilfeldig tekststreng) eller en signert JWT som inneholder informasjon om den autentiserte brukeren/organisasjonen, hvilken aktør som er valgt, identifikator til dialogbokselementet og autorisasjonsressursen, dato og andre opplysninger. Ved bruk av et opak token må tjenestetilbyderen foreta et oppslag mot Dialogboksens API-er for å veksle det inn i informasjonen nevnt over. På denne måten kan sesjoner og autorisasjonsdata utover det som finnes i ID-porten/Maskinportet-tokens overføres mellom Dialogboksen og den aktuelle tjenestetilbyderen. Ved bruk av omdirigeringer i GUI-handlinger vil tjenestetilbyderen også kunne lene seg på SSO fra ID-porten for å autentisere brukeren, og validere at informasjonen i sesjonstokenet stemmer overens.
+Et sesjonstoken er enten et «opak» token (en tilfeldig tekststreng) eller en signert JWT som inneholder informasjon om den autentiserte brukeren/organisasjonen, hvilken aktør som er valgt, identifikator til dialogelementet og autorisasjonsressursen, dato og andre opplysninger. Ved bruk av et opak token må tjenestetilbyderen foreta et oppslag mot Dialogportens API-er for å veksle det inn i informasjonen nevnt over. På denne måten kan sesjoner og autorisasjonsdata utover det som finnes i ID-porten/Maskinportet-tokens overføres mellom Dialogporten og den aktuelle tjenestetilbyderen. Ved bruk av omdirigeringer i GUI-handlinger vil tjenestetilbyderen også kunne lene seg på SSO fra ID-porten for å autentisere brukeren, og validere at informasjonen i sesjonstokenet stemmer overens.
 
-# Scenarioer som påvirker dialogboks
+# Scenarioer som påvirker Dialogporten
 
-Det er typisk tre scenarioer som innebærer behov for interaksjon med dialogboks og dialogbokselementer.
+Det er typisk tre scenarioer som innebærer behov for interaksjon med Dialogporten og dialogelementer.
 
 1. **Sluttbruker-initiert dialog**, hvor sluttbruker (på vegne av seg selv eller annen part) finner og starter tjeneste ved hjelp av  
     * Offentlig tjenestekatalog
     * Søkemotor
     * Etatenes nettsider
     * SBS (enten manuelt eller fordi SBS agerer på en hendelse  
-    Dette fører til at tjenestetilbyder oppretter et dialogbokselement i den aktuelle dialogboksen.  
+    Dette fører til at tjenestetilbyder oppretter et dialogelement i Dialogporten som tilhører den aktuelle mottakeren.  
 
-2. **Tjenestetilbyder-initiert dialog**, hvor tjenestetilbyder oppretter dialogbokselementet selv i den aktuelle dialogboksen. Dette er typisk:
+2. **Tjenestetilbyder-initiert dialog**, hvor tjenestetilbyder oppretter dialogelementet selv i Dialogporten som tilhører den aktuelle mottakeren. Dette er typisk:
     * «Prefill»-scenarioer, hvor tjenestetilbyderen trenger å innhente opplysninger og gir aktøren et delvis forhåndsutfylt skjema å begynne med
     * Proaktive/sammenhengende tjenester, hvor en tjenestetilbyder igangsetter en dialog som følge av en hendelse (som kan ha oppstått i en annen tjeneste)  
 
@@ -133,7 +135,7 @@ Det er typisk tre scenarioer som innebærer behov for interaksjon med dialogboks
     * Kan være utgangspunkt for sluttbruker-initiert dialog, med lenker til «neste trinn»
     * Teknisk/funksjonelt subset av tjenestetilbyder-initiert dialog.
 
-Det finnes andre scenarioer rundt oppslag/innsynstjenester og filoverføringer som trolig ikke vil behøve en representasjon i en dialogboks, og er følgelig out-of-scope for dette arbeidet.
+Det finnes andre scenarioer rundt oppslag/innsynstjenester og filoverføringer som trolig ikke vil behøve en representasjon i en Dialogporten, og er følgelig out-of-scope for dette arbeidet.
 
 # Overordnet diagram over konsept
 
@@ -141,18 +143,18 @@ Det finnes andre scenarioer rundt oppslag/innsynstjenester og filoverføringer s
 
 # Sekvensbeskrivelser
 
-Under følger punktvis beskrivelser av fire ulike sekvenser. Det er to måter en dialog kan initieres på; enten av sluttbruker eller tjenestetilbyder. Hver av disse kan gjennomføres ved hjelp av GUI (Dialogboks + tjenestetilbyderens GUI-brukerflate), eller API (Dialogboks API + endepunkter som tjenestetilbyder eksponerer i sin API-brukerflate).
+Under følger punktvis beskrivelser av fire ulike sekvenser. Det er to måter en dialog kan initieres på; enten av sluttbruker eller tjenestetilbyder. Hver av disse kan gjennomføres ved hjelp av GUI eller API.
 
 ## Tjenestetilbyder-initiert dialog
 
-### Opprettelse av dialogbokselement 
+### Opprettelse av dialogelement 
 
 #### Sekvensdiagram
 
 ```mermaid!
 sequenceDiagram
-    participant TE as Tjenestetilbyders integrasjon mot Dialogboksen
-    participant API as Dialogboksen API
+    participant TE as Tjenestetilbyders integrasjon mot Dialogporten
+    participant API as Dialogporten API
     participant ARR as Altinn Resource Registry
     participant EVT as Altinn Event Component
     participant NOT as Altinn Notification Component
@@ -162,11 +164,11 @@ sequenceDiagram
 note over TE,NOTRCPT: Opprettelse av tjenesteressurs (gjøres én gang per tjeneste)
 TE-->>ARR: Oppretter tjenesteressurs
 ARR-->>TE: Returnerer tjenesteressurs-identifikator
-note over TE,NOTRCPT: Opprettelse av dialogbokselement
-TE->>API: Opprette dialogbokselement
-API->>TE: Returnere identifikator til dialogbokselement
+note over TE,NOTRCPT: Opprettelse av dialogelement
+TE->>API: Opprette dialogelement
+API->>TE: Returnere identifikator til dialogelement
 par
-    API->>EVT: Generer hendelse for opprettet dialogbokselement
+    API->>EVT: Generer hendelse for opprettet dialogelement
     and
     API->>NOT: Sende evt. varsler indikert av tjenestetilbyder ved opprettelse, samt brukerstyrte varsler
 end
@@ -176,12 +178,12 @@ par
     NOT->>NOTRCPT: Send varsel på e-post/SMS el.l.
 end
 
-note over TE,NOTRCPT: Mutering av dialogbokselement (som følge av at brukeren foretar seg noe, eller andre hendeleser inntreffer)
+note over TE,NOTRCPT: Mutering av dialogelement (som følge av at brukeren foretar seg noe, eller andre hendeleser inntreffer)
 
 TE-->>ARR: Endrer tjenesteressurs med oppgitt identifikator
 ARR-->>TE: Returnerer kvittering på at endring er gjennomført
 par
-    API->>EVT: Generer hendelse for opprettet dialogbokselement
+    API->>EVT: Generer hendelse for opprettet dialogelement
     and
     API->>NOT: Sende evt. varsler indikert av tjenestetilbyder ved endring, samt brukerstyrte varsler
 end
@@ -195,7 +197,7 @@ end
 #### Tekstlig beskrivelse av trinn
 
 1.  Tjenestetilbyder oppretter tjenesteressurs i Altinn Resource Registry som refererer den aktuelle tjenesten
-2.  Tjenestetilbyder oppretter dialogbokselement som    
+2.  Tjenestetilbyder oppretter dialogelement som    
     * Referer tjenesteressurs
     * Inneholder tekstlig metadata (tittel, ingress etc) i flere språk
     * Inneholder andre (valgfrie) metadata som f.eks.
@@ -203,8 +205,8 @@ end
     * "Fra"-felt
     * Dato for når elementet skal aktiveres
     * Tjenestetilbyder sin egen referanse/ID
-    * Eventuell tilhørlighet til dialogbokselement-gruppe
-    * Inneholder (valgfri) URI for å hente oppdatering strukturert versjon av dialogbokselementet, hvis hensiktsmessig for tjenesten. Brukes typisk i det brukeren ekspanderer dialogbokselementet for å vise
+    * Eventuell tilhørlighet til dialogelement-gruppe
+    * Inneholder (valgfri) URI for å hente oppdatering strukturert versjon av dialogelementet, hvis hensiktsmessig for tjenesten. Brukes typisk i det brukeren ekspanderer dialogelementet for å vise
         * Dynamisk rikt innhold hentet i sanntid
         * Hvilke handlinger som kan utføres på elementet (se under)
         * Hvis ikke oppgitt, vises de metadata/handlinger jf. siste oppdatering som ble gjort av tjenestetilbyder (hvis noen, etter opprettelse)
@@ -213,13 +215,13 @@ end
         * GUI-handlinger kan flagges som primær, sekundær og tertiær-handlinger som påvirker hvordan dette vises til bruker (f.eks. kan primær og sekundærhandlinger vises som ulike typer knapper, mens tertiærhandlinger vises i en nedtrekksliste/tekstlenker).
         * Er gjenstand for autorisasjon definert av referert tjenesteressurs og eventuell subressurs. F.eks. vil f.eks. "Signer" kunne kreve andre rettigheter avhengig av policy knyttet til tjenesteressursen.
         * Hver GUI-handling inneholder
-            * En identifikator for handlingen. "Standard"-handlinger vil kunne oppgis som allerede finnes oversatt i Dialogboksen.
+            * En identifikator for handlingen. "Standard"-handlinger vil kunne oppgis som allerede finnes oversatt i Dialogporten.
             * Hvis ikke standard-handling, tekst som beskriver handlingen i flere språk
             * En valgfri hjelpetekst som kan fremvises brukeren som gir mer informasjon om hva handlingen innebærer
             * Flagg som indikerer om handlingen skal utføres i bakkanal
-            * En URI som enten (1) brukeren vil omdirigert til når hen aktiverer det aktuelle GUI-elementet (f.eks. en knapp) eller (2) Dialogboksen vil kalle hvis på vegne av brukeren hvis flagget som bakkanal-kall
+            * En URI som enten (1) brukeren vil omdirigert til når hen aktiverer det aktuelle GUI-elementet (f.eks. en knapp) eller (2) Felles Arbeidsflate vil kalle hvis på vegne av brukeren hvis flagget som bakkanal-kall
             * Hvis bakkanal-kall, skal URI-en skal returnerer en standardmodell som indikerer om kallet var vellykket, eller om det skal vises en feilmelding.
-            * Flagg som indikerer om elementet skal slettes/arkiveres i Dialogboksen hvis kall til URI lykkes (vil brukes til f.eks. "Er du sikker"-prompts)
+            * Flagg som indikerer om elementet skal slettes/arkiveres i Dialogporten hvis kall til URI lykkes (vil brukes til f.eks. "Er du sikker"-prompts)
         * Hver API-handling inneholder
             * En identifikator for handlingen
             * Hvilken http-metode som skal benyttes
@@ -235,7 +237,7 @@ end
         * Tilgjengelige handlinger kan oppdateres når som helst av tjenestetilbyder (som alternativ/supplement til at kall gjøres når bruker laster elementet)
         * Tittel og annen tekstlig metadata
         * Status ("under utfylling", "klar til signering", "venter på andre", "venter på svar fra tjenestetilbyder" etc) 
-    * Etter vellykket opprettelse, returner en unik identifikator for dialogboks-elementet.  
+    * Etter vellykket opprettelse, returner en unik identifikator for dialogelementet.  
 3.  Når elementet er opprettet/endret vil det
     *  Genereres hendelser som vil kunne konsumeres av parten
     * Disse kan igjen være koblet til brukerstyrt varsling på e-post/SMS andre push-kanaler 
@@ -247,36 +249,36 @@ end
 ```mermaid!
 sequenceDiagram
     actor SB as Sluttbruker
-    participant GUI as Dialogboksen GUI
-    participant API as Dialogboksen API for Innboks
+    participant GUI as Felles Arbeidsflate
+    participant API as Dialogporten API
     participant TEAPI as tjenestetilbyders API
     participant TEGUI as tjenestetilbyders GUI
-note over SB,GUI: Bruker logger inn i Dialogboksen og finner elementet
+note over SB,GUI: Bruker logger inn i Felles Arbeidsflate og finner elementet
 SB->>GUI: Bruker klikker på elementet
 opt
-    GUI->>TEAPI: Bakkanal kall for å hente oppdatert dialogbokselement
-    TEAPI->>GUI: Returnere dialogbokselement
+    GUI->>TEAPI: Bakkanal kall for å hente oppdatert dialogelement
+    TEAPI->>GUI: Returnere dialogelement
 end
-GUI->>SB: Viser innhold i dialogbokselement med aktuelle handlinger
+GUI->>SB: Viser innhold i dialogelement med aktuelle handlinger
 SB->>TEGUI: Sluttbruker følger lenke for ønsket operasjon med sesjonstoken til tjenestetilbyders portal
 TEGUI->>API: Validerer sesjonstoken
 API->>TEGUI: Sende sesjonsinformasjon
 TEGUI->>TEGUI: Opprette/oppdatere sesjon
 TEGUI->>SB: Vis arbeidsflate for tjeneste til sluttbruker
 SB->>TEGUI: Foreta endringer
-TEGUI->>API: Oppdater dialogbokselement for å reflektere ny tilstand
+TEGUI->>API: Oppdater dialogelement for å reflektere ny tilstand
 API->>TEGUI: Oppdatering OK
 TEGUI->>SB: Vis arbeidsflate med oppdatert tilstand
 ```
 
 #### Tekstlig beskrivelse av trinn
 
-1.  Bruker mottar varsling på en eller annen kanal, og logger inn i Dialogboksen
-2.  Elementet ligger i dialogboksen og viser overskrift, status og andre metadata
-3.  Bruker klikker på elementet for å ekspandere det. Hvis det av tjenestetilbyder ble oppgitt en URI for å oppdatere elementet, vil Dialogboksen kalle denne i en bakkanal og vise innholdet dynamisk samt oppdatere evt endrede metadata. Ekspandert element viser rikt innhold som tjenestetilbyder har definert, sammen med tilgjengelige handlinger. Hvis oppdatering feilet, vises enten feilmelding som tjenestetilbyder oppga, eller en standardfeilmelding.
+1.  Bruker mottar varsling på en eller annen kanal, og logger inn i Felles Arbeidsflate
+2.  Elementet har en grafisk fremstilling som viser overskrift, status og andre metadata
+3.  Bruker klikker på elementet for å ekspandere det. Hvis det av tjenestetilbyder ble oppgitt en URI for å oppdatere elementet, vil Dialogporten kalle denne i en bakkanal og vise innholdet dynamisk samt oppdatere evt endrede metadata. Ekspandert element viser rikt innhold som tjenestetilbyder har definert, sammen med tilgjengelige handlinger. Hvis oppdatering feilet, vises enten feilmelding som tjenestetilbyder oppga, eller en standardfeilmelding.
 4.  Bruker klikker på den definerte primærhandlingen.
-    * Dialogboksen vil da redirecte brukeren (nettleseren) til oppgitt URI. Det legges på en opaque sesjonstoken som parameter i URI-en (en ikke-forutsigbar tilfeldig tekststreng).
-    * Når tjenestetilbyder mottar forspørsel fra nettleser, gjøres et bakkanal-oppslag mot Dialogboksen tjenestetilbyder-API hvor sesjonstoken oppgis. Returnerer en modell som forteller
+    * Felles Arbeidsflate vil da redirecte brukeren (nettleseren) til oppgitt URI. Det legges på en opaque sesjonstoken som parameter i URI-en (en ikke-forutsigbar tilfeldig tekststreng).
+    * Når tjenestetilbyder mottar forspørsel fra nettleser, gjøres et bakkanal-oppslag mot Dialogporten tjenestetilbyder-API hvor sesjonstoken oppgis. Returnerer en modell som forteller
         *  autentisert part (f/dnr, orgnr)
         *  valgt aktør
         *  tidspunkt
@@ -284,9 +286,9 @@ TEGUI->>SB: Vis arbeidsflate med oppdatert tilstand
         *  tjenestetilbyders referanse til elementet
         *  identifikator for valgt handling
     * Alternativ til opak streng kan det brukes et token i form av en JWT som inneholder den samme informasjonen signert av Digdir. Dette unngår bruken av bakkanal, og reduserer behovet for tilstandshåndtering.  
-5.  Ved hjelp av tokenet og SSO i ID-porten blir brukeren umiddelbart logget inn hos tjenestetilbyder og tatt inn til tjenesteinstansen, hvor brukeren interagerer med tjenesten. Etter hvert som dialogen skrider frem, kan tjenestetilbyder gjøre bakkanal-kall til Dialogboksen for å oppdatere dialogbokselementet slik det fremstår for brukeren.
-6.  Hvis brukeren fullfører dialogen, kan tjenestetilbyder gjøre et bakkanal-kall for å indikere til Dialogboksen at dialogbokselementet skal arkiveres. Elementet blir da flyttet til sluttbrukers arkiv. Merk at det fremdeles kun ligger da (ikke lenger muterbare) metadata på elementet i Dialogboksen.
-7.  Når brukeren senere ekspanderer elementet i arkivet, gjøres det samme kallet for å hente siste oppdaterte (altså arkiverte) element fra tjenestetilbyder. Typisk vises da bare en kort tekst og et vedlegg til en PDF-versjon av en kvittering/gjenpart el.l.
+5.  Ved hjelp av tokenet og SSO i ID-porten blir brukeren umiddelbart logget inn hos tjenestetilbyder og tatt inn til tjenesteinstansen, hvor brukeren interagerer med tjenesten. Etter hvert som dialogen skrider frem, kan tjenestetilbyder gjøre bakkanal-kall til Dialogporten for å oppdatere dialogelementet slik det fremstår for brukeren.
+6.  Hvis brukeren fullfører dialogen, kan tjenestetilbyder gjøre et bakkanal-kall for å indikere til Dialogporten at dialogelementet skal arkiveres. Elementet blir da flyttet til sluttbrukers arkiv. Merk at det fremdeles kun ligger da (ikke lenger muterbare) metadata på elementet i Dialogporten.
+7.  Når brukeren senere ekspanderer elementet i en arkiv-visning i Felles Arbeidsflate, gjøres det samme kallet for å hente siste oppdaterte (altså arkiverte) element fra tjenestetilbyder. Typisk vises da bare en kort tekst og et vedlegg til en PDF-versjon av en kvittering/gjenpart el.l.
 
 ### Konsum gjennom API
 
@@ -296,20 +298,20 @@ TEGUI->>SB: Vis arbeidsflate med oppdatert tilstand
 sequenceDiagram
     participant SBS as Sluttbrukersystem
     participant EID as Maskinporten/ID-porten/Altinn Token Exchange
-    participant API as Dialogboksen API for Innboks
+    participant API as Dialogporten API
     participant TEAPI as tjenestetilbyders API
-note over SBS,TEAPI: SBS abonnerer på hendelser for opprettelse av dialogbokselementer<br>og mottar URI til nytt dialogbokselement.
+note over SBS,TEAPI: SBS abonnerer på hendelser for opprettelse av dialogelementer<br>og mottar URI til nytt dialogelement.
 SBS->>EID: Autentisering/autorisering
 EID->>SBS: access_token
-SBS->>API: Hent dialogbokselement
+SBS->>API: Hent dialogelement
 opt
-    API->>TEAPI: Bakkanal kall for å hente oppdatert dialogbokselement
-    TEAPI->>API: Returne dialogbokselement
+    API->>TEAPI: Bakkanal kall for å hente oppdatert dialogelement
+    TEAPI->>API: Returne dialogelement
 end
 API->>SBS: Returnere innboks-element med liste over aktuelle handlinger og URI-er
 SBS->>TEAPI: Foreta endringer
 opt
-    TEAPI->>API: Oppdater dialogbokselement for å reflektere ny tilstand
+    TEAPI->>API: Oppdater dialogelement for å reflektere ny tilstand
     API->>TEAPI: Oppdatering OK
 end
 TEAPI->>SBS: Oppdatering OK
@@ -317,10 +319,10 @@ TEAPI->>SBS: Oppdatering OK
 
 #### Tekstlig beskrivelse av trinn
 
-1.  SBS abonnerer på hendelser knyttet til opprettelse av dialogbokselementer av en eller flere typer, og mottar en notifikasjon om at et nytt dialogbokselement er opprettet. Notifikasjonen inneholder en URI til dialogbokselementet i Dialogboksens API. Alternativt kan liste med dialogbokselementer hentes gjennom standard dialogboks-API-er
-2.  Avhengig av autorisasjonspolicy tilhørende tjenesteressursen, autoriserer SBS-et seg. Dette kan være gjennom brukerstyrt datadeling i ID-porten (OAuth2/OIDC) eller ved hjelp av Maskinporten (ren OAuth2). Tokenet kan også inneholde scopes som kreves av tjenestetilbyderen, og tokenet bør da utstedes med både Dialogboksen og tjenestetilbyder som i "aud"-claim. Hvis Maskinporten-token, kan policyen ha rettighetskrav som krever at det i tillegg autentiseres en virksomhetsbruker (systemidentitet i Altinn med tildelte rettigheter som gir tilgang til tjenesteressursen), som innbærer en tokenutveksling og utstedelse av et beriket Maskinporten-token. Dette resulterer i ett (eller to, hvis også beriket Altinn-token) access token som brukes i alle påfølgende kall.
+1.  SBS abonnerer på hendelser knyttet til opprettelse av dialogelementer av en eller flere typer, og mottar en notifikasjon om at et nytt dialogelement er opprettet. Notifikasjonen inneholder en URI til dialogelementet i Dialogportens API. Alternativt kan liste med dialogelementer hentes gjennom standard Dialogporten-API-er
+2.  Avhengig av autorisasjonspolicy tilhørende tjenesteressursen, autoriserer SBS-et seg. Dette kan være gjennom brukerstyrt datadeling i ID-porten (OAuth2/OIDC) eller ved hjelp av Maskinporten (ren OAuth2). Tokenet kan også inneholde scopes som kreves av tjenestetilbyderen, og tokenet bør da utstedes med både Dialogporten og tjenestetilbyder som i "aud"-claim. Hvis Maskinporten-token, kan policyen ha rettighetskrav som krever at det i tillegg autentiseres en virksomhetsbruker (systemidentitet i Altinn med tildelte rettigheter som gir tilgang til tjenesteressursen), som innbærer en tokenutveksling og utstedelse av et beriket Maskinporten-token. Dette resulterer i ett (eller to, hvis også beriket Altinn-token) access token som brukes i alle påfølgende kall.
 3.  Ved uthenting av elementet som ble referert av hendelsen, returneres en strukturert modell som langt på vei speiler modellen som tjenestetilbyder opprinnelig sendte inn. Listen over handlinger definerer da hva SBS-et kan foreta seg, og hvilke endepunkter som må aksesseres for å utføre handlingene.  Enkelte handlinger kan være synlige/gyldige kun for portal, eller kun for API.  Handlinger kun synlige for API kan også referere JSON schemas el.l. som beskriver datamodellen som forventes på det aktuelle endepunktet. Tilsvarende håndtering av  GUI-handlinger legges det ved et sesjonstoken som inneholder informasjon om tidspunkt, autentisert part, valgt avgiver, aktuelt element, valgt handling.
-4.  SBS-et interagerer med tjenestetilbyders API gjennom endepunktene som elementet beskriver, og/eller i tråd med swagger/annen dokumentasjon som tjenestetilbyder har tilgjengeliggjort f.eks. via API-katalogen. Access token som utstedt av Altinn og/eller Maskinporten benyttes. Etter hvert som dialogen skrider frem, kan tjenestetilbyder gjøre bakkanal-kall til Dialogboksen for å oppdatere dialogbokselementet slik det fremstår for brukeren både i portal og API.
+4.  SBS-et interagerer med tjenestetilbyders API gjennom endepunktene som elementet beskriver, og/eller i tråd med swagger/annen dokumentasjon som tjenestetilbyder har tilgjengeliggjort f.eks. via API-katalogen. Access token som utstedt av Altinn og/eller Maskinporten benyttes. Etter hvert som dialogen skrider frem, kan tjenestetilbyder gjøre bakkanal-kall til Dialogporten for å oppdatere dialogelementet slik det fremstår for brukeren både i portal og API.
 
 ## Sluttbruker-initiert dialog
 
@@ -331,7 +333,7 @@ TEAPI->>SBS: Oppdatering OK
 ```mermaid!
 sequenceDiagram
     actor SB as Sluttbruker
-    participant API as Dialogboksen API for Innboks
+    participant API as Dialogporten API 
     participant AUTH as Altinn Autorisasjon API 
     participant TEGUI as tjenestetilbyders GUI
 note over SB,TEGUI: Bruker oppdager tjeneste gjennom tjenestekatalog, søkemotor, etatens nettside el.l.
@@ -341,18 +343,18 @@ AUTH->>TEGUI: Returnere aktørliste
 TEGUI->>SB: Presenter aktørliste
 SB->>TEGUI: Aktør velges
 opt
-    TEGUI->>API: Bakkanal kall for å sjekke om det allerede finnes et dialogbokselement under arbeid
-    API->>TEGUI: Returner dialogbokselement, eller tomt svar
+    TEGUI->>API: Bakkanal kall for å sjekke om det allerede finnes et dialogelement under arbeid
+    API->>TEGUI: Returner dialogelement, eller tomt svar
 end
 TEGUI->>TEGUI: Opprette tjenesteinstans
-TEGUI->>API: Bakkanal kall for å opprette dialogbokselement
-API->>TEGUI: Returnere dialogbokselement
+TEGUI->>API: Bakkanal kall for å opprette dialogelement
+API->>TEGUI: Returnere dialogelement
 TEGUI->>SB: Presenter tjeneste for bruker
 
 SB->>TEGUI: Foreta endringer
 par
     opt
-        TEGUI->>API: Oppdater dialogbokselement for å reflektere ny tilstand
+        TEGUI->>API: Oppdater dialogelement for å reflektere ny tilstand
         API->>TEGUI: Oppdatering OK
     end
 and 
@@ -364,18 +366,18 @@ end
 
 1.  Bruker oppdager tjeneste gjennom tjenestekatalog, søkemotor, etatenes nettsider el.l.
 2.  Bruker starter tjenesten og blir umiddelbart tatt inn i brukerflaten hos tjenestetilbyderen, og velger aktør avhengig av tjenestens natur (via autorisasjonskall mot Altinn Autorisasjon for å bygge aktørliste)
-3.  Tjenestetilbyder gjør bakkanal-kall for å opprette dialogboksinstans i Dialogboksen
+3.  Tjenestetilbyder gjør bakkanal-kall for å opprette dialogelement i Dialogporten
     * Her kan en se på muligheten for å la tjenestetilbyder sjekke om det allerede finnes instanser av tjenesten hos samme aktør som inneholder en eller annen status ("under arbeid" eller lignende) og gi bruker mulighet til å fortsette å jobbe med den instansen, eller opprette en ny.
-4.  Sluttbruker interagerer med tjenesten, og tjenestetilbyder gjør kall til Dialogboksen for å oppdatere dialogboksinstansen.
-5.  Hvis bruker avslutter økten før dialogen er ferdigstilt, kan han/hun (eller andre autoriserte) fortsette å jobbe med dialogen gjennom å aksessere dialogbokseelementet i Dialogboksen. Prosessen blir da som "tjenestetilbyder-initiert dialog / Konsum gjennom GUI (portal)" steg 2. 
+4.  Sluttbruker interagerer med tjenesten, og tjenestetilbyder gjør kall til Dialogporten for å oppdatere dialogelementet.
+5.  Hvis bruker avslutter økten før dialogen er ferdigstilt, kan han/hun (eller andre autoriserte) fortsette å jobbe med dialogen gjennom å aksessere dialogelementet i Felles Arbeidsflate. Prosessen blir da som "tjenestetilbyder-initiert dialog / Konsum gjennom GUI (portal)" steg 2. 
   
 ### Gjennom API
 
 *  Her er det to nærliggende alternativer - skal tjenester kunne "instansieres"
-    a) gjennom et felles "instansierings"-API i Dialogboksen som gjør bakkanal-kall til tjenestetilbyder og returnerer et dialogbokselement med liste over handlinger/endepunkter?
-    b)  direkte mot tjenestetilbyders API-er som da kan gjøre bakkanal-kall til Dialogboksen for å oppgi dialogbokselementet?
+    a) gjennom et felles "instansierings"-API i Dialogporten som gjør bakkanal-kall til tjenestetilbyder og returnerer et dialogelement med liste over handlinger/endepunkter?
+    b)  direkte mot tjenestetilbyders API-er som da kan gjøre bakkanal-kall til Dialogporten for å oppgi dialogelementet?
 
-*  Begge deler bør kanskje kunne støttes? Førstnevnte gir en mer homogen løsning sett fra SBS-ene sin side; selv om all kommunikasjon går direkte mot tjenestetilbyder etter instansiering, er dialogbokselementet et som vil kunne reflektere gjeldende tilstand/status og aktuelle handlinger. Det andre løsningen gir en løsere kobling til Dialogboksen, men gjør at SBS-et i mindre grad kan forholde seg til en felles brukerflate.
+*  Begge deler bør kanskje kunne støttes? Førstnevnte gir en mer homogen løsning sett fra SBS-ene sin side; selv om all kommunikasjon går direkte mot tjenestetilbyder etter instansiering, er dialogelementet et som vil kunne reflektere gjeldende tilstand/status og aktuelle handlinger. Det andre løsningen gir en løsere kobling til Dialogporten, men gjør at SBS-et i mindre grad kan forholde seg til en felles brukerflate.
 *  Under skisseres en løsning med felles instansierings-API
 
 #### Variant med instansierings-API 
@@ -384,21 +386,21 @@ end
 sequenceDiagram
     participant SBS as Sluttbrukersystem
     participant EID as Maskinporten/ID-porten/Altinn Token Exchange
-    participant API as Dialogboksen API for Innboks
+    participant API as Dialogporten API
     participant TEAPI as Tjenestetilbyders API
 SBS->>EID: Autentisering/autorisering
 EID->>SBS: access_token
-SBS->>API: Opprett dialogbokselement
-API->>TEAPI: Bakkanal kall til tjenestetilbyder (URI fra tjenesteressurs) for å opprette dialogbokselement
+SBS->>API: Opprett dialogelement
+API->>TEAPI: Bakkanal kall til tjenestetilbyder (URI fra tjenesteressurs) for å opprette dialogelement
 TEAPI->>TEAPI: Opprette tjenesteinstans
-TEAPI-->>API: Opprette dialogbokselement med referanse til tjenesteinstans
-API-->>TEAPI: Opprettelse OK, returner dialogbokselement-ID
-TEAPI->>TEAPI: Knytt dialogbokselement-ID til tjenesteinstans
+TEAPI-->>API: Opprette dialogelement med referanse til tjenesteinstans
+API-->>TEAPI: Opprettelse OK, returner dialogelement-ID
+TEAPI->>TEAPI: Knytt dialogelement-ID til tjenesteinstans
 TEAPI->>API: Returner element-ID
 API->>SBS: Returnere innboks-element med liste over aktuelle handlinger med URI-er
 SBS->>TEAPI: Foreta oppslag/endringer
 opt
-    TEAPI->>API: Oppdater dialogbokselement for å reflektere ny tilstand
+    TEAPI->>API: Oppdater dialogelement for å reflektere ny tilstand
     API->>TEAPI: Oppdatering OK
 end
 TEAPI->>SBS: Return av oppslag/oppdatering OK
@@ -406,12 +408,12 @@ TEAPI->>SBS: Return av oppslag/oppdatering OK
 
 1.  ("Design-time") SBS oppdager API gjennom API-katalog eller annen dokumentasjon, og foretar merkantil og teknisk onboarding (setter opp Maskinporten-klient med rette scopes, oppretter virksomhetsbruker etc)
 2.  SBS autoriserer seg (tilsvarende "tjenestetilbyder-initiert dialog / Konsum gjennom API", trinn 2.
-3.  SBS gjør et kall til et standard API i Dialogboksen ("createinstance" el.l) som oppgir aktør og tjenesteressurs
-4.  Dialogboksen foretar autorisasjon basert på policy knyttet til tjenesteressurs, og hvis godkjent gjør et bakkanal kall til et instansierings-endepunkt som er definert på tjenesteressurs. Kallet inneholder en standard modell som beskriver autentisert part, valgt aktør, og tjenesteressurs.
-5.  Tjenestetilbyder oppretter instans (el.l) i egne systemer, og gjør bakkanal-kall tilbake til Dialogboksen for å opprette dialogbokselement som beskrevet i "tjenestetilbyder-initert dialog", trinn 2.
-6.  Tjenestetilbyder mottar fra Dialogboksen identifikator til dialogbokselement, som da kan knyttes til egen tjenesteinstans
-7.  Tjenestetilbyder returnerer identifikator til dialogbokselement til Dialogboksen
-8.  Dialogboksen laster det nyopprettede dialogbokselementet, og returner dette til SBS
+3.  SBS gjør et kall til et standard API i Dialogporten ("createinstance" el.l) som oppgir aktør og tjenesteressurs
+4.  Dialogporten foretar autorisasjon basert på policy knyttet til tjenesteressurs, og hvis godkjent gjør et bakkanal kall til et instansierings-endepunkt som er definert på tjenesteressurs. Kallet inneholder en standard modell som beskriver autentisert part, valgt aktør, og tjenesteressurs.
+5.  Tjenestetilbyder oppretter instans (el.l) i egne systemer, og gjør bakkanal-kall tilbake til Dialogporten for å opprette dialogelement som beskrevet i "tjenestetilbyder-initert dialog", trinn 2.
+6.  Tjenestetilbyder mottar fra Dialogporten identifikator til dialogelement, som da kan knyttes til egen tjenesteinstans
+7.  Tjenestetilbyder returnerer identifikator til dialogelement til Dialogporten
+8.  Dialogporten laster det nyopprettede dialogelementet, og returner dette til SBS
 9.  SBS interagerer med tjenestetilbyders API-er som beskrevet i "tjenestetilbyder-initiert dialog / Konsum gjennom API", trinn 4
 
 #### Variant uten instansierings-API 
@@ -420,38 +422,38 @@ TEAPI->>SBS: Return av oppslag/oppdatering OK
 sequenceDiagram
     participant SBS as Sluttbrukersystem
     participant EID as Maskinporten/ID-porten/Altinn Token Exchange
-    participant API as Dialogboksen API for Innboks
+    participant API as Dialogporten API
     participant TEAPI as Tjenestetilbyders API
-note over SBS,TEAPI: SBS abonnerer på hendelser for opprettelse av dialogbokselementer<br>og mottar URI til nytt dialogbokselement.    
+note over SBS,TEAPI: SBS abonnerer på hendelser for opprettelse av dialogelementer<br>og mottar URI til nytt dialogelement.    
 SBS->>EID: Autentisering/autorisering
 EID->>SBS: access_token
 SBS->>TEAPI: Initier dialogtjeneste
 TEAPI->>TEAPI: Opprette tjenesteinstans
-TEAPI-->>API: Opprette dialogbokselement med referanse til tjenesteinstans
-API-->>TEAPI: Opprettelse OK, returner dialogbokselement-ID
-TEAPI->>TEAPI: Knytt dialogbokselement-ID til tjenesteinstans
-API->>SBS: Send notifikasjon om hendelse som genereres ved opprettelse av dialogbokselement
+TEAPI-->>API: Opprette dialogelement med referanse til tjenesteinstans
+API-->>TEAPI: Opprettelse OK, returner dialogelement-ID
+TEAPI->>TEAPI: Knytt dialogelement-ID til tjenesteinstans
+API->>SBS: Send notifikasjon om hendelse som genereres ved opprettelse av dialogelement
 opt
     SBS->>API: Hent liste over aktuelle handlinger
     API->>SBS: Returner liste over aktuelle handlinger
 end
 SBS->>TEAPI: Foreta oppslag/endringer
 opt
-    TEAPI->>API: Oppdater dialogbokselement for å reflektere ny tilstand
+    TEAPI->>API: Oppdater dialogelement for å reflektere ny tilstand
     API->>TEAPI: Oppdatering OK
 end
 TEAPI->>SBS: Return av oppslag/oppdatering OK
 ```
 
-1.  SBS abonnerer på hendelser knyttet til opprettelse av dialogbokselementer av en eller flere typer
+1.  SBS abonnerer på hendelser knyttet til opprettelse av dialogelementer av en eller flere typer
 2.  SBS autoriserer seg med de mekanismer som kreves av tjenesten
 3.  SBS gjør et eller annet kall for å initiere (og potensielt samtidig fullføre) en dialogtjeneste hos tjenestetilbyder
-4.  Tjenestetilbyder oppretter instans (el.l) i egne systemer, og gjør bakkanal-kall tilbake til Dialogboksen for å opprette dialogbokselement som beskrevet i "tjenestetilbyder-initert dialog", trinn 2.
-5.  Tjenestetilbyder mottar fra Dialogboksen identifikator til dialogbokselement, som da kan knyttes til egen tjenesteinstans
-6. Gjennom abonnementet på hendelser knyttet til opprettelse av dialogbokselementer mottar SBS-et en notifikasjon om at dialogbokselementet for dialogtjenesten nå finnes
-7.  Hvis aktuelt, kan SBS-et hente ned dialogbokselementet for å få se en liste over autoriserte handlinger som kan foretas. Dette forutsetter at SBS-et har autorisert seg mot Dialoboksen i trinn 2.
+4.  Tjenestetilbyder oppretter instans (el.l) i egne systemer, og gjør bakkanal-kall tilbake til Dialogporten for å opprette dialogelement som beskrevet i "tjenestetilbyder-initert dialog", trinn 2.
+5.  Tjenestetilbyder mottar fra Dialogporten identifikator til dialogelement, som da kan knyttes til egen tjenesteinstans
+6. Gjennom abonnementet på hendelser knyttet til opprettelse av dialogelementer mottar SBS-et en notifikasjon om at dialogelementet for dialogtjenesten nå finnes
+7.  Hvis aktuelt, kan SBS-et hente ned dialogelementet for å få se en liste over autoriserte handlinger som kan foretas. Dette forutsetter at SBS-et har autorisert seg mot Dialoboksen i trinn 2.
 8.  SBS interagerer med tjenestetilbyders API-er som beskrevet i "tjenestetilbyder-initiert dialog / Konsum gjennom API", trinn 4
-9. Tjenestetilbyder oppdaterer dialogbokselementet for å reflektere tilstanden på dialogen
+9. Tjenestetilbyder oppdaterer dialogelementet for å reflektere tilstanden på dialogen
 
 
 # Eksempel-modeller

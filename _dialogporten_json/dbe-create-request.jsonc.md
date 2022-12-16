@@ -189,7 +189,7 @@
         // "detailsUrl". Hvis "content" også er oppgitt, vil det bli brukt som fallback om ikke "onExpandLoadFromUrl" 
         // lar seg laste innen rimelig tid. Endepunktet returnerer en modell som minimum inneholder 
         // "content", men som også kan inneholde en oppdater liste med "actions" og "attachments".
-        "onExpandLoadFromUrl": "https://example.com/api/dialogues/123456789/get",
+        "onExpandRefreshFromUrl": "https://example.com/api/dialogues/123456789/get",
         "authorization": {
             // Policy defineres av serviceResourceIdentifier, men det kan også legges på en ytterligere policy, som i 
             // tillegg til/i stedet for referert service resource sin policy må etterleves for kun dette ene objektet. 
