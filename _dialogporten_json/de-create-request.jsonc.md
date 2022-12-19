@@ -185,11 +185,11 @@
         "requireReadNotification": true,
         // Når blir elementet synlig hos recipient
         "visibleDateTime": "2022-12-01T12:00:00.000Z",
-        // Hvis oppgitt blir denne URL-en forsøkt lastet i når dialog-elementet ekspanderes eller hentes i API via 
-        // "detailsUrl". Hvis "content" også er oppgitt, vil det bli brukt som fallback om ikke "onExpandLoadFromUrl" 
-        // lar seg laste innen rimelig tid. Endepunktet returnerer en modell som minimum inneholder 
-        // "content", men som også kan inneholde en oppdater liste med "actions" og "attachments".
-        "onExpandRefreshFromUrl": "https://example.com/api/dialogues/123456789/get",
+        // Hvis oppgitt blir denne URL-en forsøkt lastet i når dialog-elementet ekspanderes i GUI eller hentes i API via 
+        // "detailsUrl". Hvis "content" også er oppgitt, vil det bli brukt som fallback om ikke 
+        // "onLoadDetailsRefreshFromUrl" lar seg laste innen rimelig tid. Endepunktet returnerer en modell som minimum
+        //  inneholder "content", men som også kan inneholde en oppdater liste med "actions" og "attachments".
+        "onLoadDetailsRefreshFromUrl": "https://example.com/api/dialogues/123456789/get",
         "authorization": {
             // Policy defineres av serviceResourceIdentifier, men det kan også legges på en ytterligere policy, som i 
             // tillegg til/i stedet for referert service resource sin policy må etterleves for kun dette ene objektet. 

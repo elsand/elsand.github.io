@@ -96,7 +96,7 @@
     "configuration": {        
         "requireReadNotification": true,
         "visibleDateTime": "2022-12-01T12:00:00.000Z",
-        "onExpandLoadFromUrl": "https://example.com/api/dialogues/123456789/get",
+        "onLoadDetailsRefreshFromUrl": "https://example.com/api/dialogues/123456789/get",
         "authorization": {
             "requirePermitFrom": "Both",  
             "xacmlPolicy": [
