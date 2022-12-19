@@ -5,7 +5,7 @@
 // Modellen kan også oppdateres/muteres med PATCH-kall som inneholder de feltene som en ønsker å endre. 
 //Ikke-komplekse felter som ligger på rotnivå kan ikke endres (med unntak av "status").
 
-// POST /dialogporten/api/v1/dbe
+// POST /dialogporten/api/v1/de
 {
     // Identifikator som refererer en tjenesteressurs ("Altinn Service Resource") i Altinn Autorisasjon
     // Se https://docs.altinn.studio/technology/solutions/altinn-platform/authorization/resourceregistry/
