@@ -27,11 +27,11 @@ _"Application Programming Interface"_, maskinelt grensesnitt som gjør det mulig
 
 _Dialogporten_ benyttes for å betegne det overordnede konseptet som beskrives i dette dokumentet, samt prosjektet/tiltaket som i første omgang søker å undersøke hvorvidt dette kan realiseres.
 
-Dialogporten benyttes også som navn på løsningskomponenten som tilbyr et API for Felles Arbeidsflate og Sluttbrukersystemer, og som implementerer Altinn Platform-funksjonalitet for lagring av metadata og autorisasjon.
+Dialogporten benyttes også som navn på løsningskomponenten som tilbyr et API for Felles Arbeidsflate og Sluttbrukersystemer, lagring av metadata, og som implementerer Altinn Platform-funksjonalitet for autorisasjon, hendelser og varsling.
 
 ## Felles Arbeidsflate 
 
-_Felles Arbeidsflate_ refererer til en tenkt implementasjon av et GUI som benytter seg av Dialgporten, og som fungerer som en felles grafisk arbeidsflate for alle som ikke benytter et sluttbrukersystem eller et skreddersydd GUI implementert på f.eks. en etatsportal.
+_Felles Arbeidsflate_ refererer til en tenkt implementasjon av et GUI som benytter seg av Dialogporten, og som fungerer som en felles grafisk arbeidsflate for alle som ikke benytter et sluttbrukersystem eller et skreddersydd GUI implementert på f.eks. en etatsportal.
 
 ## Sluttbrukersystem (SBS) og fagsystem
 
