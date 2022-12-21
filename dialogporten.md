@@ -49,6 +49,8 @@ En _part_ er en person, enten fysisk eller juridisk, som tjenestetilbyderen har 
 
 En _dialogtjeneste_ er en digital tjeneste tjenestetilbyderen innhenter informasjon fra en part i forbindelse med forvaltning av et eller flere lovverk. Tradisjonelt innebærer en dialogtjeneste bruk av ulike skjema, hvor parten - gjennom et GUI levert av tjenestetilbyderen og/eller et API levert av tjenestetilbyderen og tatt i bruk av et sluttbrukersystem eller fagsystem.
 
+Som det pekes på i avsnittet [Scenarioer som påvirker Dialogporten](#scenarioer-som-påvirker-dialogporten) vil en dialogtjeneste i denne konteksten også kunne dekke behovet tjenestetilbydere har for å kunne dele informasjon, altså det som typisk kalles "digital post".
+
 ## Tjenesteinstans
 
 _Tjenesteinstans_, eller bare instans, refererer seg til en konkret dialog mellom en tjenestetilbyder og en eller flere parter, og som typisk refererer en saksgang eller prosess hos tjenestetilbyderen, og/eller realiserer et behov parten har for innsyn i opplysninger hos tjenestetilbyder. Typisk representerer en instans "livsløpet" til en konkret dialog, og er tilstandsfull - altså den består gjerne av flere ulike trinn som typisk gjøres sekvensielt (men som i noen tilfeller kan ha parallelle "spor" som involverer flere parter) hvor dialogen har ulike tilstander og kan manipuleres på ulike måter. All håndtering og forretningslogikk/semantikk knyttet til en tjenesteinstans håndteres av tjenestetilbyderen.
@@ -261,8 +263,12 @@ opt
 end
 GUI->>SB: Viser innhold i dialogelement med aktuelle handlinger
 SB->>TEGUI: Sluttbruker følger lenke for ønsket operasjon med sesjonstoken til tjenestetilbyders portal
-TEGUI->>API: Validerer sesjonstoken
-API->>TEGUI: Sende sesjonsinformasjon
+alt opak token
+    TEGUI->>API: Validerer sesjonstoken
+    API->>TEGUI: Sende sesjonsinformasjon
+else self-contained token
+    TEGUI->>TEGUI: Validerer sesjonstoken
+end
 TEGUI->>TEGUI: Opprette/oppdatere sesjon
 TEGUI->>SB: Vis arbeidsflate for tjeneste til sluttbruker
 SB->>TEGUI: Foreta endringer
@@ -277,7 +283,7 @@ TEGUI->>SB: Vis arbeidsflate med oppdatert tilstand
 2.  Elementet har en grafisk fremstilling som viser overskrift, status og andre metadata
 3.  Bruker klikker på elementet for å ekspandere det. Hvis det av tjenestetilbyder ble oppgitt en URI for å oppdatere elementet, vil Dialogporten kalle denne i en bakkanal og vise innholdet dynamisk samt oppdatere evt endrede metadata. Ekspandert element viser rikt innhold som tjenestetilbyder har definert, sammen med tilgjengelige handlinger. Hvis oppdatering feilet, vises enten feilmelding som tjenestetilbyder oppga, eller en standardfeilmelding.
 4.  Bruker klikker på den definerte primærhandlingen.
-    * Felles Arbeidsflate vil da redirecte brukeren (nettleseren) til oppgitt URI. Det legges på en opaque sesjonstoken som parameter i URI-en (en ikke-forutsigbar tilfeldig tekststreng).
+    * Felles Arbeidsflate vil da redirecte brukeren (nettleseren) til oppgitt URI. Det legges på et sesjonstoken som parameter i URI-en.
     * Når tjenestetilbyder mottar forspørsel fra nettleser, gjøres et bakkanal-oppslag mot Dialogporten tjenestetilbyder-API hvor sesjonstoken oppgis. Returnerer en modell som forteller
         *  autentisert part (f/dnr, orgnr)
         *  valgt aktør
