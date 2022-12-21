@@ -461,10 +461,13 @@ TEAPI->>SBS: Return av oppslag/oppdatering OK
 8.  SBS interagerer med tjenestetilbyders API-er som beskrevet i "tjenestetilbyder-initiert dialog / Konsum gjennom API", trinn 4
 9. Tjenestetilbyder oppdaterer dialogelementet for å reflektere tilstanden på dialogen
 
+# OpenAPI
+
+En foreløpig OpenAPI 3.0.1 specification (OAS) basert på modellene beskrevet under kan sees på [https://app.swaggerhub.com/apis-docs/Altinn/Dialogporten](https://app.swaggerhub.com/apis-docs/Altinn/Dialogporten). 
 
 # Eksempel-modeller
 
-Under er utkast til JSON-modeller slik de kan fremstå i API-ene som må implementeres gitt beskrivelsene over.
+Under er utkast til JSON-modeller slik de kan fremstå i API-ene som må implementeres gitt beskrivelsene over, med kommentarer.
 
 {% for dpj in site.dialogporten_json %}
   {% assign jsonPageName = dpj.url | split: "/" | last | remove: ".html"| remove: ".jsonc" %}
@@ -472,3 +475,4 @@ Under er utkast til JSON-modeller slik de kan fremstå i API-ene som må impleme
   <h2 id="{{ jsonPageId }}">{{ jsonPageName }}</h2>
   {{ dpj.content | markdownify }}
 {% endfor %}
+
