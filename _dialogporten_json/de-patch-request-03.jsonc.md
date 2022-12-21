@@ -5,7 +5,7 @@
 {
     "attachments": [
         {
-            "displayName": [ { "lang": "nb_NO", "value": "Vedtaksbrev" } ],
+            "displayName": [ { "code": "nb_NO", "value": "Vedtaksbrev" } ],
             "sizeInBytes": 123456,
             "contentType": "application/pdf",
             "url": "https://example.com/api/dialogues/123456789/attachments/2"

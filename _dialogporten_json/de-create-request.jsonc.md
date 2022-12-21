@@ -29,7 +29,7 @@
         
         // Trenger bare oppgis av ett dialogbokselement. Hvis oppgitt av flere, er det den med høyest "order"-verdi 
         // som skal benyttes.
-        "name": [ { "lang": "nb_NO", "value": "Navn på dialoggruppe." } ]
+        "name": [ { "code": "nb_NO", "value": "Navn på dialoggruppe." } ]
     },
 
     // Kjente statuser som bestemmer hvordan elementet vises for bruker: 
@@ -54,14 +54,14 @@
     "content": {
         // Alle tekster som vises verbatim må oppgis som en array av oversatte tekster. 
         // Det som benyttes er brukerens valgte språk i Dialogboksen
-        "body": [ { "lang": "nb_NO", 
+        "body": [ { "code": "nb_NO", 
             "value": "Innhold med <em>begrenset</em> HTML-støtte. Dette innholdet vises når elementet ekspanderes." } ],
-        "title": [ { "lang": "nb_NO", "value": "En eksempel på en tittel" } ],
-        "senderName": [ { "lang": "nb_NO", "value": "Overstyrt avsendernavn (bruker default tjenesteeiers navn)" } ]            
+        "title": [ { "code": "nb_NO", "value": "En eksempel på en tittel" } ],
+        "senderName": [ { "code": "nb_NO", "value": "Overstyrt avsendernavn (bruker default tjenesteeiers navn)" } ]            
     },  
     "attachments": [
         {
-            "displayName": [ { "lang": "nb_NO", "value": "dette er et vedlegg" } ],
+            "displayName": [ { "code": "nb_NO", "value": "dette er et vedlegg" } ],
             "sizeInBytes": 123456,
             "contentType": "application/pdf",            
             "url": "https://example.com/api/dialogues/123456789/attachments/1",
@@ -75,17 +75,17 @@
             { 
                 "action": "open", // Denne kan refereres i XACML-policy                
                 "type": "primary", // Dette bestemmer hvordan handlingen presenteres.
-                "title": [ { "lang": "nb_NO", "value": "Åpne i dialogtjeneste" } ],
+                "title": [ { "code": "nb_NO", "value": "Åpne i dialogtjeneste" } ],
                 "url": "https://example.com/some/deep/link/to/dialogues/123456789"
             },
             {
                 "action": "confirm",
                 "requiresAccessToResource": "somesubresource", // Det kan oppgis en valgfri referanse til en ressurs
                 "type": "secondary",
-                "title": [ { "lang": "nb_NO", "value": "Bekreft mottatt" } ],
+                "title": [ { "code": "nb_NO", "value": "Bekreft mottatt" } ],
 
                 // Dette foretar et POST bakkanal-kall til oppgitt URL, og det vises i frontend bare en spinner mens 
-                // kallet går. Må returnere en oppdatert DBE-modell (som da vises bruker) eller 204 (hvis elementet 
+                // kallet går. Må returnere en oppdatert DE-modell (som da vises bruker) eller 204 (hvis elementet 
                 // oppdatert i annet bakkanal-kall), eller en RFC7807-kompatibel feilmelding.
                 "isBackChannel": true, 
 
@@ -94,7 +94,7 @@
             { 
                 "action": "delete",
                 "type": "tertiary",
-                "title": [ { "lang": "nb_NO", "value": "Avbryt" } ],
+                "title": [ { "code": "nb_NO", "value": "Avbryt" } ],
 
                 // Dette impliserer isBackChannel=true, og viser i tillegg en "Er du sikker?"-prompt. 
                 // Vil ved vellykket kall skjule elementet fra GUI, og legge elementet i søppelkasse
@@ -111,7 +111,7 @@
                 "method": "GET",
 
                 // Indikerer hva API-konsumenter kan forvente å få slags svar
-                "responseSchema": "https://schemas.altinn.no/dbe/v1/dbe.json", 
+                "responseSchema": "https://schemas.altinn.no/de/v1/de.json", 
                 // Lenke til dokumentasjon for denne actionen
                 "documentationUrl": "https://api-docs.example.com/dialogueservice/open-action" 
             },
@@ -129,7 +129,7 @@
                 
                 // Indikerer hva API-et forventer å få som input på dette endepunktet
                 "requestSchema": "https://schemas.example.com/dialogueservice/v1/dialogueservice.json", 
-                "responseSchema": "https://schemas.altinn.no/dbe/v1/dbe.json" 
+                "responseSchema": "https://schemas.altinn.no/de/v1/de.json" 
             },
             { 
                 "action": "delete",
@@ -144,33 +144,29 @@
     /// oppgitt i Altinn. Ytterligere notifications kan sendes med å gjøre et PATCH-kall til 
     "notifications": {
         "sms": {
-                "text": [ { "lang": "nb_NO", "value": "dette kommer på sms" } ],
+                "text": [ { "code": "nb_NO", "value": "dette kommer på sms" } ],
                 
                 // Hvis avsender-felt skal være noe annet enn navn på tjenesteeier kan dette oppgis her. 
                 // Valideres opp mot whitelist knyttet til autentisert org.
-                "from": [ { "lang": "nb_NO", "value": "Etaten" } ]
+                "from": [ { "code": "nb_NO", "value": "Etaten" } ]
         },
         "email": {
-                "subject": [ { "lang": "nb_NO", "value": "emnefeltet på e-post" } ],
+                "subject": [ { "code": "nb_NO", "value": "emnefeltet på e-post" } ],
                 //
                 "template": "some-email-template",
                 "tokens": [
-                    { "name": "header", "value": [ { "lang": "nb_NO", "value": "dette er en header" } ] },
-                    { "name": "body", "value": [ { "lang": "nb_NO", "value": "Hei {{recipient.fullname}}!" } ] } 
+                    { "name": "header", "value": [ { "code": "nb_NO", "value": "dette er en header" } ] },
+                    { "name": "body", "value": [ { "code": "nb_NO", "value": "Hei {{recipient.fullname}}!" } ] } 
                 ]
         },
         "push": {
-            "sentDateTime": "2022-12-01T10:00:00.000Z",
-            "status": "ok",
-            "notification": {
-                // Basert på https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/showNotification
-                "title": [ { "lang": "nb_NO", "value": "Tittel på notifikasjon" } ],
-                "body": [ { "lang": "nb_NO", 
-                    "value": "Dette er første linje\nDette er andre linje, sendt til {{recipient.fullname}}" } ],
-                "icon": "https://example.com/some-icon-atleast-192x192.png",
-                // Valgfri URL som bruker blir sendt til hvis notifikasjonen klikkes på. Blir utvidet med sesjonstoken.
-                "notificationClickUrl": "https://example.com/some/deep/link/to/dialogues/123456789"
-            }
+            // Basert på https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/showNotification
+            "title": [ { "code": "nb_NO", "value": "Tittel på notifikasjon" } ],
+            "body": [ { "code": "nb_NO", 
+                "value": "Dette er første linje\nDette er andre linje, sendt til {{recipient.fullname}}" } ],
+            "icon": "https://example.com/some-icon-atleast-192x192.png",
+            // Valgfri URL som bruker blir sendt til hvis notifikasjonen klikkes på. Blir utvidet med sesjonstoken.
+            "notificationClickUrl": "https://example.com/some/deep/link/to/dialogues/123456789"
         }
     },
     "activityLog": [

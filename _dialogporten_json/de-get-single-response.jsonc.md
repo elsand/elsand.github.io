@@ -13,7 +13,7 @@
     "dialogueGroup": {
         "id": "some-arbitrary-id",
         "order": 1,
-        "name": [ { "lang": "nb_NO", "value": "Navn på dialoggruppe." } ]
+        "name": [ { "code": "nb_NO", "value": "Navn på dialoggruppe." } ]
     },
     "recipient": "org:991825827",
     "status": "under-progress", 
@@ -26,14 +26,14 @@
         "dueDateTime": "2022-12-01T12:00:00.000Z"
     },
     "content": {
-        "body": [ { "lang": "nb_NO", 
+        "body": [ { "code": "nb_NO", 
             "value": "Innhold med <em>begrenset</em> HTML-støtte. Dette innholdet vises når elementet ekspanderes." } ],
-        "title": [ { "lang": "nb_NO", "value": "En eksempel på en tittel" } ],
-        "senderName": [ { "lang": "nb_NO", "value": "Overstyrt avsendernavn (bruker default tjenesteeiers navn)" } ]            
+        "title": [ { "code": "nb_NO", "value": "En eksempel på en tittel" } ],
+        "senderName": [ { "code": "nb_NO", "value": "Overstyrt avsendernavn (bruker default tjenesteeiers navn)" } ]            
     },
     "attachments": [
         {
-            "displayName": [ { "lang": "nb_NO", "value": "dette er et vedlegg" } ],
+            "displayName": [ { "code": "nb_NO", "value": "dette er et vedlegg" } ],
             "sizeInBytes": 123456,
             "contentType": "application/pdf",
             "url": "https://example.com/api/dialogues/123456789/attachments/1",
@@ -45,21 +45,21 @@
             { 
                 "action": "open", // Denne kan refereres i XACML-policy
                 "type": "primary", // Dette bestemmer hvordan handlingen presenteres.
-                "title": [ { "lang": "nb_NO", "value": "Åpne i dialogtjeneste" } ],
+                "title": [ { "code": "nb_NO", "value": "Åpne i dialogtjeneste" } ],
                 "url": "https://example.com/some/deep/link/to/dialogues/123456789"
             },
             {
                 "action": "confirm",
                 "requiresAccessToResource": "somesubresource", 
                 "type": "secondary",
-                "title": [ { "lang": "nb_NO", "value": "Bekreft mottatt" } ],
+                "title": [ { "code": "nb_NO", "value": "Bekreft mottatt" } ],
                 "isBackChannel": true,
                 "url": "https://example.com/some/deep/link/to/dialogues/123456789/confirmReceived"
             },
             { 
                 "action": "delete",
                 "type": "tertiary",
-                "title": [ { "lang": "nb_NO", "value": "Avbryt" } ],
+                "title": [ { "code": "nb_NO", "value": "Avbryt" } ],
                 "isDeleteAction": true,
                 "url": "https://example.com/some/deep/link/to/dialogues/123456789"
             }
@@ -69,7 +69,7 @@
                 "action": "open",
                 "actionUrl": "https://example.com/api/dialogues/123456789",
                 "method": "GET",
-                "responseSchema": "https://schemas.altinn.no/dbe/v1/dbe.json",
+                "responseSchema": "https://schemas.altinn.no/de/v1/de.json",
                 "documentationUrl": "https://api-docs.example.com/dialogueservice/open-action"
             },
             { 
@@ -83,7 +83,7 @@
                 "actionUrl": "https://example.com/api/dialogues/123456789",
                 "method": "POST",
                 "requestSchema": "https://schemas.example.com/dialogueservice/v1/dialogueservice.json",
-                "responseSchema": "https://schemas.altinn.no/dbe/v1/dbe.json" 
+                "responseSchema": "https://schemas.altinn.no/de/v1/de.json" 
             },
             { 
                 "action": "delete",
@@ -194,32 +194,32 @@
             "activityType": "change", 
                                       
             "performedBy": "person:12018212345",
-            "activityDescription": [ { "lang": "nb_NO", "value": "Dokumentet 'X' ble signert og kan sendes inn" } ],
+            "activityDescription": [ { "code": "nb_NO", "value": "Dokumentet 'X' ble signert og kan sendes inn" } ],
             "activityDetailsUrl": "https://example.com/some/deep/link/to/dialogues/123456789/activitylog/1"
         },
         { 
             "activityDateTime": "2022-12-01T10:00:00.000Z",
             "activityType": "feedback",
             // Fravær av performedBy indikerer at det er tjenesteeieren som er utførende
-            "activityDescription": [ { "lang": "nb_NO", "value": "Foreløpig svar på saksbehandling" } ],
+            "activityDescription": [ { "code": "nb_NO", "value": "Foreløpig svar på saksbehandling" } ],
             "activityDetailsUrl": "https://example.com/some/deep/link/to/dialogues/123456789/message/2"
         }
     ],
     // HAL til relaterte ressurser
     "_links": {
-        "self": { "href": "/dialogporten/api/v1/dbe/e0300961-85fb-4ef2-abff-681d77f9960e" },        
+        "self": { "href": "/dialogporten/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e" },        
         
         // eget endepunkt for varslingslogg for elementet
-        "notificationlog": { "href": "/dialogporten/api/v1/dbe/e0300961-85fb-4ef2-abff-681d77f9960e/notificationlog" }, 
+        "notificationlog": { "href": "/dialogporten/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e/notificationlog" }, 
 
         // eget endepunkt for aktivitetslogg for elementet
-        "activitylog": { "href": "/dialogporten/api/v1/dbe/e0300961-85fb-4ef2-abff-681d77f9960e/activitylog" },         
+        "activitylog": { "href": "/dialogporten/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e/activitylog" },         
 
         // Dyplenke til portalvisning for elementet i Dialogporten
         "serviceresource": { "href": "/resourceregistry/api/v1/resource/example_dialogue_service/" }, 
 
         // Dyplenke til portalvisning for elementet i Dialogporten
-        "selfgui": { "href": "https://www.altinn.no/dialogporten/?expandElement=e0300961-85fb-4ef2-abff-681d77f9960e" }, 
+        "selfgui": { "href": "https://www.dialogporten.no/?expandElement=e0300961-85fb-4ef2-abff-681d77f9960e" }, 
 
         // Dyplenke til portalvisning for elementet hos tjenesteeier
         "externalgui": { "href": "https://example.com/some/deep/link/to/dialogues/123456789" } 

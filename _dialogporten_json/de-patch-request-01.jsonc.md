@@ -16,20 +16,20 @@
             { 
                 "action": "send",
                 "type": "primary",
-                "title": [ { "lang": "nb_NO", "value": "Send inn" } ],
+                "title": [ { "code": "nb_NO", "value": "Send inn" } ],
                 "url": "https://example.com/some/deep/link/to/dialogues/123456789/send",
                 "httpMethod": "POST"
             },
             { 
                 "action": "open", 
                 "type": "secondary",
-                "title": [ { "lang": "nb_NO", "value": "Se over før innsending" } ],
+                "title": [ { "code": "nb_NO", "value": "Se over før innsending" } ],
                 "url": "https://example.com/some/deep/link/to/dialogues/123456789"
             }, 
             { 
                 "action": "delete",
                 "type": "tertiary",
-                "title": [ { "lang": "nb_NO", "value": "Avbryt" } ],
+                "title": [ { "code": "nb_NO", "value": "Avbryt" } ],
                 "isDeleteAction": true, 
                 "url": "https://example.com/some/deep/link/to/dialogues/123456789" 
             }
@@ -39,7 +39,7 @@
                 "action": "open",
                 "actionUrl": "https://example.com/api/dialogues/123456789",
                 "method": "GET",
-                "responseSchema": "https://schemas.altinn.no/dbe/v1/dbe.json",
+                "responseSchema": "https://schemas.altinn.no/de/v1/de.json",
                 "documentationUrl": "https://api-docs.example.com/dialogueservice/open-action"
             },
             { 
@@ -53,7 +53,7 @@
                 "actionUrl": "https://example.com/api/dialogues/123456789/submit",
                 "method": "POST",
                 "requestSchema": "https://schemas.example.com/dialogueservice/v1/dialogueservice.json",
-                "responseSchema": "https://schemas.altinn.no/dbe/v1/dbe.json" 
+                "responseSchema": "https://schemas.altinn.no/de/v1/de.json" 
             },
             { 
                 "action": "delete",
@@ -67,7 +67,7 @@
             "activityDateTime": "2022-12-01T10:00:00.000Z",
             "activityType": "change",
             "performedBy": "person:12018212345",
-            "activityDescription": [ { "lang": "nb_NO", "value": "Dokumentet 'X' ble signert og kan sendes inn" } ],
+            "activityDescription": [ { "code": "nb_NO", "value": "Dokumentet 'X' ble signert og kan sendes inn" } ],
             "activityDetailsUrl": "https://example.com/some/deep/link/to/dialogues/123456789/activitylog/1"
         }
     ]
