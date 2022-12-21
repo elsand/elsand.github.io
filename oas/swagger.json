@@ -6,8 +6,7 @@
     "version" : "0.0.1"
   },
   "servers" : [ {
-    "url" : "https://virtserver.swaggerhub.com/Altinn/Dialogporten/0.0.1",
-    "description" : "SwaggerHub API Auto Mocking"
+    "url" : "/"
   } ],
   "tags" : [ {
     "name" : "Non-privileged",
