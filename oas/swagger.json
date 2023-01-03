@@ -16,7 +16,7 @@
     "description" : "Operations only available service providers"
   } ],
   "paths" : {
-    "/dialogporten" : {
+    "/dialogueelements" : {
       "summary" : "Path used to manage the list of dialogue elements.",
       "description" : "The REST endpoint/path used to list and for service provides to create dialogue elements.  This path contains a `GET` and `POST` operation to perform the list and create tasks, respectively.",
       "get" : {
@@ -61,7 +61,7 @@
         }
       }
     },
-    "/dialogporten/{id}" : {
+    "/dialogueelements/{id}" : {
       "summary" : "Path used to manage a single dialogue element.",
       "description" : "The REST endpoint/path used to get, update, and delete single dialogue elements.  This path contains `GET`, `PUT`, `PATCH` and `DELETE` operations used to perform the get, update, and delete tasks, respectively.",
       "get" : {
@@ -179,7 +179,7 @@
         }
       }
     },
-    "/dialogporten/{id}/notificationlog" : {
+    "/dialogueelements/{id}/notificationlog" : {
       "get" : {
         "tags" : [ "Non-privileged" ],
         "parameters" : [ {
@@ -684,10 +684,10 @@
         "description" : "",
         "example" : {
           "self" : {
-            "href" : "/dialogporten/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e"
+            "href" : "/dialogueelements/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e"
           },
           "notificationlog" : {
-            "href" : "/dialogporten/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e/notificationlog"
+            "href" : "/dialogueelements/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e/notificationlog"
           },
           "serviceresource" : {
             "href" : "/resourceregistry/api/v1/resource/example_dialogue_service/"
@@ -710,7 +710,7 @@
         },
         "description" : "",
         "example" : {
-          "href" : "/dialogporten/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e"
+          "href" : "/dialogueelements/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e"
         }
       },
       "LocalizedStrings" : {
@@ -952,10 +952,10 @@
           } ],
           "_links" : {
             "self" : {
-              "href" : "/dialogporten/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e"
+              "href" : "/dialogueelements/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e"
             },
             "notificationlog" : {
-              "href" : "/dialogporten/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e/notificationlog"
+              "href" : "/dialogueelements/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e/notificationlog"
             },
             "serviceresource" : {
               "href" : "/resourceregistry/api/v1/resource/example_dialogue_service/"
@@ -1353,7 +1353,6 @@
         }
       },
       "DialogueElementRequest" : {
-        "title" : "DialogElement",
         "type" : "object",
         "properties" : {
           "serviceResourceIdentifier" : {
