@@ -27,7 +27,7 @@ _"Application Programming Interface"_, maskinelt grensesnitt som gjør det mulig
 
 _Dialogporten_ benyttes for å betegne det overordnede konseptet som beskrives i dette dokumentet, samt prosjektet/tiltaket som i første omgang søker å undersøke hvorvidt dette kan realiseres.
 
-Dialogporten benyttes også som navn på løsningskomponenten som tilbyr et API for Felles Arbeidsflate og Sluttbrukersystemer, lagring av metadata, og som implementerer Altinn Platform-funksjonalitet for autorisasjon, hendelser og varsling.
+Dialogporten benyttes også som navn på løsningskomponenten (produktet) som tilbyr API for enhetlig tilgang og håndtering av digitale dialoger til Felles Arbeidsflate(r) og Sluttbrukersystemer, inkludert lagring av metadata om dialogene, og som dekker Altinn Platform-funksjonalitet for tilgangsstyring og -kontroll, hendelser og varsling.
 
 ## Felles Arbeidsflate 
 
@@ -152,7 +152,7 @@ Dialogelementtokenet benyttes som et "bearer token", altså noe som indikerer at
 | Claim            | Beskrivelse                                                                                                                                                        | Eksempel                                                                           |
 |------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------- |----------------------------------------------------------------------------------- |
 | c                | Autentisert som konsument av Dialogporten. Prefikset for  hhv. personer (typisk ID-porten), organisasjoner (typisk Maskinporten) eller selvregistrerte brukere.    | `"person:12018212345"`, `"org:991825827"` eller `"username:someemail@example.com"` |
-| l                | Sikkerhetsnivå (1-4)                                                                                                                                               | `4`                                                                                |
+| l                | Sikkerhetsnivå på autentisering (4)                                                                                                                                | `4`                                                                                |
 | s                | Valgfritt. Hvis det er benyttet et leverandørtoken i Maskinporten, vil autentisert leverandørs organisasjonsnummer oppgis her. Prefiks er alltid `org:`.           | `"org:991825827"`                                                                  |
 | p                | Hvem konsument opptrer på vegne av (om ikke seg selv), altså hvem som eier det aktuelle dialogelementet.                                                           | `"person:12018212345"`, `"org:991825827"` eller `"username:someemail@example.com"` |
 | i                | Unik identifikator til dialogelement.                                                                                                                              | `"e0300961-85fb-4ef2-abff-681d77f9960e"`                                           |
