@@ -141,11 +141,21 @@ Det finnes andre scenarioer rundt oppslag/innsynstjenester og filoverføringer s
 
 # Autorisasjon
 
+## Bruk av Dialogportens API-er
+
+Tjenesteressursen og/eller inline autorisasjonspolicy på enkelte dialogelementer bestemmer hvilke autorisasjonskontroller som skal legges til grunn for å få tilgang. Typisk innebærer dette at konsumenten innehar en spesiell rolle eller tilhører en spesifikk forhåndsdefinert tilgangsgruppe, eller er blitt delegert tilgang av en tilgangsstyrer/hovedadministrator hos den aktuelle parten.
+
+Dialogporten-API-ene krever i tillegg at klienten oppgir et token med et spesifikt scope; `digdir:dialogporten`. Dette scopet kan for SBS-er/GUI-implementasjoner være tildelt klienten gjennom brukerstyrt datadeling i ID-porten (OAuth2/OIDC) eller ved hjelp av Maskinporten (ren OAuth2). Ved bruk av Maskinporten-token, vil det typisk kreves at det i tillegg autentiseres en virksomhetsbruker (systemidentitet i Altinn med tildelte rettigheter som gir tilgang til tjenesteressursen), som innbærer en tokenutveksling og utstedelse av et beriket Maskinporten-token som benyttes mot Dialogporten. Tjenestetilbydere blir tildelt et eget scope; `digdir:dialogporten.tjenestetilbyder` som kun er tilgjengelig for Maskinporten-integrasjoner. Dette gir skrivetilgang til Dialogporten og mulighet til å hente ut alle elementer som er opprettet av tjenestetilbyderen. 
+
+Felles arbeidsflate vil av hensyn til brukskvalitet ikke kreve eksplisitt autorisasjon fra sluttbrukeren for tilgang til Dialogporten-API-ene; dette skjer implisitt gjennom innlogging i ID-porten, og Felles arbeidsflate vil bruke et internt scope for å autorisere seg mot Dialogportens API-er.
+
+## Bruk av dialogelementtoken 
+
 Det legges opp til at hvert element blir utstyrt med et eget token (dialogelementtoken) som Felles Arbeidsflate og SBS-er benytter i alle URL-er mot tjenestetilbyder. Dette gjør det mulig å overføre sesjoner og autorisasjonsdata utover det som finnes i ID-porten/Maskinportet-tokens mellom Dialogporten og den aktuelle tjenestetilbyderen. Ved bruk av omdirigeringer i GUI-handlinger vil tjenestetilbyderen også kunne lene seg på SSO fra ID-porten for å autentisere brukeren, og validere at informasjonen i dialogelementtokenet stemmer overens.
 
 Dialogelementtokenet benyttes som et "bearer token", altså noe som indikerer at ihendehaveren er autorisert av Dialogporten til en liste med påstander (claims) som ligger i tokenet. [Standard JWT-claims](https://www.rfc-editor.org/rfc/rfc7519#section-4.1) og [JWS-parametere](https://www.rfc-editor.org/rfc/rfc7515#section-4.1) som definert i RFC7519 og RFC7515 vil inkluderes, i tillegg til de Dialogporten-spesifikke påstandene under:
 
-## Dialogporten-spesifikke claims
+### Dialogporten-spesifikke claims
 
 | Claim            | Beskrivelse                                                                                                                                                        | Eksempel                                                                           |
 |------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------- |----------------------------------------------------------------------------------- |
@@ -157,7 +167,7 @@ Dialogelementtokenet benyttes som et "bearer token", altså noe som indikerer at
 | e                | Ekstern referanse til elementet                                                                                                                                    | `"123456789"`                                                                      |
 | a                | Liste over autoriserte actions. Kan være prefixet med `<ressurs>:` hvis actionen omfatter en navngitt ressurs i XACML policy som ikke er tjenesteressursen         | `[ "open", "attachment1:open", "confirm" ]`                                        |
 
-## Eksempel på dekodet token
+### Eksempel på dekodet token
 
 ```jsonc
 {
@@ -188,7 +198,7 @@ Dialogelementtokenet benyttes som et "bearer token", altså noe som indikerer at
 
 Tokenet kan verifiseres på vanlig vis gjennom at det publiseres et nøkkelsett (JWK) på et kjent endepunkt. Med å hente den offentlige nøkkelen definert av `kid` kan tjenestetilbyder verifisere at tokenet er gyldig. 
 
-## Overføring av token til tjenestetilbyder
+### Overføring av token til tjenestetilbyder
 
 Tokenet vil inkluderes i responsmodellen som returneres til SBS-er og Felles arbeidsflate i feltet `dialogElementToken`. For GUI-handlinger, eller andre dyplenker til tjenesteinstans hos tjenestetilbyder hvor bruker omdirigeres i nettleser, vil Felles arbeidsflate legge til tokenet som et fast query-parameter konfigurerte URL-en. F.eks. hvis en GUI-handling er definert til å være på `https://example.com/some/deep/link/to/dialogues/123456789` vil Felles arbeidsflate omdirigere brukeren til `https://example.com/some/deep/link/to/dialogues/123456789?dialogElementToken={token}` hvor `{token}` er en Base64URL enkodet JWT.
 
@@ -374,7 +384,7 @@ TEAPI->>SBS: Oppdatering OK
 #### Tekstlig beskrivelse av trinn
 
 1.  SBS abonnerer på hendelser knyttet til opprettelse av dialogelementer av en eller flere typer for en gitt part, og mottar en notifikasjon om at et nytt dialogelement er opprettet. Notifikasjonen inneholder en URI til dialogelementet i Dialogportens API. Alternativt kan liste med dialogelementer hentes gjennom standard Dialogporten-API-er
-2.  Avhengig av autorisasjonspolicy tilhørende tjenesteressursen, autoriserer SBS-et seg. Dette kan være gjennom brukerstyrt datadeling i ID-porten (OAuth2/OIDC) eller ved hjelp av Maskinporten (ren OAuth2). Tokenet kan også inneholde scopes som kreves av tjenestetilbyderen, og tokenet bør da utstedes med både Dialogporten og tjenestetilbyder som i "aud"-claim. Hvis Maskinporten-token, kan policyen ha rettighetskrav som krever at det i tillegg autentiseres en virksomhetsbruker (systemidentitet i Altinn med tildelte rettigheter som gir tilgang til tjenesteressursen), som innbærer en tokenutveksling og utstedelse av et beriket Maskinporten-token. Dette resulterer i ett (eller to, hvis også beriket Altinn-token) access token som brukes i alle påfølgende kall.
+2.  Avhengig av autorisasjonspolicy tilhørende tjenesteressursen, autoriserer SBS-et seg. Les mer i avsnittet [Autorisasjon](#autorisasjon).
 3.  Ved uthenting av elementet som ble referert av hendelsen, returneres en strukturert modell som langt på vei speiler modellen som tjenestetilbyder opprinnelig sendte inn. Listen over handlinger definerer da hva SBS-et kan foreta seg, og hvilke endepunkter som må aksesseres for å utføre handlingene.  Enkelte handlinger kan være synlige/gyldige kun for portal, eller kun for API.  Handlinger kun synlige for API kan også referere JSON schemas el.l. som beskriver datamodellen som forventes på det aktuelle endepunktet. Tilsvarende håndtering av  GUI-handlinger legges det ved et dialogelementtoken som inneholder informasjon om tidspunkt, autentisert part, valgt avgiver, aktuelt element, valgt handling.
 4.  SBS-et interagerer med tjenestetilbyders API gjennom endepunktene som elementet beskriver, og/eller i tråd med swagger/annen dokumentasjon som tjenestetilbyder har tilgjengeliggjort f.eks. via API-katalogen. Dialogelementtoken oppgis i forespørslene som beskrevet i avsnittet [Autorisasjon](#autorisasjon). Etter hvert som dialogen skrider frem, kan tjenestetilbyder gjøre bakkanal-kall til Dialogporten for å oppdatere dialogelementet slik det fremstår for brukeren både i portal og API.
 
