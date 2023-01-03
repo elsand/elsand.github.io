@@ -317,12 +317,7 @@ opt
 end
 GUI->>SB: Viser innhold i dialogelement med aktuelle handlinger
 SB->>TEGUI: Sluttbruker følger lenke for ønsket operasjon med dialogelementtoken til tjenestetilbyders portal
-alt opak token
-    TEGUI->>API: Validerer dialogelementtoken
-    API->>TEGUI: Sende sesjonsinformasjon
-else self-contained token
     TEGUI->>TEGUI: Validerer dialogelementtoken
-end
 TEGUI->>TEGUI: Opprette/oppdatere sesjon
 TEGUI->>SB: Vis arbeidsflate for tjeneste til sluttbruker
 SB->>TEGUI: Foreta endringer
@@ -338,14 +333,13 @@ TEGUI->>SB: Vis arbeidsflate med oppdatert tilstand
 3.  Bruker klikker på elementet for å ekspandere det. Hvis det av tjenestetilbyder ble oppgitt en URI for å oppdatere elementet, vil Dialogporten kalle denne i en bakkanal og vise innholdet dynamisk samt oppdatere evt endrede metadata. Ekspandert element viser rikt innhold som tjenestetilbyder har definert, sammen med tilgjengelige handlinger. Hvis oppdatering feilet, vises enten feilmelding som tjenestetilbyder oppga, eller en standardfeilmelding.
 4.  Bruker klikker på den definerte primærhandlingen.
     * Felles Arbeidsflate vil da redirecte brukeren (nettleseren) til oppgitt URI. Det legges på et dialogelementtoken som parameter i URI-en.
-    * Når tjenestetilbyder mottar forspørsel fra nettleser, gjøres et bakkanal-oppslag mot Dialogporten tjenestetilbyder-API hvor dialogelementtoken oppgis. Returnerer en modell som forteller
+    * Når tjenestetilbyder mottar forspørsel fra nettleser, verifiseres vedlagt dialogelementtoken (JWT) som inneholder bl.a.
         *  autentisert part (f/dnr, orgnr)
         *  valgt aktør
         *  tidspunkt
         *  identifikator for elementet som ble klikket
         *  tjenestetilbyders referanse til elementet
         *  identifikator for valgt handling
-    * Alternativ til opak streng kan det brukes et token i form av en JWT som inneholder den samme informasjonen signert av Digdir. Dette unngår bruken av bakkanal, og reduserer behovet for tilstandshåndtering.  
 5.  Ved hjelp av tokenet og SSO i ID-porten blir brukeren umiddelbart logget inn hos tjenestetilbyder og tatt inn til tjenesteinstansen, hvor brukeren interagerer med tjenesten. Etter hvert som dialogen skrider frem, kan tjenestetilbyder gjøre bakkanal-kall til Dialogporten for å oppdatere dialogelementet slik det fremstår for brukeren.
 6.  Hvis brukeren fullfører dialogen, kan tjenestetilbyder gjøre et bakkanal-kall for å indikere til Dialogporten at dialogelementet skal arkiveres. Elementet blir da flyttet til sluttbrukers arkiv. Merk at det fremdeles kun ligger da (ikke lenger muterbare) metadata på elementet i Dialogporten.
 7.  Når brukeren senere ekspanderer elementet i en arkiv-visning i Felles Arbeidsflate, gjøres det samme kallet for å hente siste oppdaterte (altså arkiverte) element fra tjenestetilbyder. Typisk vises da bare en kort tekst og et vedlegg til en PDF-versjon av en kvittering/gjenpart el.l.
