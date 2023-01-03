@@ -16,22 +16,22 @@
     "description" : "Operations only available service providers"
   } ],
   "paths" : {
-    "/dialogueelements" : {
-      "summary" : "Path used to manage the list of dialogue elements.",
-      "description" : "The REST endpoint/path used to list and for service provides to create dialogue elements.  This path contains a `GET` and `POST` operation to perform the list and create tasks, respectively.",
+    "/dialogelements" : {
+      "summary" : "Path used to manage the list of dialog elements.",
+      "description" : "The REST endpoint/path used to list and for service provides to create dialog elements.  This path contains a `GET` and `POST` operation to perform the list and create tasks, respectively.",
       "get" : {
         "tags" : [ "Non-privileged" ],
-        "description" : "API for listing/searching for dialogue elements.",
-        "operationId" : "GetDialogueElements",
+        "description" : "API for listing/searching for dialog elements.",
+        "operationId" : "GetDialogElements",
         "responses" : {
           "200" : {
-            "description" : "Successful response - returns an array of dialogue elements.",
+            "description" : "Successful response - returns an array of dialog elements.",
             "content" : {
               "application/json" : {
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/DialogueElementRequest"
+                    "$ref" : "#/components/schemas/DialogElementRequest"
                   }
                 }
               }
@@ -41,14 +41,14 @@
       },
       "post" : {
         "tags" : [ "Privileged" ],
-        "description" : "Creates a new dialogue element.",
-        "operationId" : "CreateDialogueElement",
+        "description" : "Creates a new dialog element.",
+        "operationId" : "CreateDialogElement",
         "requestBody" : {
-          "description" : "A new dialogue element to be created using the `DialogueElementRequest` model",
+          "description" : "A new dialog element to be created using the `DialogElementRequest` model",
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/DialogueElementRequest"
+                "$ref" : "#/components/schemas/DialogElementRequest"
               }
             }
           },
@@ -61,17 +61,17 @@
         }
       }
     },
-    "/dialogueelements/{id}" : {
-      "summary" : "Path used to manage a single dialogue element.",
-      "description" : "The REST endpoint/path used to get, update, and delete single dialogue elements.  This path contains `GET`, `PUT`, `PATCH` and `DELETE` operations used to perform the get, update, and delete tasks, respectively.",
+    "/dialogelements/{id}" : {
+      "summary" : "Path used to manage a single dialog element.",
+      "description" : "The REST endpoint/path used to get, update, and delete single dialog elements.  This path contains `GET`, `PUT`, `PATCH` and `DELETE` operations used to perform the get, update, and delete tasks, respectively.",
       "get" : {
         "tags" : [ "Non-privileged" ],
-        "description" : "Gets the details of a single dialogue element.",
-        "operationId" : "GetDialogueElement",
+        "description" : "Gets the details of a single dialog element.",
+        "operationId" : "GetDialogElement",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
-          "description" : "A unique identifier for a dialogue element.",
+          "description" : "A unique identifier for a dialog element.",
           "required" : true,
           "style" : "simple",
           "explode" : false,
@@ -86,7 +86,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/DialogueElementResponse"
+                  "$ref" : "#/components/schemas/DialogElementResponse"
                 }
               }
             }
@@ -95,12 +95,12 @@
       },
       "put" : {
         "tags" : [ "Privileged" ],
-        "description" : "Updates an existing dialogue element.",
+        "description" : "Updates an existing dialog element.",
         "operationId" : "updateDialogElement",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
-          "description" : "A unique identifier for a dialogue element.",
+          "description" : "A unique identifier for a dialog element.",
           "required" : true,
           "style" : "simple",
           "explode" : false,
@@ -114,7 +114,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/DialogueElementRequest"
+                "$ref" : "#/components/schemas/DialogElementRequest"
               }
             }
           },
@@ -128,12 +128,12 @@
       },
       "delete" : {
         "tags" : [ "Privileged" ],
-        "description" : "Deletes an existing dialogue element.",
+        "description" : "Deletes an existing dialog element.",
         "operationId" : "deleteDialogElement",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
-          "description" : "A unique identifier for a dialogue element.",
+          "description" : "A unique identifier for a dialog element.",
           "required" : true,
           "style" : "simple",
           "explode" : false,
@@ -153,7 +153,7 @@
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
-          "description" : "A unique identifier for a dialogue element.",
+          "description" : "A unique identifier for a dialog element.",
           "required" : true,
           "style" : "simple",
           "explode" : false,
@@ -166,7 +166,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/DialogueElementRequest"
+                "$ref" : "#/components/schemas/DialogElementRequest"
               }
             }
           },
@@ -174,18 +174,18 @@
         },
         "responses" : {
           "202" : {
-            "description" : "The PATCH of the dialogue element was successful"
+            "description" : "The PATCH of the dialog element was successful"
           }
         }
       }
     },
-    "/dialogueelements/{id}/notificationlog" : {
+    "/dialogelements/{id}/notificationlog" : {
       "get" : {
         "tags" : [ "Non-privileged" ],
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
-          "description" : "A unique identifier for a dialogue element.",
+          "description" : "A unique identifier for a dialog element.",
           "required" : true,
           "style" : "simple",
           "explode" : false,
@@ -256,7 +256,7 @@
               "code" : "nb_NO",
               "value" : "Åpne i dialogtjeneste"
             } ],
-            "url" : "https://example.com/some/deep/link/to/dialogues/123456789"
+            "url" : "https://example.com/some/deep/link/to/dialogs/123456789"
           }, {
             "action" : "confirm",
             "requiresAccessToResource" : "somesubresource",
@@ -266,7 +266,7 @@
               "value" : "Bekreft mottatt"
             } ],
             "isBackChannel" : true,
-            "url" : "https://example.com/some/deep/link/to/dialogues/123456789/confirmReceived"
+            "url" : "https://example.com/some/deep/link/to/dialogs/123456789/confirmReceived"
           }, {
             "action" : "delete",
             "type" : "tertiary",
@@ -275,29 +275,29 @@
               "value" : "Avbryt"
             } ],
             "isDeleteAction" : true,
-            "url" : "https://example.com/some/deep/link/to/dialogues/123456789"
+            "url" : "https://example.com/some/deep/link/to/dialogs/123456789"
           } ],
           "api" : [ {
             "action" : "open",
-            "actionUrl" : "https://example.com/api/dialogues/123456789",
+            "actionUrl" : "https://example.com/api/dialogs/123456789",
             "method" : "GET",
             "responseSchema" : "https://schemas.altinn.no/de/v1/de.json",
-            "documentationUrl" : "https://api-docs.example.com/dialogueservice/open-action"
+            "documentationUrl" : "https://api-docs.example.com/dialogservice/open-action"
           }, {
             "action" : "confirm",
             "method" : "POST",
-            "actionUrl" : "https://example.com/api/dialogues/123456789/confirmReceived",
-            "documentationUrl" : "https://api-docs.example.com/dialogueservice/confirm-action"
+            "actionUrl" : "https://example.com/api/dialogs/123456789/confirmReceived",
+            "documentationUrl" : "https://api-docs.example.com/dialogservice/confirm-action"
           }, {
             "action" : "submit",
-            "actionUrl" : "https://example.com/api/dialogues/123456789",
+            "actionUrl" : "https://example.com/api/dialogs/123456789",
             "method" : "POST",
-            "requestSchema" : "https://schemas.example.com/dialogueservice/v1/dialogueservice.json",
+            "requestSchema" : "https://schemas.example.com/dialogservice/v1/dialogservice.json",
             "responseSchema" : "https://schemas.altinn.no/de/v1/de.json"
           }, {
             "action" : "delete",
             "method" : "DELETE",
-            "actionUrl" : "https://example.com/api/dialogues/123456789"
+            "actionUrl" : "https://example.com/api/dialogs/123456789"
           } ]
         }
       },
@@ -337,7 +337,7 @@
             "value" : "Bekreft mottatt"
           } ],
           "isBackChannel" : true,
-          "url" : "https://example.com/some/deep/link/to/dialogues/123456789/confirmReceived"
+          "url" : "https://example.com/some/deep/link/to/dialogs/123456789/confirmReceived"
         }
       },
       "ApiAction" : {
@@ -367,11 +367,11 @@
         "description" : "",
         "example" : {
           "action" : "submit",
-          "actionUrl" : "https://example.com/api/dialogues/123456789",
+          "actionUrl" : "https://example.com/api/dialogs/123456789",
           "method" : "POST",
-          "requestSchema" : "https://schemas.example.com/dialogueservice/v1/dialogueservice.json",
+          "requestSchema" : "https://schemas.example.com/dialogservice/v1/dialogservice.json",
           "responseSchema" : "https://schemas.altinn.no/de/v1/de.json",
-          "documentationUrl" : "https://api-docs.example.com/dialogueservice/confirm-action"
+          "documentationUrl" : "https://api-docs.example.com/dialogservice/confirm-action"
         }
       },
       "Dates" : {
@@ -428,20 +428,20 @@
         "example" : {
           "requireReadNotification" : true,
           "visibleDateTime" : "2022-12-01T12:00:00.000Z",
-          "onLoadDetailsRefreshFromUrl" : "https://example.com/api/dialogues/123456789/get",
+          "onLoadDetailsRefreshFromUrl" : "https://example.com/api/dialogs/123456789/get",
           "authorization" : {
             "requirePermitFrom" : "Both",
             "xacmlPolicy" : [ {
               "Effect" : "Permit",
               "Subjects" : [ "person:12345678901" ],
-              "Resources" : [ "serviceresource:example_dialogue_service", "serviceresource:example_dialogue_service/attachment1" ],
+              "Resources" : [ "serviceresource:example_dialog_service", "serviceresource:example_dialog_service/attachment1" ],
               "Actions" : [ "open", "confirm", "submit", "delete" ],
               "Description" : "Nærmeste leder har alle tilganger",
               "IsDelegable" : true
             }, {
               "Effect" : "Permit",
               "Subjects" : [ "person:23456789012", "accessgroup:taushetsbelagt" ],
-              "Resources" : [ "serviceresource:example_dialogue_service" ],
+              "Resources" : [ "serviceresource:example_dialog_service" ],
               "Actions" : [ "open" ],
               "Description" : "Den aktuelle ansatte, samt bemyndigede medarbeidere, har kun lesetilgang",
               "IsDelegable" : false
@@ -471,14 +471,14 @@
           "xacmlPolicy" : [ {
             "Effect" : "Permit",
             "Subjects" : [ "person:12345678901" ],
-            "Resources" : [ "serviceresource:example_dialogue_service", "serviceresource:example_dialogue_service/attachment1" ],
+            "Resources" : [ "serviceresource:example_dialog_service", "serviceresource:example_dialog_service/attachment1" ],
             "Actions" : [ "open", "confirm", "submit", "delete" ],
             "Description" : "Nærmeste leder har alle tilganger",
             "IsDelegable" : true
           }, {
             "Effect" : "Permit",
             "Subjects" : [ "person:23456789012", "accessgroup:taushetsbelagt" ],
-            "Resources" : [ "serviceresource:example_dialogue_service" ],
+            "Resources" : [ "serviceresource:example_dialog_service" ],
             "Actions" : [ "open" ],
             "Description" : "Den aktuelle ansatte, samt bemyndigede medarbeidere, har kun lesetilgang",
             "IsDelegable" : false
@@ -521,7 +521,7 @@
         "example" : {
           "Effect" : "Permit",
           "Subjects" : [ "person:12345678901" ],
-          "Resources" : [ "serviceresource:example_dialogue_service", "serviceresource:example_dialogue_service/attachment1" ],
+          "Resources" : [ "serviceresource:example_dialog_service", "serviceresource:example_dialog_service/attachment1" ],
           "Actions" : [ "open", "confirm", "submit", "delete" ],
           "Description" : "Nærmeste leder har alle tilganger",
           "IsDelegable" : true
@@ -594,7 +594,7 @@
           } ],
           "sizeInBytes" : 123456,
           "contentType" : "application/pdf",
-          "url" : "https://example.com/api/dialogues/123456789/attachments/1",
+          "url" : "https://example.com/api/dialogs/123456789/attachments/1",
           "requiresAccessToResource" : "attachment1"
         }
       },
@@ -653,7 +653,7 @@
               "title" : "Notification title",
               "body" : "Simple piece of body text.\nSecond line of body text :)",
               "icon" : "https://example.com/some-icon-atleast-192x192.png",
-              "notificationClickUrl" : "https://example.com/some/deep/link/to/dialogues/123456789"
+              "notificationClickUrl" : "https://example.com/some/deep/link/to/dialogs/123456789"
             }
           } ]
         }
@@ -684,19 +684,19 @@
         "description" : "",
         "example" : {
           "self" : {
-            "href" : "/dialogueelements/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e"
+            "href" : "/dialogelements/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e"
           },
           "notificationlog" : {
-            "href" : "/dialogueelements/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e/notificationlog"
+            "href" : "/dialogelements/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e/notificationlog"
           },
           "serviceresource" : {
-            "href" : "/resourceregistry/api/v1/resource/example_dialogue_service/"
+            "href" : "/resourceregistry/api/v1/resource/example_dialog_service/"
           },
           "selfgui" : {
             "href" : "https://www.dialogporten.no/?expandElement=e0300961-85fb-4ef2-abff-681d77f9960e"
           },
           "externalgui" : {
-            "href" : "https://example.com/some/deep/link/to/dialogues/123456789"
+            "href" : "https://example.com/some/deep/link/to/dialogs/123456789"
           }
         }
       },
@@ -710,7 +710,7 @@
         },
         "description" : "",
         "example" : {
-          "href" : "/dialogueelements/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e"
+          "href" : "/dialogelements/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e"
         }
       },
       "LocalizedStrings" : {
@@ -757,10 +757,10 @@
             "code" : "nb_NO",
             "value" : "Foreløpig svar på saksbehandling"
           } ],
-          "activityDetailsUrl" : "https://example.com/some/deep/link/to/dialogues/123456789/message/2"
+          "activityDetailsUrl" : "https://example.com/some/deep/link/to/dialogs/123456789/message/2"
         }
       },
-      "DialogueElementResponse" : {
+      "DialogElementResponse" : {
         "title" : "DialogElementResponse",
         "required" : [ "status" ],
         "type" : "object",
@@ -774,8 +774,8 @@
           "externalReference" : {
             "type" : "string"
           },
-          "dialogueGroup" : {
-            "$ref" : "#/components/schemas/DialogueGroup"
+          "dialogGroup" : {
+            "$ref" : "#/components/schemas/DialogGroup"
           },
           "recipient" : {
             "type" : "string"
@@ -815,9 +815,9 @@
         "description" : "",
         "example" : {
           "id" : "e0300961-85fb-4ef2-abff-681d77f9960e",
-          "serviceResourceIdentifier" : "example_dialogue_service",
+          "serviceResourceIdentifier" : "example_dialog_service",
           "externalReference" : "123456789",
-          "dialogueGroup" : {
+          "dialogGroup" : {
             "id" : "some-arbitrary-id",
             "order" : 1,
             "name" : [ {
@@ -854,7 +854,7 @@
             } ],
             "sizeInBytes" : 123456,
             "contentType" : "application/pdf",
-            "url" : "https://example.com/api/dialogues/123456789/attachments/1",
+            "url" : "https://example.com/api/dialogs/123456789/attachments/1",
             "requiresAccessToResource" : "attachment1"
           } ],
           "actions" : {
@@ -865,7 +865,7 @@
                 "lang" : "nb_NO",
                 "value" : "Åpne i dialogtjeneste"
               } ],
-              "url" : "https://example.com/some/deep/link/to/dialogues/123456789"
+              "url" : "https://example.com/some/deep/link/to/dialogs/123456789"
             }, {
               "action" : "confirm",
               "requiresAccessToResource" : "somesubresource",
@@ -875,7 +875,7 @@
                 "value" : "Bekreft mottatt"
               } ],
               "isBackChannel" : true,
-              "url" : "https://example.com/some/deep/link/to/dialogues/123456789/confirmReceived"
+              "url" : "https://example.com/some/deep/link/to/dialogs/123456789/confirmReceived"
             }, {
               "action" : "delete",
               "type" : "tertiary",
@@ -884,48 +884,48 @@
                 "value" : "Avbryt"
               } ],
               "isDeleteAction" : true,
-              "url" : "https://example.com/some/deep/link/to/dialogues/123456789"
+              "url" : "https://example.com/some/deep/link/to/dialogs/123456789"
             } ],
             "api" : [ {
               "action" : "open",
-              "actionUrl" : "https://example.com/api/dialogues/123456789",
+              "actionUrl" : "https://example.com/api/dialogs/123456789",
               "method" : "GET",
               "responseSchema" : "https://schemas.altinn.no/de/v1/de.json",
-              "documentationUrl" : "https://api-docs.example.com/dialogueservice/open-action"
+              "documentationUrl" : "https://api-docs.example.com/dialogservice/open-action"
             }, {
               "action" : "confirm",
               "method" : "POST",
-              "actionUrl" : "https://example.com/api/dialogues/123456789/confirmReceived",
-              "documentationUrl" : "https://api-docs.example.com/dialogueservice/confirm-action"
+              "actionUrl" : "https://example.com/api/dialogs/123456789/confirmReceived",
+              "documentationUrl" : "https://api-docs.example.com/dialogservice/confirm-action"
             }, {
               "action" : "submit",
-              "actionUrl" : "https://example.com/api/dialogues/123456789",
+              "actionUrl" : "https://example.com/api/dialogs/123456789",
               "method" : "POST",
-              "requestSchema" : "https://schemas.example.com/dialogueservice/v1/dialogueservice.json",
+              "requestSchema" : "https://schemas.example.com/dialogservice/v1/dialogservice.json",
               "responseSchema" : "https://schemas.altinn.no/de/v1/de.json"
             }, {
               "action" : "delete",
               "method" : "DELETE",
-              "actionUrl" : "https://example.com/api/dialogues/123456789"
+              "actionUrl" : "https://example.com/api/dialogs/123456789"
             } ]
           },
           "configuration" : {
             "requireReadNotification" : true,
             "visibleDateTime" : "2022-12-01T12:00:00.000Z",
-            "onLoadDetailsRefreshFromUrl" : "https://example.com/api/dialogues/123456789/get",
+            "onLoadDetailsRefreshFromUrl" : "https://example.com/api/dialogs/123456789/get",
             "authorization" : {
               "requirePermitFrom" : "Both",
               "xacmlPolicy" : [ {
                 "Effect" : "Permit",
                 "Subjects" : [ "person:12345678901" ],
-                "Resources" : [ "serviceresource:example_dialogue_service", "serviceresource:example_dialogue_service/attachment1" ],
+                "Resources" : [ "serviceresource:example_dialog_service", "serviceresource:example_dialog_service/attachment1" ],
                 "Actions" : [ "open", "confirm", "submit", "delete" ],
                 "Description" : "Nærmeste leder har alle tilganger",
                 "IsDelegable" : true
               }, {
                 "Effect" : "Permit",
                 "Subjects" : [ "person:23456789012", "accessgroup:taushetsbelagt" ],
-                "Resources" : [ "serviceresource:example_dialogue_service" ],
+                "Resources" : [ "serviceresource:example_dialog_service" ],
                 "Actions" : [ "open" ],
                 "Description" : "Den aktuelle ansatte, samt bemyndigede medarbeidere, har kun lesetilgang",
                 "IsDelegable" : false
@@ -940,7 +940,7 @@
               "lang" : "nb_NO",
               "value" : "Dokumentet 'X' ble signert og kan sendes inn"
             } ],
-            "activityDetailsUrl" : "https://example.com/some/deep/link/to/dialogues/123456789/activitylog/1"
+            "activityDetailsUrl" : "https://example.com/some/deep/link/to/dialogs/123456789/activitylog/1"
           }, {
             "activityDateTime" : "2022-12-01T10:00:00.000Z",
             "activityType" : "feedback",
@@ -948,28 +948,28 @@
               "lang" : "nb_NO",
               "value" : "Foreløpig svar på saksbehandling"
             } ],
-            "activityDetailsUrl" : "https://example.com/some/deep/link/to/dialogues/123456789/message/2"
+            "activityDetailsUrl" : "https://example.com/some/deep/link/to/dialogs/123456789/message/2"
           } ],
           "_links" : {
             "self" : {
-              "href" : "/dialogueelements/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e"
+              "href" : "/dialogelements/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e"
             },
             "notificationlog" : {
-              "href" : "/dialogueelements/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e/notificationlog"
+              "href" : "/dialogelements/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e/notificationlog"
             },
             "serviceresource" : {
-              "href" : "/resourceregistry/api/v1/resource/example_dialogue_service/"
+              "href" : "/resourceregistry/api/v1/resource/example_dialog_service/"
             },
             "selfgui" : {
               "href" : "https://www.dialogporten.no/?expandElement=e0300961-85fb-4ef2-abff-681d77f9960e"
             },
             "externalgui" : {
-              "href" : "https://example.com/some/deep/link/to/dialogues/123456789"
+              "href" : "https://example.com/some/deep/link/to/dialogs/123456789"
             }
           }
         }
       },
-      "DialogueGroup" : {
+      "DialogGroup" : {
         "title" : "DialogGroup",
         "required" : [ "id", "name" ],
         "type" : "object",
@@ -1059,7 +1059,7 @@
                 "value" : "Dette er første linje\nDette er andre linje, sendt til {{recipient.fullname}}"
               } ],
               "icon" : "https://example.com/some-icon-atleast-192x192.png",
-              "notificationClickUrl" : "https://example.com/some/deep/link/to/dialogues/123456789"
+              "notificationClickUrl" : "https://example.com/some/deep/link/to/dialogs/123456789"
             }
           }
         }
@@ -1143,7 +1143,7 @@
             "title" : "Notification title",
             "body" : "Simple piece of body text.\nSecond line of body text :)",
             "icon" : "https://example.com/some-icon-atleast-192x192.png",
-            "notificationClickUrl" : "https://example.com/some/deep/link/to/dialogues/123456789"
+            "notificationClickUrl" : "https://example.com/some/deep/link/to/dialogs/123456789"
           }
         }
       },
@@ -1241,7 +1241,7 @@
           "title" : "Notification title",
           "body" : "Simple piece of body text.\nSecond line of body text :)",
           "icon" : "https://example.com/some-icon-atleast-192x192.png",
-          "notificationClickUrl" : "https://example.com/some/deep/link/to/dialogues/123456789"
+          "notificationClickUrl" : "https://example.com/some/deep/link/to/dialogs/123456789"
         }
       },
       "NotificationLogSmsPayload" : {
@@ -1349,10 +1349,10 @@
             "value" : "Dette er første linje\nDette er andre linje, sendt til {{recipient.fullname}}"
           } ],
           "icon" : "https://example.com/some-icon-atleast-192x192.png",
-          "notificationClickUrl" : "https://example.com/some/deep/link/to/dialogues/123456789"
+          "notificationClickUrl" : "https://example.com/some/deep/link/to/dialogs/123456789"
         }
       },
-      "DialogueElementRequest" : {
+      "DialogElementRequest" : {
         "type" : "object",
         "properties" : {
           "serviceResourceIdentifier" : {
@@ -1361,8 +1361,8 @@
           "externalReference" : {
             "type" : "string"
           },
-          "dialogueGroup" : {
-            "$ref" : "#/components/schemas/DialogueGroup"
+          "dialogGroup" : {
+            "$ref" : "#/components/schemas/DialogGroup"
           },
           "recipient" : {
             "type" : "string"
@@ -1397,10 +1397,10 @@
         },
         "description" : "",
         "example" : {
-          "serviceResourceIdentifier" : "example_dialogue_service",
+          "serviceResourceIdentifier" : "example_dialog_service",
           "recipient" : "org:991825827",
           "externalReference" : "123456789",
-          "dialogueGroup" : {
+          "dialogGroup" : {
             "id" : "some-arbitrary-id",
             "order" : 1,
             "name" : [ {
@@ -1434,7 +1434,7 @@
             } ],
             "sizeInBytes" : 123456,
             "contentType" : "application/pdf",
-            "url" : "https://example.com/api/dialogues/123456789/attachments/1",
+            "url" : "https://example.com/api/dialogs/123456789/attachments/1",
             "requiresAccessToResource" : "attachment1"
           } ],
           "actions" : {
@@ -1445,7 +1445,7 @@
                 "code" : "nb_NO",
                 "value" : "Åpne i dialogtjeneste"
               } ],
-              "url" : "https://example.com/some/deep/link/to/dialogues/123456789"
+              "url" : "https://example.com/some/deep/link/to/dialogs/123456789"
             }, {
               "action" : "confirm",
               "requiresAccessToResource" : "somesubresource",
@@ -1455,7 +1455,7 @@
                 "value" : "Bekreft mottatt"
               } ],
               "isBackChannel" : true,
-              "url" : "https://example.com/some/deep/link/to/dialogues/123456789/confirmReceived"
+              "url" : "https://example.com/some/deep/link/to/dialogs/123456789/confirmReceived"
             }, {
               "action" : "delete",
               "type" : "tertiary",
@@ -1464,29 +1464,29 @@
                 "value" : "Avbryt"
               } ],
               "isDeleteAction" : true,
-              "url" : "https://example.com/some/deep/link/to/dialogues/123456789"
+              "url" : "https://example.com/some/deep/link/to/dialogs/123456789"
             } ],
             "api" : [ {
               "action" : "open",
-              "actionUrl" : "https://example.com/api/dialogues/123456789",
+              "actionUrl" : "https://example.com/api/dialogs/123456789",
               "method" : "GET",
               "responseSchema" : "https://schemas.altinn.no/de/v1/de.json",
-              "documentationUrl" : "https://api-docs.example.com/dialogueservice/open-action"
+              "documentationUrl" : "https://api-docs.example.com/dialogservice/open-action"
             }, {
               "action" : "confirm",
               "method" : "POST",
-              "actionUrl" : "https://example.com/api/dialogues/123456789/confirmReceived",
-              "documentationUrl" : "https://api-docs.example.com/dialogueservice/confirm-action"
+              "actionUrl" : "https://example.com/api/dialogs/123456789/confirmReceived",
+              "documentationUrl" : "https://api-docs.example.com/dialogservice/confirm-action"
             }, {
               "action" : "submit",
-              "actionUrl" : "https://example.com/api/dialogues/123456789",
+              "actionUrl" : "https://example.com/api/dialogs/123456789",
               "method" : "POST",
-              "requestSchema" : "https://schemas.example.com/dialogueservice/v1/dialogueservice.json",
+              "requestSchema" : "https://schemas.example.com/dialogservice/v1/dialogservice.json",
               "responseSchema" : "https://schemas.altinn.no/de/v1/de.json"
             }, {
               "action" : "delete",
               "method" : "DELETE",
-              "actionUrl" : "https://example.com/api/dialogues/123456789"
+              "actionUrl" : "https://example.com/api/dialogs/123456789"
             } ]
           },
           "notifications" : {
@@ -1533,7 +1533,7 @@
                   "value" : "Dette er første linje\nDette er andre linje, sendt til {{recipient.fullname}}"
                 } ],
                 "icon" : "https://example.com/some-icon-atleast-192x192.png",
-                "notificationClickUrl" : "https://example.com/some/deep/link/to/dialogues/123456789"
+                "notificationClickUrl" : "https://example.com/some/deep/link/to/dialogs/123456789"
               }
             }
           },
@@ -1541,20 +1541,20 @@
           "configuration" : {
             "requireReadNotification" : true,
             "visibleDateTime" : "2022-12-01T12:00:00.000Z",
-            "onLoadDetailsRefreshFromUrl" : "https://example.com/api/dialogues/123456789/get",
+            "onLoadDetailsRefreshFromUrl" : "https://example.com/api/dialogs/123456789/get",
             "authorization" : {
               "requirePermitFrom" : "Both",
               "xacmlPolicy" : [ {
                 "Effect" : "Permit",
                 "Subjects" : [ "person:12345678901" ],
-                "Resources" : [ "serviceresource:example_dialogue_service", "serviceresource:example_dialogue_service/attachment1" ],
+                "Resources" : [ "serviceresource:example_dialog_service", "serviceresource:example_dialog_service/attachment1" ],
                 "Actions" : [ "open", "confirm", "submit", "delete" ],
                 "Description" : "Nærmeste leder har alle tilganger",
                 "IsDelegable" : true
               }, {
                 "Effect" : "Permit",
                 "Subjects" : [ "person:23456789012", "accessgroup:taushetsbelagt", "scope:someprefix:somescopeinmaskinportenoridporten" ],
-                "Resources" : [ "serviceresource:example_dialogue_service" ],
+                "Resources" : [ "serviceresource:example_dialog_service" ],
                 "Actions" : [ "open" ],
                 "Description" : "Den aktuelle ansatte, samt bemyndigede medarbeidere, har kun lesetilgang",
                 "IsDelegable" : false
@@ -1581,7 +1581,7 @@
         "content" : {
           "application/json" : {
             "schema" : {
-              "$ref" : "#/components/schemas/DialogueElementResponse"
+              "$ref" : "#/components/schemas/DialogElementResponse"
             }
           }
         }
