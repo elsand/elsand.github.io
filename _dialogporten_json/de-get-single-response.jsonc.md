@@ -99,7 +99,6 @@ WFsb2dwb3J0ZW4ubm8iLCJuYmYiOjE2NzI3NzI1NTcsImlhdCI6MTY3Mjc3MjU1N30.UXvmH4L6NATJ8
     "configuration": {        
         "requireReadNotification": true,
         "visibleDateTime": "2022-12-01T12:00:00.000Z",
-        "onLoadDetailsRefreshFromUrl": "https://example.com/api/dialogues/123456789/get",
         "authorization": {
             "requirePermitFrom": "Both",  
             "xacmlPolicy": [
