@@ -143,11 +143,17 @@ Det finnes andre scenarioer rundt oppslag/innsynstjenester og filoverføringer s
 
 ## Bruk av Dialogportens API-er
 
-Tjenesteressursen og/eller inline autorisasjonspolicy på enkelte dialogelementer bestemmer hvilke autorisasjonskontroller som skal legges til grunn for å få tilgang. Typisk innebærer dette at konsumenten innehar en spesiell rolle eller tilhører en spesifikk forhåndsdefinert tilgangsgruppe, eller er blitt delegert tilgang av en tilgangsstyrer/hovedadministrator hos den aktuelle parten.
+Tjenesteressursen og/eller inline autorisasjonspolicy på enkelte dialogelementer bestemmer hvilke autorisasjonskontroller som skal legges til grunn for å få tilgang. Typisk innebærer dette at konsumenten innehar en spesiell rolle eller tilhører en spesifikk forhåndsdefinert tilgangsgruppe, eller er blitt delegert tilgang til tjenesteressursen elementet refererer av en tilgangsstyrer/hovedadministrator hos den aktuelle parten.
 
-Dialogporten-API-ene krever i tillegg at klienten oppgir et token med et spesifikt scope; `digdir:dialogporten`. Dette scopet kan for SBS-er/GUI-implementasjoner være tildelt klienten gjennom brukerstyrt datadeling i ID-porten (OAuth2/OIDC) eller ved hjelp av Maskinporten (ren OAuth2). Ved bruk av Maskinporten-token, vil det typisk kreves at det i tillegg autentiseres en virksomhetsbruker (systemidentitet i Altinn med tildelte rettigheter som gir tilgang til tjenesteressursen), som innbærer en tokenutveksling og utstedelse av et beriket Maskinporten-token som benyttes mot Dialogporten. Tjenestetilbydere blir tildelt et eget scope; `digdir:dialogporten.tjenestetilbyder` som kun er tilgjengelig for Maskinporten-integrasjoner. Dette gir skrivetilgang til Dialogporten og mulighet til å hente ut alle elementer som er opprettet av tjenestetilbyderen. 
+For API-konsumenter krever Dialogporten at klienten oppgir et token med et spesifikt scope; `digdir:dialogporten`. Dette scopet kan for SBS-er/GUI-implementasjoner være tildelt klienten gjennom brukerstyrt datadeling i ID-porten (OAuth2/OIDC) eller ved hjelp av Maskinporten (ren OAuth2). Ved bruk av Maskinporten-token, vil det typisk kreves at det i tillegg autentiseres en virksomhetsbruker (systemidentitet i Altinn med tildelte rettigheter som gir tilgang til tjenesteressursen), som innbærer en tokenutveksling og utstedelse av et beriket Maskinporten-token som benyttes mot Dialogporten. Tjenestetilbydere blir tildelt et eget scope; `digdir:dialogporten.tjenestetilbyder` som kun er tilgjengelig for Maskinporten-integrasjoner. Dette gir skrivetilgang til Dialogporten og mulighet til å hente ut (og oppdatere) alle elementer som er opprettet av tjenestetilbyderen. 
 
 Felles arbeidsflate vil av hensyn til brukskvalitet ikke kreve eksplisitt autorisasjon fra sluttbrukeren for tilgang til Dialogporten-API-ene; dette skjer implisitt gjennom innlogging i ID-porten, og Felles arbeidsflate vil bruke et internt scope for å autorisere seg mot Dialogportens API-er.
+
+## Bruk av samme token mot både Dialogporten og tjenestetilbyders API
+
+I de fleste tilfeller vil det imidlertid være tilstrekkelig å benytte dialogelementtoken (beskrevet under), som gir tjenestetilbyder finkornet autorisasjonsinformasjon som vil kunne brukes subsidiært ordinære Maskinporten/ID-porten tokens.
+
+Men tjenestetilbyders API-er vil potensielt kreve egne scopes som grovkornet autorisasjon. I disse tilfellene vil det kunne utstedes tokens som benyttes mot både Dialogportens API såvel som tjenestetilbyderen. Dialogporten vil ikke kreve eller verifisere "aud"-claims i tokens, men disse kan benyttes hvis tokenet også skal benyttes mot tjenestetilbyders endepunkter. Alternativt kan klienten hente ut to tokens for bruk mot hhv. Dialogporten API og tjenestetilbyder.
 
 ## Bruk av dialogelementtoken 
 
@@ -202,7 +208,7 @@ Tokenet kan verifiseres på vanlig vis gjennom at det publiseres et nøkkelsett 
 
 Tokenet vil inkluderes i responsmodellen som returneres til SBS-er og Felles arbeidsflate i feltet `dialogElementToken`. For GUI-handlinger, eller andre dyplenker til tjenesteinstans hos tjenestetilbyder hvor bruker omdirigeres i nettleser, vil Felles arbeidsflate legge til tokenet som et fast query-parameter konfigurerte URL-en. F.eks. hvis en GUI-handling er definert til å være på `https://example.com/some/deep/link/to/dialogues/123456789` vil Felles arbeidsflate omdirigere brukeren til `https://example.com/some/deep/link/to/dialogues/123456789?dialogElementToken={token}` hvor `{token}` er en Base64URL enkodet JWT.
 
-For URL-er som aksesseres via bakkanal eller andre mekanismer kan alternativt token overføres gjennom HTTP headeren `X-DialogElementToken`. Tjenestetilbydere må håndtere begge mekanismene.
+For URL-er som aksesseres via bakkanal eller andre mekanismer kan alternativt token overføres gjennom HTTP headeren `X-DialogElementToken`. Tjenestetilbydere må håndtere begge mekanismene for å autorisere kall fra nettlesere og andre klienter.
 
 
 # Sekvensbeskrivelser
