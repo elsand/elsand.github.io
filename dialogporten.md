@@ -47,7 +47,7 @@ En _part_ er en person, enten fysisk eller juridisk, som tjenestetilbyderen har 
 
 ## Dialogtjeneste
 
-En _dialogtjeneste_ er en digital tjeneste tjenestetilbyderen innhenter informasjon fra en part i forbindelse med forvaltning av et eller flere lovverk. Tradisjonelt innebærer en dialogtjeneste bruk av ulike skjema, hvor parten - gjennom et GUI levert av tjenestetilbyderen og/eller et API levert av tjenestetilbyderen og tatt i bruk av et sluttbrukersystem eller fagsystem.
+En _dialogtjeneste_ er en digital tjeneste tjenestetilbyderen kommuniserer med en part i forbindelse med forvaltning av et eller flere lovverk. Tradisjonelt innebærer en dialogtjeneste bruk av ulike skjema, hvor parten - gjennom et GUI levert av tjenestetilbyderen og/eller et API levert av tjenestetilbyderen og tatt i bruk av et sluttbrukersystem eller fagsystem.
 
 Som det pekes på i avsnittet [Scenarioer som påvirker Dialogporten](#scenarioer-som-påvirker-dialogporten) vil en dialogtjeneste i denne konteksten også kunne dekke behovet tjenestetilbydere har for å kunne dele informasjon, altså det som typisk kalles "digital post".
 
@@ -61,7 +61,7 @@ Tilstand i Dialogporten begrenser seg til metadata for en gitt tjenesteinstans, 
 
 Dialogelementet reflekterer tilstanden til en eller annen pågående eller avsluttet dialog  fra en tjenestetilbyder, og inneholder beskrivende metadata, f.eks. hvem som er mottakende part, adresse (URL), overskrift, dato, status samt en liste over aktuelle _handlinger_ som kan utføres på dialogelementet. Dialogporten knytter semantikk kun til enkelte typer handlinger (slett), hvis dette gjøres tilgjengelig av tjenestetilbyder. Andre handlinger kan vilkårlig defineres av tjenestetilbyder, og all interaksjon med selve tjenesteinstansen foregår i tjenestetilbyders brukerflater (GUI og/eller API).
 
-En viktig forskjell mot dagens «correspondence» i Altinn, er at dialogelementene er _mutérbare_ og kan også være _dynamiske_. Et dialogelement kan (men må ikke) konfigureres til å foreta et synkront kall til et endepunkt hos tjenestetilbyder idet brukeren åpner/aksesserer elementet for å vise en dynamisk oppdatert «preview» (etter tjenestetilbyders forgodtbefinnende) av innholdet i elementet, sammen med en oppdatert liste over aktuelle handlinger.
+En viktig forskjell mot dagens «correspondence» i Altinn, er at dialogelementene er _mutérbare_. Et dialogelement kan (men må ikke) konfigureres til å foreta et synkront kall til et endepunkt hos tjenestetilbyder idet brukeren åpner/aksesserer elementet for å vise en dynamisk oppdatert «preview» (etter tjenestetilbyders forgodtbefinnende) av innholdet i elementet, sammen med en oppdatert liste over aktuelle handlinger.
 
 Tjenestetilbyder kan også når som helst oppdatere metadata og tilgjengelige handlinger på elementet. Enhver endringe fører til at det genereres _hendelser_, som autoriserte parter kan agere på, f.eks. at det sendes et varsel eller at et SBS foretar seg noe.
 
