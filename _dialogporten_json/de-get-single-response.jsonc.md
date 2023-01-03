@@ -15,7 +15,7 @@
         "order": 1,
         "name": [ { "code": "nb_NO", "value": "Navn på dialoggruppe." } ]
     },
-    "recipient": "org:991825827",
+    "party": "org:991825827",
     "status": "under-progress", 
     "dates": {
         "createdDateTime": "2022-12-01T10:00:00.000Z",
@@ -31,13 +31,16 @@
         "title": [ { "code": "nb_NO", "value": "En eksempel på en tittel" } ],
         "senderName": [ { "code": "nb_NO", "value": "Overstyrt avsendernavn (bruker default tjenesteeiers navn)" } ]            
     },
+    // Dialogelementtoken som benyttes mot tjenestetilbyders endepunkter, enten som en HTTP header eller via query parameter
+    "dialogElementToken": "eyJhbGciOiJFZERTQSIsImtpZCI6ImRwLTIwMjMtMDEiLCJ0eXAiOiJKV1QifQ.eyJjIjoicGVyc29uOjEyMDE4MjEyMzQ1IiwibCI6NCwicCI6Im9yZzo5OTE4MjU4MjciLCJpIjoiZTAzMDA5NjEtODVmYi00ZWYyLWFiZmYtNjgxZDc3Zjk5NjBlIiwiZSI6IjEyMzQ1Njc4OSIsImEiOlsib3BlbiIsImF0dGFjaG1lbnQxOm9wZW4iLCJjb25maXJtIl0sImV4cCI6MTY3Mjc3Mjg1NywiaXNzIjoiaHR0cHM6Ly9ka
+WFsb2dwb3J0ZW4ubm8iLCJuYmYiOjE2NzI3NzI1NTcsImlhdCI6MTY3Mjc3MjU1N30.UXvmH4L6NATJ8ZNWDIfWcf7-BO2c4eQQ3HK0RRmFhzkE5SSc6oV4hxCnsR2MAePLEdDSeCdP6yr5xlJ9Rzt_Dg",
     "attachments": [
         {
             "displayName": [ { "code": "nb_NO", "value": "dette er et vedlegg" } ],
             "sizeInBytes": 123456,
             "contentType": "application/pdf",
             "url": "https://example.com/api/dialogues/123456789/attachments/1",
-            "requiresAccessToResource": "attachment1"
+            "resource": "attachment1"
         }
     ],
     "actions": {
@@ -50,7 +53,7 @@
             },
             {
                 "action": "confirm",
-                "requiresAccessToResource": "somesubresource", 
+                "resource": "somesubresource", 
                 "type": "secondary",
                 "title": [ { "code": "nb_NO", "value": "Bekreft mottatt" } ],
                 "isBackChannel": true,
@@ -158,7 +161,7 @@
                     "template": "some-email-template",
                     "tokens": [
                         { "name": "header", "value": "dette er en header" },
-                        { "name": "body", "value": "Hei {{recipient.fullname}}!" } 
+                        { "name": "body", "value": "Hei {{party.fullname}}!" } 
                     ]
                 }
             }

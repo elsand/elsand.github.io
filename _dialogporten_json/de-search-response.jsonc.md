@@ -9,7 +9,7 @@
         "org": "digdir",
         "serviceName": "example_dialogue_service",
         "externalReference": "someReference",
-        "recipient": "12018212345",        
+        "party": "12018212345",        
         "dates": {
             "createdDateTime": "2022-12-01T10:00:00.000Z",
             "updatedDateTime": "2022-12-01T10:00:00.000Z",

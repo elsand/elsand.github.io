@@ -14,7 +14,7 @@
 
     // Organisasjonsnummer, fødselsnummer eller brukernavn (aka "avgiver" eller "aktør") - altså hvem sin dialogboks 
     // skal elementet tilhøre. Brukernavn benyttes for selv-registrerte bruker, og er typisk en e-postadresse.
-    "recipient": "org:991825827", 
+    "party": "org:991825827", 
                                   
     // Vilkårlig referanse til ekstern dialoginstans. Dialogporten tilegger denne ingen semantikk (trenger f.eks. ikke
     // være unik)
@@ -66,8 +66,9 @@
             "contentType": "application/pdf",            
             "url": "https://example.com/api/dialogues/123456789/attachments/1",
 
-            // Det kan oppgis en valgfri referanse til en ressurs
-            "requiresAccessToResource": "attachment1"
+            // Det kan oppgis en valgfri referanse til en ressurs. Brukeren må ha tilgang til "open" i
+            // XACML-policy for oppgitt ressurs for å få tilgang til elementet.
+            "resource": "attachment1"
         }
     ],
     "actions": {
@@ -80,7 +81,7 @@
             },
             {
                 "action": "confirm",
-                "requiresAccessToResource": "somesubresource", // Det kan oppgis en valgfri referanse til en ressurs
+                "resource": "somesubresource", // Det kan oppgis en valgfri referanse til en ressurs
                 "type": "secondary",
                 "title": [ { "code": "nb_NO", "value": "Bekreft mottatt" } ],
 
@@ -156,14 +157,14 @@
                 "template": "some-email-template",
                 "tokens": [
                     { "name": "header", "value": [ { "code": "nb_NO", "value": "dette er en header" } ] },
-                    { "name": "body", "value": [ { "code": "nb_NO", "value": "Hei {{recipient.fullname}}!" } ] } 
+                    { "name": "body", "value": [ { "code": "nb_NO", "value": "Hei {{party.fullname}}!" } ] } 
                 ]
         },
         "push": {
             // Basert på https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/showNotification
             "title": [ { "code": "nb_NO", "value": "Tittel på notifikasjon" } ],
             "body": [ { "code": "nb_NO", 
-                "value": "Dette er første linje\nDette er andre linje, sendt til {{recipient.fullname}}" } ],
+                "value": "Dette er første linje\nDette er andre linje, sendt til {{party.fullname}}" } ],
             "icon": "https://example.com/some-icon-atleast-192x192.png",
             // Valgfri URL som bruker blir sendt til hvis notifikasjonen klikkes på. Blir utvidet med sesjonstoken.
             "notificationClickUrl": "https://example.com/some/deep/link/to/dialogues/123456789"
@@ -179,7 +180,7 @@
         // Hvis tjenesteeieren ønsker en "rekommandert" sending, kan dette flagget settes til true. Det vil da genereres 
         // en event om at elementet er lest til. 
         "requireReadNotification": true,
-        // Når blir elementet synlig hos recipient
+        // Når blir elementet synlig hos party
         "visibleDateTime": "2022-12-01T12:00:00.000Z",
         // Hvis oppgitt blir denne URL-en forsøkt lastet i når dialog-elementet ekspanderes i GUI eller hentes i API via 
         // "detailsUrl". Hvis "content" også er oppgitt, vil det bli brukt som fallback om ikke 

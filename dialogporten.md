@@ -107,13 +107,11 @@ Handlinger og andre deler (typisk referanser til vedlegg) av i dialogelementet k
 
 På samme måte vil API-handlinger som ikke er tilgjengelige for SBS-et (med den identiteten SBS-et oppgir) ikke returneres. 
 
-Opplysninger om hvem som er den autoriserte parten overføres gjennom et _sesjonstoken._
+Opplysninger om hvem som er den autoriserte parten overføres gjennom et _dialogelementtoken._
 
-## Sesjonstoken
+## Dialogelementtoken (DET)
 
-{% include note.html type="warning" content="Mekanismene for hvordan autorisasjons/sesjonsinformasjon overføres fra Dialogporten til tjenestetilbyders flater i både GUI og API er ikke tilstrekkelig utredet." %}
-
-Et sesjonstoken er enten et «opak» token (en tilfeldig tekststreng) eller en signert JWT som inneholder informasjon om den autentiserte brukeren/organisasjonen, hvilken aktør som er valgt, identifikator til dialogelementet og autorisasjonsressursen, dato og andre opplysninger. Ved bruk av et opak token må tjenestetilbyderen foreta et oppslag mot Dialogportens API-er for å veksle det inn i informasjonen nevnt over. På denne måten kan sesjoner og autorisasjonsdata utover det som finnes i ID-porten/Maskinportet-tokens overføres mellom Dialogporten og den aktuelle tjenestetilbyderen. Ved bruk av omdirigeringer i GUI-handlinger vil tjenestetilbyderen også kunne lene seg på SSO fra ID-porten for å autentisere brukeren, og validere at informasjonen i sesjonstokenet stemmer overens.
+Et dialogelementtoken er et signert JSON Web Token (JWT) som inneholder informasjon om den autentiserte brukeren/organisasjonen, hvilken aktør som er valgt, identifikator til dialogelementet, dato og andre opplysninger. Les mer i avsnittet  [Autorisasjon](#autorisasjon).
 
 # Scenarioer som påvirker Dialogporten
 
@@ -143,6 +141,62 @@ Det finnes andre scenarioer rundt oppslag/innsynstjenester og filoverføringer s
 
 ![](https://lucid.app/publicSegments/view/c3ce275d-9170-45d0-8c09-e50de2ffc690/image.png)
 
+# Autorisasjon
+
+Det legges opp til at hvert element blir utstyrt med et eget token (dialogelementtoken) som Felles Arbeidsflate og SBS-er benytter i alle URL-er mot tjenestetilbyder. Dette gjør det mulig å overføre sesjoner og autorisasjonsdata utover det som finnes i ID-porten/Maskinportet-tokens mellom Dialogporten og den aktuelle tjenestetilbyderen. Ved bruk av omdirigeringer i GUI-handlinger vil tjenestetilbyderen også kunne lene seg på SSO fra ID-porten for å autentisere brukeren, og validere at informasjonen i dialogelementtokenet stemmer overens.
+
+Dialogelementtokenet benyttes som et "bearer token", altså noe som indikerer at ihendehaveren er autorisert av Dialogporten til en liste med påstander (claims) som ligger i tokenet. [Standard JWT-claims](https://www.rfc-editor.org/rfc/rfc7519#section-4.1) og [JWS-parametere](https://www.rfc-editor.org/rfc/rfc7515#section-4.1) som definert i RFC7519 og RFC7515 vil inkluderes, i tillegg til de Dialogporten-spesifikke påstandene under:
+
+## Dialogporten-spesifikke claims
+
+| Claim            | Beskrivelse                                                                                                                                                        | Eksempel                                                                           |
+|------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------- |----------------------------------------------------------------------------------- |
+| c                | Autentisert som konsument av Dialogporten. Prefikset for  hhv. personer (typisk ID-porten), organisasjoner (typisk Maskinporten) eller selvregistrerte brukere.    | `"person:12018212345"`, `"org:991825827"` eller `"username:someemail@example.com"` |
+| l                | Sikkerhetsnivå (1-4)                                                                                                                                               | `4`                                                                                |
+| s                | Valgfritt. Hvis det er benyttet et leverandørtoken i Maskinporten, vil autentisert leverandørs organisasjonsnummer oppgis her. Prefiks er alltid `org:`.           | `"org:991825827"`                                                                  |
+| p                | Hvem konsument opptrer på vegne av (om ikke seg selv), altså hvem som eier det aktuelle dialogelementet.                                                           | `"person:12018212345"`, `"org:991825827"` eller `"username:someemail@example.com"` |
+| i                | Unik identifikator til dialogelement.                                                                                                                              | `"e0300961-85fb-4ef2-abff-681d77f9960e"`                                           |
+| e                | Ekstern referanse til elementet                                                                                                                                    | `"123456789"`                                                                      |
+| a                | Liste over autoriserte actions. Kan være prefixet med `<ressurs>:` hvis actionen omfatter en navngitt ressurs i XACML policy som ikke er tjenesteressursen         | `[ "open", "attachment1:open", "confirm" ]`                                        |
+
+## Eksempel på dekodet token
+
+```jsonc
+{
+  "alg": "EdDSA",
+  "typ": "JWT",
+  "kid" : "dp-2023-01" 
+}
+// .
+{
+  "l": 4,
+  "p": "org:991825827",
+  "i": "e0300961-85fb-4ef2-abff-681d77f9960e",
+  "e": "123456789",
+  "a": [
+    "open",
+    "attachment1:open",
+    "confirm"
+  ],
+  "exp": 1672772834, // Tokenet er her gyldig i 15 minutter og caches deretter
+  "iss": "https://dialogporten.no",
+  "nbf": 1672771934,
+  "iat": 1672771934 
+}
+ 
+// .
+// <signatur>
+```
+
+Tokenet kan verifiseres på vanlig vis gjennom at det publiseres et nøkkelsett (JWK) på et kjent endepunkt. Med å hente den offentlige nøkkelen definert av `kid` kan tjenestetilbyder verifisere at tokenet er gyldig. 
+
+## Overføring av token til tjenestetilbyder
+
+Tokenet vil inkluderes i responsmodellen som returneres til SBS-er og Felles arbeidsflate i feltet `dialogElementToken`. For GUI-handlinger, eller andre dyplenker til tjenesteinstans hos tjenestetilbyder hvor bruker omdirigeres i nettleser, vil Felles arbeidsflate legge til tokenet som et fast query-parameter konfigurerte URL-en. F.eks. hvis en GUI-handling er definert til å være på `https://example.com/some/deep/link/to/dialogues/123456789` vil Felles arbeidsflate omdirigere brukeren til `https://example.com/some/deep/link/to/dialogues/123456789?dialogElementToken={token}` hvor `{token}` er en Base64URL enkodet JWT.
+
+For URL-er som aksesseres via bakkanal eller andre mekanismer kan alternativt token overføres gjennom HTTP headeren `X-DialogElementToken`. Tjenestetilbydere må håndtere begge mekanismene.
+
+
 # Sekvensbeskrivelser
 
 Under følger punktvis beskrivelser av fire ulike sekvenser. Det er to måter en dialog kan initieres på; enten av sluttbruker eller tjenestetilbyder. Hver av disse kan gjennomføres ved hjelp av GUI eller API.
@@ -164,8 +218,8 @@ sequenceDiagram
     actor NOTRCPT as Varselsmmottaker
 
 note over TE,NOTRCPT: Opprettelse av tjenesteressurs (gjøres én gang per tjeneste)
-TE-->>ARR: Oppretter tjenesteressurs
-ARR-->>TE: Returnerer tjenesteressurs-identifikator
+TE->>ARR: Oppretter tjenesteressurs
+ARR->>TE: Returnerer tjenesteressurs-identifikator
 note over TE,NOTRCPT: Opprettelse av dialogelement
 TE->>API: Opprette dialogelement
 API->>TE: Returnere identifikator til dialogelement
@@ -182,8 +236,8 @@ end
 
 note over TE,NOTRCPT: Mutering av dialogelement (som følge av at brukeren foretar seg noe, eller andre hendeleser inntreffer)
 
-TE-->>ARR: Endrer tjenesteressurs med oppgitt identifikator
-ARR-->>TE: Returnerer kvittering på at endring er gjennomført
+TE->>API: Endrer dialogelement med oppgitt identifikator
+API->>TE: Returnerer kvittering på at endring er gjennomført
 par
     API->>EVT: Generer hendelse for opprettet dialogelement
     and
@@ -262,12 +316,12 @@ opt
     TEAPI->>GUI: Returnere dialogelement
 end
 GUI->>SB: Viser innhold i dialogelement med aktuelle handlinger
-SB->>TEGUI: Sluttbruker følger lenke for ønsket operasjon med sesjonstoken til tjenestetilbyders portal
+SB->>TEGUI: Sluttbruker følger lenke for ønsket operasjon med dialogelementtoken til tjenestetilbyders portal
 alt opak token
-    TEGUI->>API: Validerer sesjonstoken
+    TEGUI->>API: Validerer dialogelementtoken
     API->>TEGUI: Sende sesjonsinformasjon
 else self-contained token
-    TEGUI->>TEGUI: Validerer sesjonstoken
+    TEGUI->>TEGUI: Validerer dialogelementtoken
 end
 TEGUI->>TEGUI: Opprette/oppdatere sesjon
 TEGUI->>SB: Vis arbeidsflate for tjeneste til sluttbruker
@@ -283,8 +337,8 @@ TEGUI->>SB: Vis arbeidsflate med oppdatert tilstand
 2.  Elementet har en grafisk fremstilling som viser overskrift, status og andre metadata
 3.  Bruker klikker på elementet for å ekspandere det. Hvis det av tjenestetilbyder ble oppgitt en URI for å oppdatere elementet, vil Dialogporten kalle denne i en bakkanal og vise innholdet dynamisk samt oppdatere evt endrede metadata. Ekspandert element viser rikt innhold som tjenestetilbyder har definert, sammen med tilgjengelige handlinger. Hvis oppdatering feilet, vises enten feilmelding som tjenestetilbyder oppga, eller en standardfeilmelding.
 4.  Bruker klikker på den definerte primærhandlingen.
-    * Felles Arbeidsflate vil da redirecte brukeren (nettleseren) til oppgitt URI. Det legges på et sesjonstoken som parameter i URI-en.
-    * Når tjenestetilbyder mottar forspørsel fra nettleser, gjøres et bakkanal-oppslag mot Dialogporten tjenestetilbyder-API hvor sesjonstoken oppgis. Returnerer en modell som forteller
+    * Felles Arbeidsflate vil da redirecte brukeren (nettleseren) til oppgitt URI. Det legges på et dialogelementtoken som parameter i URI-en.
+    * Når tjenestetilbyder mottar forspørsel fra nettleser, gjøres et bakkanal-oppslag mot Dialogporten tjenestetilbyder-API hvor dialogelementtoken oppgis. Returnerer en modell som forteller
         *  autentisert part (f/dnr, orgnr)
         *  valgt aktør
         *  tidspunkt
@@ -327,7 +381,7 @@ TEAPI->>SBS: Oppdatering OK
 
 1.  SBS abonnerer på hendelser knyttet til opprettelse av dialogelementer av en eller flere typer, og mottar en notifikasjon om at et nytt dialogelement er opprettet. Notifikasjonen inneholder en URI til dialogelementet i Dialogportens API. Alternativt kan liste med dialogelementer hentes gjennom standard Dialogporten-API-er
 2.  Avhengig av autorisasjonspolicy tilhørende tjenesteressursen, autoriserer SBS-et seg. Dette kan være gjennom brukerstyrt datadeling i ID-porten (OAuth2/OIDC) eller ved hjelp av Maskinporten (ren OAuth2). Tokenet kan også inneholde scopes som kreves av tjenestetilbyderen, og tokenet bør da utstedes med både Dialogporten og tjenestetilbyder som i "aud"-claim. Hvis Maskinporten-token, kan policyen ha rettighetskrav som krever at det i tillegg autentiseres en virksomhetsbruker (systemidentitet i Altinn med tildelte rettigheter som gir tilgang til tjenesteressursen), som innbærer en tokenutveksling og utstedelse av et beriket Maskinporten-token. Dette resulterer i ett (eller to, hvis også beriket Altinn-token) access token som brukes i alle påfølgende kall.
-3.  Ved uthenting av elementet som ble referert av hendelsen, returneres en strukturert modell som langt på vei speiler modellen som tjenestetilbyder opprinnelig sendte inn. Listen over handlinger definerer da hva SBS-et kan foreta seg, og hvilke endepunkter som må aksesseres for å utføre handlingene.  Enkelte handlinger kan være synlige/gyldige kun for portal, eller kun for API.  Handlinger kun synlige for API kan også referere JSON schemas el.l. som beskriver datamodellen som forventes på det aktuelle endepunktet. Tilsvarende håndtering av  GUI-handlinger legges det ved et sesjonstoken som inneholder informasjon om tidspunkt, autentisert part, valgt avgiver, aktuelt element, valgt handling.
+3.  Ved uthenting av elementet som ble referert av hendelsen, returneres en strukturert modell som langt på vei speiler modellen som tjenestetilbyder opprinnelig sendte inn. Listen over handlinger definerer da hva SBS-et kan foreta seg, og hvilke endepunkter som må aksesseres for å utføre handlingene.  Enkelte handlinger kan være synlige/gyldige kun for portal, eller kun for API.  Handlinger kun synlige for API kan også referere JSON schemas el.l. som beskriver datamodellen som forventes på det aktuelle endepunktet. Tilsvarende håndtering av  GUI-handlinger legges det ved et dialogelementtoken som inneholder informasjon om tidspunkt, autentisert part, valgt avgiver, aktuelt element, valgt handling.
 4.  SBS-et interagerer med tjenestetilbyders API gjennom endepunktene som elementet beskriver, og/eller i tråd med swagger/annen dokumentasjon som tjenestetilbyder har tilgjengeliggjort f.eks. via API-katalogen. Access token som utstedt av Altinn og/eller Maskinporten benyttes. Etter hvert som dialogen skrider frem, kan tjenestetilbyder gjøre bakkanal-kall til Dialogporten for å oppdatere dialogelementet slik det fremstår for brukeren både i portal og API.
 
 ## Sluttbruker-initiert dialog
