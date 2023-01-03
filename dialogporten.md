@@ -298,6 +298,8 @@ end
 
 ### Konsum gjennom GUI (portal)
 
+I beskrivelsene under brukes Felles Arbeidsflate som eksempel på en implementasjon av Dialogporten-API, men tilsvarende sekvenser kan også gjelde for andre GUI-klienter.
+
 #### Sekvensdiagram
 
 ```mermaid!
@@ -305,8 +307,8 @@ sequenceDiagram
     actor SB as Sluttbruker
     participant GUI as Felles Arbeidsflate
     participant API as Dialogporten API
-    participant TEAPI as tjenestetilbyders API
-    participant TEGUI as tjenestetilbyders GUI
+    participant TEAPI as Tjenestetilbyders API
+    participant TEGUI as Tjenestetilbyders GUI
 note over SB,GUI: Bruker logger inn i Felles Arbeidsflate og finner elementet
 SB->>GUI: Bruker klikker på elementet
 opt
