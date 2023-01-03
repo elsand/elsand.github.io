@@ -153,7 +153,7 @@ Felles arbeidsflate vil av hensyn til brukskvalitet ikke kreve eksplisitt autori
 
 I de fleste tilfeller vil det imidlertid være tilstrekkelig å benytte dialogelementtoken (beskrevet under), som gir tjenestetilbyder finkornet autorisasjonsinformasjon som vil kunne brukes subsidiært ordinære Maskinporten/ID-porten tokens.
 
-Men tjenestetilbyders API-er vil potensielt kreve egne scopes som grovkornet autorisasjon. I disse tilfellene vil det kunne utstedes tokens som benyttes mot både Dialogportens API såvel som tjenestetilbyderen. Dialogporten vil ikke kreve eller verifisere "aud"-claims i tokens, men disse kan benyttes hvis tokenet også skal benyttes mot tjenestetilbyders endepunkter. Alternativt kan klienten hente ut to tokens for bruk mot hhv. Dialogporten API og tjenestetilbyder.
+Men tjenestetilbyders API-er vil potensielt kreve egne scopes som grovkornet autorisasjon. I disse tilfellene vil det kunne utstedes tokens som benyttes mot både Dialogportens API såvel som tjenestetilbyderen, altså scopes for begge API-ene. Dialogporten vil ikke kreve eller verifisere "aud"-claims i tokens, men disse kan benyttes hvis tokenet også skal benyttes mot tjenestetilbyders endepunkter. Klienter må imidlertid vurdere sikkerhetsrisikoen knyttet til at tjenestetilbyder da vil kunne gjenbruke tokenet mot Dialogporten (replay attack). For høyest sikkerhet må klienten hente ut to tokens for bruk mot hhv. Dialogporten API og tjenestetilbyder.
 
 ## Bruk av dialogelementtoken 
 
