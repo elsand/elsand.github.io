@@ -232,7 +232,7 @@ par
     NOT->>NOTRCPT: Send varsel på e-post/SMS el.l.
 end
 
-note over TE,NOTRCPT: Mutering av dialogelement (som følge av at brukeren foretar seg noe, eller andre hendeleser inntreffer)
+note over TE,NOTRCPT: Oppdatering av dialogelement (som følge av at brukeren foretar seg noe, eller andre hendeleser inntreffer)
 
 TE->>API: Endrer dialogelement med oppgitt identifikator
 API->>TE: Returnerer kvittering på at endring er gjennomført
