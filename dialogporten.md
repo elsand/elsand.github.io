@@ -412,10 +412,6 @@ TEGUI->>AUTH: Hente brukers aktørliste filtrert på tjenesteressurs
 AUTH->>TEGUI: Returnere aktørliste
 TEGUI->>SB: Presenter aktørliste
 SB->>TEGUI: Aktør velges
-opt
-    TEGUI->>API: Bakkanal kall for å sjekke om det allerede finnes et dialogelement under arbeid
-    API->>TEGUI: Returner dialogelement, eller tomt svar
-end
 TEGUI->>TEGUI: Opprette tjenesteinstans
 TEGUI->>API: Bakkanal kall for å opprette dialogelement
 API->>TEGUI: Returnere dialogelement
@@ -437,7 +433,6 @@ end
 1.  Bruker oppdager tjeneste gjennom tjenestekatalog, søkemotor, etatenes nettsider el.l.
 2.  Bruker starter tjenesten og blir umiddelbart tatt inn i brukerflaten hos tjenestetilbyderen, og velger aktør avhengig av tjenestens natur (via autorisasjonskall mot Altinn Autorisasjon for å bygge aktørliste)
 3.  Tjenestetilbyder gjør bakkanal-kall for å opprette dialogelement i Dialogporten
-    * Her kan en se på muligheten for å la tjenestetilbyder sjekke om det allerede finnes instanser av tjenesten hos samme aktør som inneholder en eller annen status ("under arbeid" eller lignende) og gi bruker mulighet til å fortsette å jobbe med den instansen, eller opprette en ny.
 4.  Sluttbruker interagerer med tjenesten, og tjenestetilbyder gjør kall til Dialogporten for å oppdatere dialogelementet.
 5.  Hvis bruker avslutter økten før dialogen er ferdigstilt, kan han/hun (eller andre autoriserte) fortsette å jobbe med dialogen gjennom å aksessere dialogelementet i Felles Arbeidsflate. Prosessen blir da som "tjenestetilbyder-initiert dialog / Konsum gjennom GUI (portal)" steg 2. 
   
