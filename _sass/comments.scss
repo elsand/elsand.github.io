@@ -8,13 +8,43 @@ div.issue-container {
     min-width: 280px;
     font-size: 80%;
     border-radius: 6px;
-    box-shadow: -7px 11px 9px 0px #c9c9c9;
+    box-shadow: -7px 11px 9px 0px #00000047;
     margin-top: 10px;
     z-index: 1;
+
+    .showrest {
+        display: none;
+    }
+
+    &.overflow {
+        max-height: 300px;
+        overflow-y: hidden;
+
+        &:after {
+            content: "";
+            display: block;
+            position: absolute;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(178,218,249,0) 0%, rgba(178,218,249,0.7917542016806722) 54%, rgba(178,218,249,1) 73%);
+            width: calc(100% - 16px);
+            height: 82px;
+        }
+
+        .showrest {
+            content: "Vis resten";
+            display: block;
+            position: absolute;
+            bottom: 0;
+            height: 21px;
+            z-index: 2;
+            cursor: pointer;
+        }
+    }
 
     .title {
         display: block;
         border-bottom: 1px solid #aaa;
+        width: calc(100% - 50px);
     }
 
     .body {
@@ -65,6 +95,17 @@ div.issue-container {
         .showhide, .showhideanchor {
             display: block !important;
             margin-top:auto;
+        }
+
+        &.overflow {
+    
+            &:after {
+                display: none;
+            }
+    
+            .showrest {
+                display: none;
+            }
         }
     }
 }

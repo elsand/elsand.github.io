@@ -60,6 +60,9 @@ function onload() {
         else if (e.target.classList.contains('showhideanchor')) {
             e.target.parentElement.parentElement.classList.toggle('hidden');
         }
+        else if (e.target.classList.contains('showrestanchor')) {
+            e.target.parentElement.parentElement.classList.toggle('overflow');
+        }
     });
 
     loadIssues();
@@ -79,12 +82,16 @@ async function loadIssues() {
         repo: 'elsand.github.io'
     });
 
+    var seenAnchors = {};
     response.data.forEach(async (issue) => {
         var container = document.createElement('div');
+        var id = "issue-" + issue.id;
+        container.id = id;
         container.classList.add('issue-container');
         container.innerHTML = `
             <span class="title">${issue.title} <a href="${issue.html_url}">#${issue.number}</a></span> 
             <span class="showhide"><a href="javascript:" class="showhideanchor">Skjul/vis</span></a>
+            <span class="showrest"><a href="javascript:" class="showrestanchor">Vis resten</span></a>
             <span class="author">${issue.user.login}</span>
             <span class="body">${getParsedBody(issue.body)}</span>            
             <span class="date">${issue.updated_at}</span>
@@ -105,9 +112,24 @@ async function loadIssues() {
         `
 
         var anchorid = getAnchorElementFromBody(issue.body);
+        if (!Object.hasOwn(seenAnchors, anchorid)) {
+            seenAnchors[anchorid] = -1;
+        }
+        seenAnchors[anchorid]++;
         if (anchorid) {
             var anchor = document.getElementById(anchorid);
-            if (anchor) anchor.before(container);
+            if (anchor) {
+                anchor.before(container);
+                var issuecontainer = document.getElementById(id);
+                if (issuecontainer && issuecontainer.offsetHeight > 300) {
+                    issuecontainer.classList.add('overflow');
+                }
+                var offsety = seenAnchors[anchorid] * 38;
+                if (offsety) {
+                    issuecontainer.style.marginTop = offsety + "px";
+                } 
+            }
+
         }
     });
 }
