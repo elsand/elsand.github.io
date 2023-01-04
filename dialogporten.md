@@ -130,8 +130,8 @@ Det er typisk tre scenarioer som innebærer behov for interaksjon med Dialogport
     * DPV, DPI
     * Typisk én-veis (foruten «rekommandert»-funksjonalitet hvor tjenestetilbyder trenger bekreftelse på at melding er mottatt og lest)
     * Ikke-muterbar - meldingen forandrer seg ikke etter at den er mottatt (annet enn «lest»-status og arkiv/slettet-tilstand)
-    * Kan være utgangspunkt for sluttbruker-initiert dialog, med lenker til «neste trinn»
-    * Teknisk/funksjonelt subset av tjenestetilbyder-initiert dialog.
+    * Kan være utgangspunkt for sluttbruker-initiert dialog, med lenker til «neste trinn» 
+    * Teknisk/funksjonelt subset av tjenestetilbyder-initiert dialog, men kan også være del av en sluttbruker-initiert dialog (f.eks. et vedtaksbrev)
 
 Det finnes andre scenarioer rundt oppslag/innsynstjenester og filoverføringer som trolig ikke vil behøve en representasjon i en Dialogporten, og er følgelig out-of-scope for dette arbeidet.
 
