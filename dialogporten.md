@@ -488,38 +488,65 @@ sequenceDiagram
     participant SBS as Sluttbrukersystem
     participant EID as Maskinporten/ID-porten/Altinn Token Exchange
     participant API as Dialogporten API
+    participant AA as Altinn Autorisasjon
     participant TEAPI as Tjenestetilbyders API
-note over SBS,TEAPI: SBS abonnerer på hendelser for opprettelse av dialogelementer<br>og mottar URI til nytt dialogelement.    
+note over SBS,TEAPI: SBS abonnerer på hendelser for opprettelse av dialogelementerog mottar URI til nytt dialogelement.    
 SBS->>EID: Autentisering/autorisering
 EID->>SBS: access_token
+note over SBS,TEAPI: Mange tjenester vil ikke ha behov for noe eget initierings-trinn, men kan fullføre en innsending i ett kall.<br>Andre tjenester vil ha behov for dette, kanskje fordi en innsending skal prefilles med data av tilbyder.<br>I dette eksemplet er det et eget instansieringstrinn, og dialogelementet opprettes ikke før etter at SBS-et har foretatt en innsending.
 SBS->>TEAPI: Initier dialogtjeneste
+note over AA,TEAPI: Siden vi bare har et ID-porten/Maskinporten-token,<br>mangler finkornet autorisasjon som må slås opp i Altinn.
+TEAPI->>AA: Sjekk om fnr/orgnr/virksomhetsbruker er autorisert
+AA->>TEAPI: Autorisasjon OK
 TEAPI->>TEAPI: Opprette tjenesteinstans
-TEAPI-->>API: Opprette dialogelement med referanse til tjenesteinstans
-API-->>TEAPI: Opprettelse OK, returner dialogelement-ID
-TEAPI->>TEAPI: Knytt dialogelement-ID til tjenesteinstans
-API->>SBS: Send notifikasjon om hendelse som genereres ved opprettelse av dialogelement
+TEAPI->>SBS: Returner OK + referanse til tjenesteinstans / prefill-data
+opt
+    SBS->>TEAPI: Foreta oppslag for å hente forhåndsutfylt data
+    TEAPI->>SBS: Returner forhåndsutfylt data
+end
+SBS->>TEAPI: Foreta innsending
+TEAPI->>TEAPI: Validere innsending
+par
+    TEAPI->>SBS: Returner OK, kvittering etc
+and
+    note over SBS,TEAPI: Emuler transaksjon og sikre atomitet i synkroniseringen av dialogElementId gjennom å avvente utsendelse/synliggjøring inntil neste endring. Dette tilsvarer en two-phase commit (2PC).
+    TEAPI->>API: Opprette dialogelement og oppgi flagget "delayCommitUntilFirstUpdate" (se de-create-request-jsonc)
+    API->>TEAPI: Opprettelse OK, returner dialogelement-ID
+    TEAPI->>TEAPI: Knytt dialogelement-ID til tjenesteinstans
+    TEAPI->>API: Gjør vilkårlig oppdatering av dialogelement, f.eks. sette referanse til tjenesteinstans
+    par
+        API->>TEAPI: Oppdatering OK
+    and
+        API->>SBS: Send notifikasjon om hendelse som genereres ved opprettelse av dialogelement    
+    end
+end
+
+note over SBS,TEAPI: Eventuelt videre arbeid/oppfølging kan (men må ikke) gjøres gjennom DP
+
 opt
     SBS->>API: Hent liste over aktuelle handlinger
     API->>SBS: Returner liste over aktuelle handlinger
-end
-SBS->>TEAPI: Foreta oppslag/endringer
-opt
+
+    SBS->>TEAPI: Foreta oppslag/endringer
+
     TEAPI->>API: Oppdater dialogelement for å reflektere ny tilstand
     API->>TEAPI: Oppdatering OK
+
+    TEAPI->>SBS: Return av oppslag/oppdatering OK
 end
-TEAPI->>SBS: Return av oppslag/oppdatering OK
+
 ```
 
 1.  SBS abonnerer på hendelser knyttet til opprettelse av dialogelementer av en eller flere typer
-2.  SBS autoriserer seg med de mekanismer som kreves av tjenesten
+2.  SBS autentiserer/autoriserer seg mot Maskinporten/ID-porten og får ut access tokens med nødvendige scopes
 3.  SBS gjør et eller annet kall for å initiere (og potensielt samtidig fullføre) en dialogtjeneste hos tjenestetilbyder
-4.  Tjenestetilbyder oppretter instans (el.l) i egne systemer, og gjør bakkanal-kall tilbake til Dialogporten for å opprette dialogelement som beskrevet i "tjenestetilbyder-initert dialog", trinn 2.
-5.  Tjenestetilbyder mottar fra Dialogporten identifikator til dialogelement, som da kan knyttes til egen tjenesteinstans
-6. Gjennom abonnementet på hendelser knyttet til opprettelse av dialogelementer mottar SBS-et en notifikasjon om at dialogelementet for dialogtjenesten nå finnes
-7.  Hvis aktuelt, kan SBS-et hente ned dialogelementet for å få se en liste over autoriserte handlinger som kan foretas. Dette forutsetter at SBS-et har autorisert seg mot Dialoboksen i trinn 2.
-8.  SBS interagerer med tjenestetilbyders API-er som beskrevet i "tjenestetilbyder-initiert dialog / Konsum gjennom API", trinn 4
-9. Tjenestetilbyder oppdaterer dialogelementet for å reflektere tilstanden på dialogen
-
+4.  Tjenestetilbyder foretar et oppslag mot Altinn Autorisasjon for å sjekke om forespørselen (fnr/orgnr/virksomhetsbruker/SI-bruker) er autorisert for den aktuelle tjenesteressursen
+5.  Tjenestetilbyder oppretter tjenesteinstansen i egne systemer, og returnerer en referanse til SBS-et
+6.  SBS-et kan ved behov gjøre et oppslag for å hente prefill-data, hvis ikke dette er inkludert i responsen på forrige trinn
+7.  SBS-et foretar en innsending basert på hva sluttbrukeren oppgir 
+8.  Tjenestetilbyderen validerer innsendingen
+9.  Tjenestetilbyder returner OK til SBS-et. Parallelt (asynkront) opprettes dialogelement i Dialogporten. Synkronisering av identifikator utføres gjennom at elementet først opprettes uten at det tilgjengeliggjøres for party med å sette flagget "delayCommitUntilFirstUpdate"-flagget. Dialogporten vil dog opprette elementet i databasen og tildele det en identifikator, som returneres tjenestetilbyder på vanlig måte. Så fort tjenestetilbyder har fått oppdatert sin tjenesteinstans med referanse til dialogelementet, gjøres en oppdatering på elementet mot Dialogporten, som da vil "commite" elementet og føre til at det utstedes en "opprettet"-event og at det blir tilgjengeliggjort for party. På denne måten unngås problemer med at Dialogporten tilgjengeliggjør et element som peker til en tjenesteinstans som ikke har rukket å lagre dialogelement-id-en. Dette er å anse som en implementasjon av en [two-phase commit-protokoll](https://en.wikipedia.org/wiki/Two-phase_commit_protocol).
+10. På et senere tidspunkt kan SBS-er jobbe videre med tjenesteinstansen gjennom dialogelementet i Dialogporten, eller fortsette å benytte API-ene til tjenestetilbuder direkte.
 # OpenAPI
 
 En foreløpig OpenAPI 3.0.1 specification (OAS) basert på modellene beskrevet under kan sees på [https://app.swaggerhub.com/apis-docs/Altinn/Dialogporten](https://app.swaggerhub.com/apis-docs/Altinn/Dialogporten). 

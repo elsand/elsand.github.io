@@ -180,7 +180,15 @@
         // Hvis tjenesteeieren ønsker en "rekommandert" sending, kan dette flagget settes til true. Det vil da genereres 
         // en event om at elementet er lest til. 
         "requireReadNotification": true,
-        // Når blir elementet synlig hos party
+        
+        // Hvis dette flagget er satt til true, vil ikke elementet bli tilgjengelig for party og det vil heller ikke 
+        // sendes noen "opprettet"-hendelse. Først når første oppdatering på elementet (enhver PATCH eller PUT) blir utført, 
+        // vil det blir sendt en "opprettet"-hendelse og elementet gjøres tilgjengelig for party. Flagget vil deretter ikke ha
+        // noen betydning. Dette lar en emulere transaksjoner og sikre atomitet når et element som allerede finnes hos tjenestetilbyder
+        // skal opprettes, og tjenestetilbyder må rekke å oppdatere egen tjenesteinstans med dialogelement-ID før andre konsumenter
+        // av Dialporten tar i bruk det aktuelle elementet.
+        "delayCommitUntilFirstUpdate": true,
+        // Når blir elementet synlig hos party (uavhengig av delayCommitUntilFirstUpdate)
         "visibleDateTime": "2022-12-01T12:00:00.000Z",
         "authorization": {
             // Policy defineres av serviceResourceIdentifier, men det kan også legges på en ytterligere policy, som i 
