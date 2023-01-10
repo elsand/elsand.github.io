@@ -208,7 +208,7 @@ Tokenet kan verifiseres på vanlig vis gjennom at det publiseres et nøkkelsett 
 
 Tokenet vil inkluderes i responsmodellen som returneres til SBS-er og Felles arbeidsflate i feltet `dialogElementToken`. For GUI-handlinger, eller andre dyplenker til tjenesteinstans hos tjenestetilbyder hvor bruker omdirigeres i nettleser, vil Felles arbeidsflate overføre tokenet gjennom en POST request til den oppgitte URL-en. `Content-Type` vil være `application/x-www-form-urlencoded` og tokenet overføres i body i formen `X-DialogElementToken=<token>`.
 
-For URL-er som aksesseres via bakkanal eller andre mekanismer kan alternativt token overføres gjennom HTTP headeren `X-DialogElementToken`. Tjenestetilbydere må håndtere begge mekanismene for å autorisere kall fra nettlesere og andre klienter.
+For URL-er som aksesseres via bakkanal eller andre mekanismer kan alternativt token overføres gjennom HTTP headeren `X-DialogElementToken: <token>`. Tjenestetilbydere må håndtere begge mekanismene for å autorisere kall fra nettlesere og andre klienter.
 
 
 # Sekvensbeskrivelser
