@@ -458,10 +458,17 @@ EID->>SBS: access_token
 SBS->>API: Opprett dialogelement
 API->>TEAPI: Bakkanal kall til tjenestetilbyder (URI fra tjenesteressurs) for å opprette dialogelement
 TEAPI->>TEAPI: Opprette tjenesteinstans
-TEAPI-->>API: Opprette dialogelement med referanse til tjenesteinstans
-API-->>TEAPI: Opprettelse OK, returner dialogelement-ID
+note over SBS,TEAPI: Emuler transaksjon og sikre atomitet i synkroniseringen av dialogElementId gjennom å avvente utsendelse/synliggjøring inntil neste endring. Dette tilsvarer en two-phase commit (2PC).
+TEAPI->>API: Opprette dialogelement og oppgi flagget "delayCommitUntilFirstUpdate" (se de-create-request-jsonc)
+API->>TEAPI: Opprettelse OK, returner dialogelement-ID
 TEAPI->>TEAPI: Knytt dialogelement-ID til tjenesteinstans
-TEAPI->>API: Returner element-ID
+TEAPI->>API: Gjør vilkårlig oppdatering av dialogelement, f.eks. sette referanse til tjenesteinstans
+par
+    API->>TEAPI: Oppdatering OK
+and
+    API->>SBS: Send notifikasjon om hendelse som genereres ved opprettelse av dialogelement    
+end
+TEAPI->>API: Returner dialogelement-ID
 API->>SBS: Returnere innboks-element med liste over aktuelle handlinger med URI-er
 SBS->>TEAPI: Foreta oppslag/endringer
 opt
