@@ -61,7 +61,9 @@ Tilstand i Dialogporten begrenser seg til metadata for en gitt tjenesteinstans, 
 
 Dialogelementet reflekterer tilstanden til en eller annen pågående eller avsluttet dialog  fra en tjenestetilbyder, og inneholder beskrivende metadata, f.eks. hvem som er mottakende part, adresse (URL), overskrift, dato, status samt en liste over aktuelle _handlinger_ som kan utføres på dialogelementet. Dialogporten knytter semantikk kun til enkelte typer handlinger (slett), hvis dette gjøres tilgjengelig av tjenestetilbyder. Andre handlinger kan vilkårlig defineres av tjenestetilbyder, og all interaksjon med selve tjenesteinstansen foregår i tjenestetilbyders brukerflater (GUI og/eller API).
 
-En viktig forskjell mot dagens «correspondence» i Altinn, er at dialogelementene er _mutérbare_. Tjenestetilbyder kan når som helst oppdatere metadata og tilgjengelige handlinger på elementet. Enhver endringe fører til at det genereres _hendelser_, som autoriserte parter kan agere på, f.eks. at det sendes et varsel eller at et SBS foretar seg noe.
+En viktig forskjell mot dagens «correspondence» i Altinn, er at dialogelementene er _mutérbare_. Tjenestetilbyder kan når som helst oppdatere metadata og tilgjengelige handlinger på elementet. Enhver endring fører til at det genereres _hendelser_, som autoriserte parter kan agere på, f.eks. at det sendes et varsel eller at et SBS foretar seg noe.
+
+Dialogelementer har en UUID som identifikator. Tjenesteeier kan selv oppgi ønsket UUID ved opprettelse for å enklere kunne bruke samme identifikator på egen tjenesteinstans og dialogelelement.
 
 ## Dialoggruppe (DG)
 
@@ -235,8 +237,8 @@ note over TE,NOTRCPT: Opprettelse av tjenesteressurs (gjøres én gang per tjene
 TE->>ARR: Oppretter tjenesteressurs
 ARR->>TE: Returnerer tjenesteressurs-identifikator
 note over TE,NOTRCPT: Opprettelse av dialogelement
-TE->>API: Opprette dialogelement
-API->>TE: Returnere identifikator til dialogelement
+TE->>API: Opprette dialogelement (eventuelt med egen-generert identifikator)
+API->>TE: Returnere OK
 par
     API->>EVT: Generer hendelse for opprettet dialogelement
     and
@@ -307,7 +309,7 @@ end
         * Tilgjengelige handlinger kan oppdateres når som helst av tjenestetilbyder (som alternativ/supplement til at kall gjøres når bruker laster elementet)
         * Tittel og annen tekstlig metadata
         * Status ("under utfylling", "klar til signering", "venter på andre", "venter på svar fra tjenestetilbyder" etc) 
-    * Etter vellykket opprettelse, returner en unik identifikator for dialogelementet.  
+    * Etter vellykket opprettelse, returners en unik identifikator for dialogelementet (identifikator kan også opprettes av tjenestetilbyder).  
 3.  Når elementet er opprettet/endret vil det
     *  Genereres hendelser som vil kunne konsumeres av parten
     * Disse kan igjen være koblet til brukerstyrt varsling på e-post/SMS andre push-kanaler 
@@ -346,7 +348,7 @@ TEGUI->>SB: Vis arbeidsflate med oppdatert tilstand
 
 1.  Bruker mottar varsling på en eller annen kanal, og logger inn i Felles Arbeidsflate
 2.  Elementet har en grafisk fremstilling som viser overskrift, status og andre metadata
-3.  Bruker klikker på elementet for å ekspandere det. Hvis det av tjenestetilbyder ble oppgitt en URI for å oppdatere elementet, vil Dialogporten kalle denne i en bakkanal og vise innholdet dynamisk samt oppdatere evt endrede metadata. Ekspandert element viser rikt innhold som tjenestetilbyder har definert, sammen med tilgjengelige handlinger. Hvis oppdatering feilet, vises enten feilmelding som tjenestetilbyder oppga, eller en standardfeilmelding.
+3.  Bruker klikker på elementet for å ekspandere det. Ekspandert element viser rikt innhold som tjenestetilbyder har definert, sammen med tilgjengelige handlinger. Hvis oppdatering feilet, vises enten feilmelding som tjenestetilbyder oppga, eller en standardfeilmelding.
 4.  Bruker klikker på den definerte primærhandlingen.
     * Felles Arbeidsflate vil da redirecte brukeren (nettleseren) til oppgitt URI. Det legges på et dialogelementtoken som parameter i URI-en.
     * Når tjenestetilbyder mottar forspørsel fra nettleser, verifiseres vedlagt dialogelementtoken (JWT) som inneholder bl.a.
@@ -357,8 +359,8 @@ TEGUI->>SB: Vis arbeidsflate med oppdatert tilstand
         *  tjenestetilbyders referanse til elementet
         *  identifikator for valgt handling
 5.  Ved hjelp av tokenet og SSO i ID-porten blir brukeren umiddelbart logget inn hos tjenestetilbyder og tatt inn til tjenesteinstansen, hvor brukeren interagerer med tjenesten. Etter hvert som dialogen skrider frem, kan tjenestetilbyder gjøre bakkanal-kall til Dialogporten for å oppdatere dialogelementet slik det fremstår for brukeren.
-6.  Hvis brukeren fullfører dialogen, kan tjenestetilbyder gjøre et bakkanal-kall for å indikere til Dialogporten at dialogelementet skal arkiveres. Elementet blir da flyttet til sluttbrukers arkiv. Merk at det fremdeles kun ligger da (ikke lenger muterbare) metadata på elementet i Dialogporten.
-7.  Når brukeren senere ekspanderer elementet i en arkiv-visning i Felles Arbeidsflate, gjøres det samme kallet for å hente siste oppdaterte (altså arkiverte) element fra tjenestetilbyder. Typisk vises da bare en kort tekst og et vedlegg til en PDF-versjon av en kvittering/gjenpart el.l.
+6.  Hvis brukeren fullfører dialogen, kan tjenestetilbyder gjøre et bakkanal-kall for å indikere til Dialogporten at dialogelementet skal markeres som fullført. Elementet blir da merket som fullført, og vil typsik flyttes til "arkiv"-visning i Felles arbeidsflate. Merk at det fremdeles kun ligger metadata på elementet i Dialogporten.
+7.  Når brukeren senere ekspanderer elementet i en arkiv-visning i Felles Arbeidsflate, vises da de data som siste ble lagt inn på elementet av tjenestetilbyder. Typisk vises da bare en kort tekst og et vedlegg til en PDF-versjon av en kvittering/gjenpart el.l. som ligger hos tjenestetilbyder.
 
 ### Konsum gjennom API
 
@@ -378,7 +380,7 @@ opt
     API->>TEAPI: Bakkanal kall for å hente oppdatert dialogelement
     TEAPI->>API: Returne dialogelement
 end
-API->>SBS: Returnere innboks-element med liste over aktuelle handlinger og URI-er
+API->>SBS: Returnere dialogelement med liste over aktuelle handlinger og URI-er
 SBS->>TEAPI: Foreta endringer
 opt
     TEAPI->>API: Oppdater dialogelement for å reflektere ny tilstand
@@ -389,9 +391,9 @@ TEAPI->>SBS: Oppdatering OK
 
 #### Tekstlig beskrivelse av trinn
 
-1.  SBS abonnerer på hendelser knyttet til opprettelse av dialogelementer av en eller flere typer for en gitt part, og mottar en notifikasjon om at et nytt dialogelement er opprettet. Notifikasjonen inneholder en URI til dialogelementet i Dialogportens API. Alternativt kan liste med dialogelementer hentes gjennom standard Dialogporten-API-er
+1.  SBS abonnerer på hendelser knyttet til opprettelse av dialogelementer av en eller flere typer for en gitt part, og mottar en notifikasjon om at et nytt dialogelement er opprettet. Notifikasjonen inneholder en URI til dialogelementet i Dialogportens API. Alternativt kan liste med dialogelementer hentes/søkes opp gjennom standard Dialogporten-API-er.
 2.  Avhengig av autorisasjonspolicy tilhørende tjenesteressursen, autoriserer SBS-et seg. Les mer i avsnittet [Autorisasjon](#autorisasjon).
-3.  Ved uthenting av elementet som ble referert av hendelsen, returneres en strukturert modell som langt på vei speiler modellen som tjenestetilbyder opprinnelig sendte inn. Listen over handlinger definerer da hva SBS-et kan foreta seg, og hvilke endepunkter som må aksesseres for å utføre handlingene.  Enkelte handlinger kan være synlige/gyldige kun for portal, eller kun for API.  Handlinger kun synlige for API kan også referere JSON schemas el.l. som beskriver datamodellen som forventes på det aktuelle endepunktet. Tilsvarende håndtering av  GUI-handlinger legges det ved et dialogelementtoken som inneholder informasjon om tidspunkt, autentisert part, valgt avgiver, aktuelt element, valgt handling.
+3.  Ved uthenting av elementet som ble referert av hendelsen, returneres en strukturert modell som langt på vei speiler modellen som tjenestetilbyder opprinnelig sendte inn (typisk har samme identifikator). Listen over handlinger definerer da hva SBS-et kan foreta seg, og hvilke endepunkter som må aksesseres for å utføre handlingene.  Enkelte handlinger kan være synlige/gyldige kun for portal, eller kun for API.  Handlinger kun synlige for API kan også referere JSON schemas el.l. som beskriver datamodellen som forventes på det aktuelle endepunktet. Tilsvarende håndtering av  GUI-handlinger legges det ved et dialogelementtoken som inneholder informasjon om tidspunkt, autentisert part, valgt avgiver, aktuelt element, valgt handling.
 4.  SBS-et interagerer med tjenestetilbyders API gjennom endepunktene som elementet beskriver, og/eller i tråd med swagger/annen dokumentasjon som tjenestetilbyder har tilgjengeliggjort f.eks. via API-katalogen. Dialogelementtoken oppgis i forespørslene som beskrevet i avsnittet [Autorisasjon](#autorisasjon). Etter hvert som dialogen skrider frem, kan tjenestetilbyder gjøre bakkanal-kall til Dialogporten for å oppdatere dialogelementet slik det fremstår for brukeren både i portal og API.
 
 ## Sluttbruker-initiert dialog
@@ -408,14 +410,21 @@ sequenceDiagram
     participant TEGUI as tjenestetilbyders GUI
 note over SB,TEGUI: Bruker oppdager tjeneste gjennom tjenestekatalog, søkemotor, etatens nettside el.l.
 SB->>TEGUI: Bruker starter tjeneste
+note over SB,TEGUI: Her kan potensielt Ansattporten benyttes i stedet for at tjenestetilbyder implementerer egen aktørvelger
 TEGUI->>AUTH: Hente brukers aktørliste filtrert på tjenesteressurs
 AUTH->>TEGUI: Returnere aktørliste
 TEGUI->>SB: Presenter aktørliste
 SB->>TEGUI: Aktør velges
 TEGUI->>TEGUI: Opprette tjenesteinstans
-TEGUI->>API: Bakkanal kall for å opprette dialogelement
-API->>TEGUI: Returnere dialogelement
-TEGUI->>SB: Presenter tjeneste for bruker
+par
+    note over API,TEGUI: Opprettelse av dialogelementet gjøres når tjenestetilbyder finner dette hensiktsmessig
+    opt
+        TEGUI->>API: Bakkanal kall for å opprette dialogelement med egengenerert identifikatpr
+        API->>TEGUI: Returnere dialogelement
+    end
+and
+    TEGUI->>SB: Presenter tjeneste for bruker
+end
 
 SB->>TEGUI: Foreta endringer
 par
@@ -443,7 +452,7 @@ end
     b)  direkte mot tjenestetilbyders API-er som da kan gjøre bakkanal-kall til Dialogporten for å oppgi dialogelementet?
 
 *  Begge deler bør kanskje kunne støttes? Førstnevnte gir en mer homogen løsning sett fra SBS-ene sin side; selv om all kommunikasjon går direkte mot tjenestetilbyder etter instansiering, er dialogelementet et som vil kunne reflektere gjeldende tilstand/status og aktuelle handlinger. Det andre løsningen gir en løsere kobling til Dialogporten, men gjør at SBS-et i mindre grad kan forholde seg til en felles brukerflate.
-*  Under skisseres en løsning med felles instansierings-API
+*  I alle tilfeller skal Dialogporten støtte at tjenesteeier oppgir identifikator for dialogelementet.
 
 #### Variant med instansierings-API 
 
@@ -456,35 +465,39 @@ sequenceDiagram
 SBS->>EID: Autentisering/autorisering
 EID->>SBS: access_token
 SBS->>API: Opprett dialogelement
+activate SBS
+activate API
 API->>TEAPI: Bakkanal kall til tjenestetilbyder (URI fra tjenesteressurs) for å opprette dialogelement
+activate TEAPI
 TEAPI->>TEAPI: Opprette tjenesteinstans
-note over SBS,TEAPI: Emuler transaksjon og sikre atomitet i synkroniseringen av dialogElementId gjennom å avvente utsendelse/synliggjøring inntil neste endring. Dette tilsvarer en two-phase commit (2PC).
-TEAPI->>API: Opprette dialogelement og oppgi flagget "delayCommitUntilFirstUpdate" (se de-create-request-jsonc)
+note over API,TEAPI: Tjenesteeier kan oppgi identifikator (UUIDv4 eller tilsvarende)<br>for å ha samme identifikator på tvers av systemene
+TEAPI->>API: Opprette dialogelement med selvgenerert dialogelement-ID
+activate TEAPI
+activate API
 API->>TEAPI: Opprettelse OK, returner dialogelement-ID
-TEAPI->>TEAPI: Knytt dialogelement-ID til tjenesteinstans
-TEAPI->>API: Gjør vilkårlig oppdatering av dialogelement, f.eks. sette referanse til tjenesteinstans
-par
-    API->>TEAPI: Oppdatering OK
-and
-    API->>SBS: Send notifikasjon om hendelse som genereres ved opprettelse av dialogelement    
-end
+deactivate TEAPI
+deactivate API
 TEAPI->>API: Returner dialogelement-ID
-API->>SBS: Returnere innboks-element med liste over aktuelle handlinger med URI-er
+deactivate TEAPI
+API->>SBS: Returnere dialogelement med liste over aktuelle handlinger med URI-er
+deactivate API
+deactivate SBS
 SBS->>TEAPI: Foreta oppslag/endringer
 opt
     TEAPI->>API: Oppdater dialogelement for å reflektere ny tilstand
     API->>TEAPI: Oppdatering OK
 end
 TEAPI->>SBS: Return av oppslag/oppdatering OK
+
 ```
 
 1.  ("Design-time") SBS oppdager API gjennom API-katalog eller annen dokumentasjon, og foretar merkantil og teknisk onboarding (setter opp Maskinporten-klient med rette scopes, oppretter virksomhetsbruker etc)
 2.  SBS autoriserer seg (tilsvarende "tjenestetilbyder-initiert dialog / Konsum gjennom API", trinn 2.
 3.  SBS gjør et kall til et standard API i Dialogporten ("createinstance" el.l) som oppgir aktør og tjenesteressurs
 4.  Dialogporten foretar autorisasjon basert på policy knyttet til tjenesteressurs, og hvis godkjent gjør et bakkanal kall til et instansierings-endepunkt som er definert på tjenesteressurs. Kallet inneholder en standard modell som beskriver autentisert part, valgt aktør, og tjenesteressurs.
-5.  Tjenestetilbyder oppretter instans (el.l) i egne systemer, og gjør bakkanal-kall tilbake til Dialogporten for å opprette dialogelement som beskrevet i "tjenestetilbyder-initert dialog", trinn 2.
-6.  Tjenestetilbyder mottar fra Dialogporten identifikator til dialogelement, som da kan knyttes til egen tjenesteinstans
-7.  Tjenestetilbyder returnerer identifikator til dialogelement til Dialogporten
+5.  Tjenestetilbyder oppretter instans (el.l) i egne systemer, og gjør kall tilbake til Dialogporten i ny kanal for å opprette dialogelement som beskrevet i "tjenestetilbyder-initert dialog", trinn 2.
+6.  Tjenestetilbyder mottar fra Dialogporten bekreftelse på at elementet er opprettet
+7.  Tjenestetilbyder returnerer identifikator til dialogelement til Dialogporten i tråd som startet i trinn 3
 8.  Dialogporten laster det nyopprettede dialogelementet, og returner dette til SBS
 9.  SBS interagerer med tjenestetilbyders API-er som beskrevet i "tjenestetilbyder-initiert dialog / Konsum gjennom API", trinn 4
 
@@ -497,7 +510,6 @@ sequenceDiagram
     participant API as Dialogporten API
     participant AA as Altinn Autorisasjon
     participant TEAPI as Tjenestetilbyders API
-note over SBS,TEAPI: SBS abonnerer på hendelser for opprettelse av dialogelementerog mottar URI til nytt dialogelement.    
 SBS->>EID: Autentisering/autorisering
 EID->>SBS: access_token
 note over SBS,TEAPI: Mange tjenester vil ikke ha behov for noe eget initierings-trinn, men kan fullføre en innsending i ett kall.<br>Andre tjenester vil ha behov for dette, kanskje fordi en innsending skal prefilles med data av tilbyder.<br>I dette eksemplet er det et eget instansieringstrinn, og dialogelementet opprettes ikke før etter at SBS-et har foretatt en innsending.
@@ -516,13 +528,10 @@ TEAPI->>TEAPI: Validere innsending
 par
     TEAPI->>SBS: Returner OK, kvittering etc
 and
-    note over SBS,TEAPI: Emuler transaksjon og sikre atomitet i synkroniseringen av dialogElementId gjennom å avvente utsendelse/synliggjøring inntil neste endring. Dette tilsvarer en two-phase commit (2PC).
-    TEAPI->>API: Opprette dialogelement og oppgi flagget "delayCommitUntilFirstUpdate" (se de-create-request-jsonc)
-    API->>TEAPI: Opprettelse OK, returner dialogelement-ID
-    TEAPI->>TEAPI: Knytt dialogelement-ID til tjenesteinstans
-    TEAPI->>API: Gjør vilkårlig oppdatering av dialogelement, f.eks. sette referanse til tjenesteinstans
+    note over API,TEAPI: Opprett element med selvgenerert identifikator, som typisk er den samme som egen tjenesteinstans
+    TEAPI->>API: Opprette dialogelement med selvgenerert dialogelement-ID
     par
-        API->>TEAPI: Oppdatering OK
+        API->>TEAPI: Opprettelse OK, returner dialogelement-ID
     and
         API->>SBS: Send notifikasjon om hendelse som genereres ved opprettelse av dialogelement    
     end
@@ -544,16 +553,15 @@ end
 
 ```
 
-1.  SBS abonnerer på hendelser knyttet til opprettelse av dialogelementer av en eller flere typer
-2.  SBS autentiserer/autoriserer seg mot Maskinporten/ID-porten og får ut access tokens med nødvendige scopes
-3.  SBS gjør et eller annet kall for å initiere (og potensielt samtidig fullføre) en dialogtjeneste hos tjenestetilbyder
-4.  Tjenestetilbyder foretar et oppslag mot Altinn Autorisasjon for å sjekke om forespørselen (fnr/orgnr/virksomhetsbruker/SI-bruker) er autorisert for den aktuelle tjenesteressursen
-5.  Tjenestetilbyder oppretter tjenesteinstansen i egne systemer, og returnerer en referanse til SBS-et
-6.  SBS-et kan ved behov gjøre et oppslag for å hente prefill-data, hvis ikke dette er inkludert i responsen på forrige trinn
-7.  SBS-et foretar en innsending basert på hva sluttbrukeren oppgir 
-8.  Tjenestetilbyderen validerer innsendingen
-9.  Tjenestetilbyder returner OK til SBS-et. Parallelt (asynkront) opprettes dialogelement i Dialogporten. Synkronisering av identifikator utføres gjennom at elementet først opprettes uten at det tilgjengeliggjøres for party med å sette flagget "delayCommitUntilFirstUpdate"-flagget. Dialogporten vil dog opprette elementet i databasen og tildele det en identifikator, som returneres tjenestetilbyder på vanlig måte. Så fort tjenestetilbyder har fått oppdatert sin tjenesteinstans med referanse til dialogelementet, gjøres en oppdatering på elementet mot Dialogporten, som da vil "commite" elementet og føre til at det utstedes en "opprettet"-event og at det blir tilgjengeliggjort for party. På denne måten unngås problemer med at Dialogporten tilgjengeliggjør et element som peker til en tjenesteinstans som ikke har rukket å lagre dialogelement-id-en. Dette er å anse som en implementasjon av en [two-phase commit-protokoll](https://en.wikipedia.org/wiki/Two-phase_commit_protocol).
-10. På et senere tidspunkt kan SBS-er jobbe videre med tjenesteinstansen gjennom dialogelementet i Dialogporten, eller fortsette å benytte API-ene til tjenestetilbuder direkte.
+1.  SBS autentiserer/autoriserer seg mot Maskinporten/ID-porten og får ut access tokens med nødvendige scopes
+2.  SBS gjør et eller annet kall for å initiere (og potensielt samtidig fullføre) en dialogtjeneste hos tjenestetilbyder
+3.  Tjenestetilbyder foretar et oppslag mot Altinn Autorisasjon for å sjekke om forespørselen (fnr/orgnr/virksomhetsbruker/SI-bruker) er autorisert for den aktuelle tjenesteressursen
+4.  Tjenestetilbyder oppretter tjenesteinstansen i egne systemer, og returnerer en referanse til SBS-et
+5.  SBS-et kan ved behov gjøre et oppslag for å hente prefill-data, hvis ikke dette er inkludert i responsen på forrige trinn
+6.  SBS-et foretar en innsending basert på hva sluttbrukeren oppgir 
+7.  Tjenestetilbyderen validerer innsendingen
+8.  Tjenestetilbyder returner OK til SBS-et. Parallelt (asynkront) opprettes dialogelement i Dialogporten, og tjenesteeier oppgir å bruke samme identifikator for elementet.
+9. På et senere tidspunkt kan SBS-er jobbe videre med tjenesteinstansen gjennom dialogelementet i Dialogporten, eller fortsette å benytte API-ene til tjenestetilbuder direkte.
 # OpenAPI
 
 En foreløpig OpenAPI 3.0.1 specification (OAS) basert på modellene beskrevet under kan sees på [https://app.swaggerhub.com/apis-docs/Altinn/Dialogporten](https://app.swaggerhub.com/apis-docs/Altinn/Dialogporten). 
