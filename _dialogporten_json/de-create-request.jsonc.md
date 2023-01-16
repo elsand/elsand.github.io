@@ -7,7 +7,8 @@
 
 // POST /dialogporten/api/v1/de
 {
-    // Tjenestetilbyder kan valgfritt oppgi en egen-generert UUID her.
+    // Tjenestetilbyder kan valgfritt oppgi en egen-generert UUID her. Hvis det ikke oppgis vil Dialogporten generere
+    // en unik identifikator som blir returnert ved opprettelse
     "id": "e0300961-85fb-4ef2-abff-681d77f9960e",
 
     // Identifikator som refererer en tjenesteressurs ("Altinn Service Resource") i Altinn Autorisasjon
@@ -19,8 +20,8 @@
     // skal elementet tilhøre. Brukernavn benyttes for selv-registrerte bruker, og er typisk en e-postadresse.
     "party": "org:991825827", 
                                   
-    // Vilkårlig referanse til ekstern dialoginstans. Dialogporten tilegger denne ingen semantikk (trenger f.eks. ikke
-    // være unik)
+    // Vilkårlig referanse som presenteres sluttbruker i UI. Dialogporten tilegger denne ingen semantikk (trenger f.eks. ikke
+    // være unik). Merk at identifikator/primærnøkkel vil kunne være den samme gjennom at tjenestetilbyder kan oppgi "id"
     "externalReference": "123456789",
 
     // Alle dialogbokselementer som har samme dialoggruppe-id vil kunne grupperes eller på annet vis samles i GUI    
