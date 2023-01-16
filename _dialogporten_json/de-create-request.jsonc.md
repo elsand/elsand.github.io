@@ -185,6 +185,10 @@
         // en event om at elementet er lest til. 
         "requireReadNotification": true,
 
+        // Tjenestetilbyder kan oppgi et selvpålagt tokenkrav, som innebærer at dette elementet vil kreve at det 
+        // autoriseres med et Maskinporten-token som inneholder følgende scopes i tillegg til 
+        "serviceProviderScopesRequired": [ "serviceprovider:myservice" ]
+
         // Når blir elementet synlig hos party
         "visibleDateTime": "2022-12-01T12:00:00.000Z",
         "authorization": {
