@@ -5,7 +5,7 @@
 // - "configuration" vises kun til tjenesteeier
 
 
-// GET /dialogporten/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e
+// GET /dialogporten/api/v1/dialogs/e0300961-85fb-4ef2-abff-681d77f9960e
 {
     "id": "e0300961-85fb-4ef2-abff-681d77f9960e",
     "serviceResourceIdentifier": "example_dialogue_service", // Her kan det være en lenke 
@@ -21,18 +21,18 @@
         "createdDateTime": "2022-12-01T10:00:00.000Z",
         "updatedDateTime": "2022-12-01T10:00:00.000Z",
         // Sist meldingen ble "lest", altså ekspandert i UI eller hentet via detailsUrl i API. Hvis ikke oppgitt, eller 
-        // readDateTime < updatedDateTime vises typisk elementet som ulest/oppdatert i GUI.
+        // readDateTime < updatedDateTime vises typisk dialogen som ulest/oppdatert i GUI.
         "readDateTime": "2022-12-01T10:00:00.000Z", 
         "dueDateTime": "2022-12-01T12:00:00.000Z"
     },
     "content": {
         "body": [ { "code": "nb_NO", 
-            "value": "Innhold med <em>begrenset</em> HTML-støtte. Dette innholdet vises når elementet ekspanderes." } ],
+            "value": "Innhold med <em>begrenset</em> HTML-støtte. Dette innholdet vises når dialogen ekspanderes." } ],
         "title": [ { "code": "nb_NO", "value": "En eksempel på en tittel" } ],
         "senderName": [ { "code": "nb_NO", "value": "Overstyrt avsendernavn (bruker default tjenesteeiers navn)" } ]            
     },
-    // Dialogelementtoken som benyttes mot tjenestetilbyders endepunkter, enten som en HTTP header eller via query parameter
-    "dialogElementToken": "eyJhbGciOiJFZERTQSIsImtpZCI6ImRwLTIwMjMtMDEiLCJ0eXAiOiJKV1QifQ.eyJjIjoicGVyc29uOjEyMDE4MjEyMzQ1IiwibCI6NCwicCI6Im9yZzo5OTE4MjU4MjciLCJpIjoiZTAzMDA5NjEtODVmYi00ZWYyLWFiZmYtNjgxZDc3Zjk5NjBlIiwiZSI6IjEyMzQ1Njc4OSIsImEiOlsib3BlbiIsImF0dGFjaG1lbnQxOm9wZW4iLCJjb25maXJtIl0sImV4cCI6MTY3Mjc3Mjg1NywiaXNzIjoiaHR0cHM6Ly9ka
+    // Dialogtoken som benyttes mot tjenestetilbyders endepunkter, enten som en HTTP header eller via query parameter
+    "dialogToken": "eyJhbGciOiJFZERTQSIsImtpZCI6ImRwLTIwMjMtMDEiLCJ0eXAiOiJKV1QifQ.eyJjIjoicGVyc29uOjEyMDE4MjEyMzQ1IiwibCI6NCwicCI6Im9yZzo5OTE4MjU4MjciLCJpIjoiZTAzMDA5NjEtODVmYi00ZWYyLWFiZmYtNjgxZDc3Zjk5NjBlIiwiZSI6IjEyMzQ1Njc4OSIsImEiOlsib3BlbiIsImF0dGFjaG1lbnQxOm9wZW4iLCJjb25maXJtIl0sImV4cCI6MTY3Mjc3Mjg1NywiaXNzIjoiaHR0cHM6Ly9ka
 WFsb2dwb3J0ZW4ubm8iLCJuYmYiOjE2NzI3NzI1NTcsImlhdCI6MTY3Mjc3MjU1N30.UXvmH4L6NATJ8ZNWDIfWcf7-BO2c4eQQ3HK0RRmFhzkE5SSc6oV4hxCnsR2MAePLEdDSeCdP6yr5xlJ9Rzt_Dg",
     "attachments": [
         {
@@ -72,7 +72,7 @@ WFsb2dwb3J0ZW4ubm8iLCJuYmYiOjE2NzI3NzI1NTcsImlhdCI6MTY3Mjc3MjU1N30.UXvmH4L6NATJ8
                 "action": "open",
                 "actionUrl": "https://example.com/api/dialogues/123456789",
                 "method": "GET",
-                "responseSchema": "https://schemas.altinn.no/de/v1/de.json",
+                "responseSchema": "https://schemas.altinn.no/dialogs/v1/dialogs.json",
                 "documentationUrl": "https://api-docs.example.com/dialogueservice/open-action"
             },
             { 
@@ -86,7 +86,7 @@ WFsb2dwb3J0ZW4ubm8iLCJuYmYiOjE2NzI3NzI1NTcsImlhdCI6MTY3Mjc3MjU1N30.UXvmH4L6NATJ8
                 "actionUrl": "https://example.com/api/dialogues/123456789",
                 "method": "POST",
                 "requestSchema": "https://schemas.example.com/dialogueservice/v1/dialogueservice.json",
-                "responseSchema": "https://schemas.altinn.no/de/v1/de.json" 
+                "responseSchema": "https://schemas.altinn.no/dialogs/v1/dialogs.json" 
             },
             { 
                 "action": "delete",
@@ -184,7 +184,7 @@ WFsb2dwb3J0ZW4ubm8iLCJuYmYiOjE2NzI3NzI1NTcsImlhdCI6MTY3Mjc3MjU1N30.UXvmH4L6NATJ8
     // dialogen. Dette tilgjengeliggjøres sluttbruker gjennom GUI og API, og vil  slås sammen med aktivitet foretatt i 
     // dialogporten, som kan være:
     // - videredelegering av instansen
-    // - elementet åpnes for første gang
+    // - dialogen åpnes for første gang
     // - sletting
     // 
     // Loggen er immuterbar - det kan bare legges til innslag gjennom PATCH-kall
@@ -210,21 +210,21 @@ WFsb2dwb3J0ZW4ubm8iLCJuYmYiOjE2NzI3NzI1NTcsImlhdCI6MTY3Mjc3MjU1N30.UXvmH4L6NATJ8
     ],
     // HAL til relaterte ressurser
     "_links": {
-        "self": { "href": "/dialogporten/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e" },        
+        "self": { "href": "/dialogporten/api/v1/dialogs/e0300961-85fb-4ef2-abff-681d77f9960e" },        
         
-        // eget endepunkt for varslingslogg for elementet
-        "notificationlog": { "href": "/dialogporten/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e/notificationlog" }, 
+        // eget endepunkt for varslingslogg for dialogen
+        "notificationlog": { "href": "/dialogporten/api/v1/dialogs/e0300961-85fb-4ef2-abff-681d77f9960e/notificationlog" }, 
 
-        // eget endepunkt for aktivitetslogg for elementet
-        "activitylog": { "href": "/dialogporten/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e/activitylog" },         
+        // eget endepunkt for aktivitetslogg for dialogen
+        "activitylog": { "href": "/dialogporten/api/v1/dialogs/e0300961-85fb-4ef2-abff-681d77f9960e/activitylog" },         
 
-        // Dyplenke til portalvisning for elementet i Dialogporten
+        // Dyplenke til portalvisning for dialogen i Dialogporten
         "serviceresource": { "href": "/resourceregistry/api/v1/resource/example_dialogue_service/" }, 
 
-        // Dyplenke til portalvisning for elementet i Dialogporten
-        "selfgui": { "href": "https://www.dialogporten.no/?expandElement=e0300961-85fb-4ef2-abff-681d77f9960e" }, 
+        // Dyplenke til portalvisning for dialogen i Dialogporten
+        "selfgui": { "href": "https://www.dialogporten.no/?expandDialog=e0300961-85fb-4ef2-abff-681d77f9960e" }, 
 
-        // Dyplenke til portalvisning for elementet hos tjenesteeier
+        // Dyplenke til portalvisning for dialogen hos tjenesteeier
         "externalgui": { "href": "https://example.com/some/deep/link/to/dialogues/123456789" } 
     }
 }

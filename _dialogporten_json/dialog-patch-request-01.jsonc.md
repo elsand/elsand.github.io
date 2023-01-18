@@ -1,15 +1,15 @@
 ---
 ---
 ```jsonc
-// Input modell som tjenesteeiere oppgir for å endre/oppdatere et element.
+// Input modell som tjenesteeiere oppgir for å endre/oppdatere en dialog.
 
 // I dette eksemplet er det en dialogtjeneste hvor det å "sende inn" er en egen handling, som typisk ikke er 
 // tilgjengelig før alt er fylt ut, validert og signert. "Send inn" blir satt til primærhandlingen i GUI. Her oppgis det 
 // til å skal være en POST i frontchannel (default for frontchannel er GET) siden det å klikke på knappen medfører 
 // tilstandsendring.  Bruker blir da sendt til en eller annen kvitteringsside hos tjenesteeier, som da også har satt 
-// elementet som "completed" via et bakkanal-kall
+// dialogen som "completed" via et bakkanal-kall
 
-// PATCH /dialogporten/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e
+// PATCH /dialogporten/api/v1/dialogs/e0300961-85fb-4ef2-abff-681d77f9960e
 {
     "actions": {
         "gui": [            
@@ -39,7 +39,7 @@
                 "action": "open",
                 "actionUrl": "https://example.com/api/dialogues/123456789",
                 "method": "GET",
-                "responseSchema": "https://schemas.altinn.no/de/v1/de.json",
+                "responseSchema": "https://schemas.altinn.no/dialogs/v1/dialogs.json",
                 "documentationUrl": "https://api-docs.example.com/dialogueservice/open-action"
             },
             { 
@@ -53,7 +53,7 @@
                 "actionUrl": "https://example.com/api/dialogues/123456789/submit",
                 "method": "POST",
                 "requestSchema": "https://schemas.example.com/dialogueservice/v1/dialogueservice.json",
-                "responseSchema": "https://schemas.altinn.no/de/v1/de.json" 
+                "responseSchema": "https://schemas.altinn.no/dialogs/v1/dialogs.json" 
             },
             { 
                 "action": "delete",

@@ -2,7 +2,7 @@
 ---
 ```jsonc
 // Listemodell som brukes i dialogboks-søk. Presis paginering er antagelig ikke mulig pga. behov for individuell 
-// autorisasjon per element, men det burde være en eller annen "next"-mekanisme som lar et SBS iterere gjennom en liste.
+// autorisasjon per dialog, men det burde være en eller annen "next"-mekanisme som lar et SBS iterere gjennom en liste.
 [
     {
         "id": "e0300961-85fb-4ef2-abff-681d77f9960e",

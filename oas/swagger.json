@@ -281,7 +281,7 @@
             "action" : "open",
             "actionUrl" : "https://example.com/api/dialogs/123456789",
             "method" : "GET",
-            "responseSchema" : "https://schemas.altinn.no/de/v1/de.json",
+            "responseSchema" : "https://schemas.altinn.no/dialogs/v1/dialogs.json",
             "documentationUrl" : "https://api-docs.example.com/dialogservice/open-action"
           }, {
             "action" : "confirm",
@@ -293,7 +293,7 @@
             "actionUrl" : "https://example.com/api/dialogs/123456789",
             "method" : "POST",
             "requestSchema" : "https://schemas.example.com/dialogservice/v1/dialogservice.json",
-            "responseSchema" : "https://schemas.altinn.no/de/v1/de.json"
+            "responseSchema" : "https://schemas.altinn.no/dialogs/v1/dialogs.json"
           }, {
             "action" : "delete",
             "method" : "DELETE",
@@ -370,7 +370,7 @@
           "actionUrl" : "https://example.com/api/dialogs/123456789",
           "method" : "POST",
           "requestSchema" : "https://schemas.example.com/dialogservice/v1/dialogservice.json",
-          "responseSchema" : "https://schemas.altinn.no/de/v1/de.json",
+          "responseSchema" : "https://schemas.altinn.no/dialogs/v1/dialogs.json",
           "documentationUrl" : "https://api-docs.example.com/dialogservice/confirm-action"
         }
       },
@@ -684,10 +684,10 @@
         "description" : "",
         "example" : {
           "self" : {
-            "href" : "/dialogelements/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e"
+            "href" : "/dialogelements/api/v1/dialogs/e0300961-85fb-4ef2-abff-681d77f9960e"
           },
           "notificationlog" : {
-            "href" : "/dialogelements/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e/notificationlog"
+            "href" : "/dialogelements/api/v1/dialogs/e0300961-85fb-4ef2-abff-681d77f9960e/notificationlog"
           },
           "serviceresource" : {
             "href" : "/resourceregistry/api/v1/resource/example_dialog_service/"
@@ -710,7 +710,7 @@
         },
         "description" : "",
         "example" : {
-          "href" : "/dialogelements/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e"
+          "href" : "/dialogelements/api/v1/dialogs/e0300961-85fb-4ef2-abff-681d77f9960e"
         }
       },
       "LocalizedStrings" : {
@@ -890,7 +890,7 @@
               "action" : "open",
               "actionUrl" : "https://example.com/api/dialogs/123456789",
               "method" : "GET",
-              "responseSchema" : "https://schemas.altinn.no/de/v1/de.json",
+              "responseSchema" : "https://schemas.altinn.no/dialogs/v1/dialogs.json",
               "documentationUrl" : "https://api-docs.example.com/dialogservice/open-action"
             }, {
               "action" : "confirm",
@@ -902,7 +902,7 @@
               "actionUrl" : "https://example.com/api/dialogs/123456789",
               "method" : "POST",
               "requestSchema" : "https://schemas.example.com/dialogservice/v1/dialogservice.json",
-              "responseSchema" : "https://schemas.altinn.no/de/v1/de.json"
+              "responseSchema" : "https://schemas.altinn.no/dialogs/v1/dialogs.json"
             }, {
               "action" : "delete",
               "method" : "DELETE",
@@ -952,10 +952,10 @@
           } ],
           "_links" : {
             "self" : {
-              "href" : "/dialogelements/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e"
+              "href" : "/dialogelements/api/v1/dialogs/e0300961-85fb-4ef2-abff-681d77f9960e"
             },
             "notificationlog" : {
-              "href" : "/dialogelements/api/v1/de/e0300961-85fb-4ef2-abff-681d77f9960e/notificationlog"
+              "href" : "/dialogelements/api/v1/dialogs/e0300961-85fb-4ef2-abff-681d77f9960e/notificationlog"
             },
             "serviceresource" : {
               "href" : "/resourceregistry/api/v1/resource/example_dialog_service/"
@@ -1470,7 +1470,7 @@
               "action" : "open",
               "actionUrl" : "https://example.com/api/dialogs/123456789",
               "method" : "GET",
-              "responseSchema" : "https://schemas.altinn.no/de/v1/de.json",
+              "responseSchema" : "https://schemas.altinn.no/dialogs/v1/dialogs.json",
               "documentationUrl" : "https://api-docs.example.com/dialogservice/open-action"
             }, {
               "action" : "confirm",
@@ -1482,7 +1482,7 @@
               "actionUrl" : "https://example.com/api/dialogs/123456789",
               "method" : "POST",
               "requestSchema" : "https://schemas.example.com/dialogservice/v1/dialogservice.json",
-              "responseSchema" : "https://schemas.altinn.no/de/v1/de.json"
+              "responseSchema" : "https://schemas.altinn.no/dialogs/v1/dialogs.json"
             }, {
               "action" : "delete",
               "method" : "DELETE",

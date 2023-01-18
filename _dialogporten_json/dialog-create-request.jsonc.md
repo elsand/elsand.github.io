@@ -1,11 +1,11 @@
 ---
 ---
 ```jsonc
-// Input modell som tjenesteeiere oppgir for å opprette et element.
+// Input modell som tjenesteeiere oppgir for å opprette en dialog.
 // Modellen kan også oppdateres/muteres med PATCH-kall som inneholder de feltene som en ønsker å endre. 
 //Ikke-komplekse felter som ligger på rotnivå kan ikke endres (med unntak av "status").
 
-// POST /dialogporten/api/v1/de
+// POST /dialogporten/api/v1/dialogs
 {
     // Tjenestetilbyder kan valgfritt oppgi en egen-generert UUID her. Hvis det ikke oppgis vil Dialogporten generere
     // en unik identifikator som blir returnert ved opprettelse
@@ -17,49 +17,49 @@
     "serviceResourceIdentifier": "example_dialogue_service", 
 
     // Organisasjonsnummer, fødselsnummer eller brukernavn (aka "avgiver" eller "aktør") - altså hvem sin dialogboks 
-    // skal elementet tilhøre. Brukernavn benyttes for selv-registrerte bruker, og er typisk en e-postadresse.
+    // skal dialogen tilhøre. Brukernavn benyttes for selv-registrerte bruker, og er typisk en e-postadresse.
     "party": "org:991825827", 
                                   
     // Vilkårlig referanse som presenteres sluttbruker i UI. Dialogporten tilegger denne ingen semantikk (trenger f.eks. ikke
     // være unik). Merk at identifikator/primærnøkkel vil kunne være den samme gjennom at tjenestetilbyder kan oppgi "id"
     "externalReference": "123456789",
 
-    // Alle dialogbokselementer som har samme dialoggruppe-id vil kunne grupperes eller på annet vis samles i GUI    
+    // Alle dialoger som har samme dialoggruppe-id vil kunne grupperes eller på annet vis samles i GUI    
     "dialogueGroup": {
         "id": "some-arbitrary-id",
         
-        // Bestemmer rekkefølgen dette elementet har blant alle elementer som har samme dialogueGroup.id
+        // Bestemmer rekkefølgen denne dialogen har blant alle dialoger som har samme dialogueGroup.id
         "order": 1,
         
-        // Trenger bare oppgis av ett dialogbokselement. Hvis oppgitt av flere, er det den med høyest "order"-verdi 
+        // Trenger bare oppgis av én dialog. Hvis oppgitt av flere, er det den med høyest "order"-verdi 
         // som skal benyttes.
         "name": [ { "code": "nb_NO", "value": "Navn på dialoggruppe." } ]
     },
 
-    // Kjente statuser som bestemmer hvordan elementet vises for bruker: 
-    // "unspecified"    = Elementet har ingen spesiell status. Brukes typisk for enkle meldinger som ikke krever noe 
+    // Kjente statuser som bestemmer hvordan dialogen vises for bruker: 
+    // "unspecified"    = Dialogen har ingen spesiell status. Brukes typisk for enkle meldinger som ikke krever noe 
     //                    interaksjon. Dette er default. 
     // "under-progress" = Under arbeid. Generell status som brukes for dialogtjenester der ytterligere bruker-input er 
     //                    forventet.
     // "waiting"        = Venter på tilbakemelding fra tjenesteeier
     // "signing"        = Dialogen er i en tilstand hvor den venter på signering. Typisk siste steg etter at all  
     //                    utfylling er gjennomført og validert. 
-    // "cancelled"      = Dialogen ble avbrutt. Dette gjør at elementet typisk fjernes fra normale GUI-visninger.
-    // "completed"      = Dialigen ble fullført. Dette gjør at elementet typisk flyttes til et GUI-arkiv eller lignende.
+    // "cancelled"      = Dialogen ble avbrutt. Dette gjør at dialogen typisk fjernes fra normale GUI-visninger.
+    // "completed"      = Dialigen ble fullført. Dette gjør at dialogen typisk flyttes til et GUI-arkiv eller lignende.
     "status": "under-progress", 
     "dates": {
-        // Hvis oppgitt blir elementet satt med en frist 
+        // Hvis oppgitt blir dialogen satt med en frist 
         // (i Altinn2 er denne bare retningsgivende og har ingen effekt, skal dette fortsette?)
         "dueDateTime": "2022-12-01T12:00:00.000Z",
         
-        // Mulighet for å skjule/deaktivere et element på et eller annet tidspunkt?
+        // Mulighet for å skjule/deaktivere en dialog på et eller annet tidspunkt?
         "expiryDate": "2023-12-01T12:00:00.000Z" 
     },
     "content": {
         // Alle tekster som vises verbatim må oppgis som en array av oversatte tekster. 
         // Det som benyttes er brukerens valgte språk i Dialogboksen
         "body": [ { "code": "nb_NO", 
-            "value": "Innhold med <em>begrenset</em> HTML-støtte. Dette innholdet vises når elementet ekspanderes." } ],
+            "value": "Innhold med <em>begrenset</em> HTML-støtte. Dette innholdet vises når dialogen ekspanderes." } ],
         "title": [ { "code": "nb_NO", "value": "En eksempel på en tittel" } ],
         "senderName": [ { "code": "nb_NO", "value": "Overstyrt avsendernavn (bruker default tjenesteeiers navn)" } ]            
     },  
@@ -71,7 +71,7 @@
             "url": "https://example.com/api/dialogues/123456789/attachments/1",
 
             // Det kan oppgis en valgfri referanse til en ressurs. Brukeren må ha tilgang til "open" i
-            // XACML-policy for oppgitt ressurs for å få tilgang til elementet.
+            // XACML-policy for oppgitt ressurs for å få tilgang til dialogen.
             "resource": "attachment1"
         }
     ],
@@ -90,7 +90,7 @@
                 "title": [ { "code": "nb_NO", "value": "Bekreft mottatt" } ],
 
                 // Dette foretar et POST bakkanal-kall til oppgitt URL, og det vises i frontend bare en spinner mens 
-                // kallet går. Må returnere en oppdatert DE-modell (som da vises bruker) eller 204 (hvis elementet 
+                // kallet går. Må returnere en oppdatert DE-modell (som da vises bruker) eller 204 (hvis dialogen 
                 // oppdatert i annet bakkanal-kall), eller en RFC7807-kompatibel feilmelding.
                 "isBackChannel": true, 
 
@@ -102,7 +102,7 @@
                 "title": [ { "code": "nb_NO", "value": "Avbryt" } ],
 
                 // Dette impliserer isBackChannel=true, og viser i tillegg en "Er du sikker?"-prompt. 
-                // Vil ved vellykket kall skjule elementet fra GUI, og legge elementet i søppelkasse
+                // Vil ved vellykket kall skjule dialogen fra GUI, og legge dialogen i søppelkasse
                 "isDeleteAction": true, 
 
                 // Blir kalt med DELETE i bakkanal. Må returnere 204 eller en RFC7807-kompatibel feilmelding.
@@ -116,7 +116,7 @@
                 "method": "GET",
 
                 // Indikerer hva API-konsumenter kan forvente å få slags svar
-                "responseSchema": "https://schemas.altinn.no/de/v1/de.json", 
+                "responseSchema": "https://schemas.altinn.no/dialogs/v1/dialogs.json", 
                 // Lenke til dokumentasjon for denne actionen
                 "documentationUrl": "https://api-docs.example.com/dialogueservice/open-action" 
             },
@@ -134,13 +134,13 @@
                 
                 // Indikerer hva API-et forventer å få som input på dette endepunktet
                 "requestSchema": "https://schemas.example.com/dialogueservice/v1/dialogueservice.json", 
-                "responseSchema": "https://schemas.altinn.no/de/v1/de.json" 
+                "responseSchema": "https://schemas.altinn.no/dialogs/v1/dialogs.json" 
             },
             { 
                 "action": "delete",
                 "method": "DELETE",
 
-                // Merk dette vil kreve at org gjør bakkanal-kall for å slette elementet
+                // Merk dette vil kreve at org gjør bakkanal-kall for å slette dialogen
                 "actionUrl": "https://example.com/api/dialogues/123456789"
             }
         ]
@@ -182,20 +182,20 @@
     // Dette er ulike innstillinger som kun kan oppgis og er synlig for tjenesteeier
     "configuration": {
         // Hvis tjenesteeieren ønsker en "rekommandert" sending, kan dette flagget settes til true. Det vil da genereres 
-        // en event om at elementet er lest til. 
+        // en event om at dialogen er lest til tjenestetilbyder. 
         "requireReadNotification": true,
 
-        // Tjenestetilbyder kan oppgi et selvpålagt tokenkrav, som innebærer at dette elementet vil kreve at det 
+        // Tjenestetilbyder kan oppgi et selvpålagt tokenkrav, som innebærer at dette dialogen vil kreve at det 
         // autoriseres med et Maskinporten-token som inneholder følgende scopes i tillegg til 
         "serviceProviderScopesRequired": [ "serviceprovider:myservice" ]
 
-        // Når blir elementet synlig hos party
+        // Når blir dialogen synlig hos party
         "visibleDateTime": "2022-12-01T12:00:00.000Z",
         "authorization": {
             // Policy defineres av serviceResourceIdentifier, men det kan også legges på en ytterligere policy, som i 
             // tillegg til/i stedet for referert service resource sin policy må etterleves for kun dette ene objektet. 
-            // Dette muliggjør individuell tilgangsstyring på elementnivå, som f.eks. når bare nærmeste leder til 
-            // en ansatt skal ha kunne se dialogelementer fra NAV ifm en sykmelding. 
+            // Dette muliggjør individuell tilgangsstyring på dialognivå, som f.eks. når bare nærmeste leder til 
+            // en ansatt skal ha kunne se dialoger fra NAV ifm en sykmelding. 
             // Basert på en forenklet variant av XACML, se https://github.com/Altinn/altinn-studio/issues/5016. 
      
             // I dette eksemplet gis tilgang til to eksplisitt oppgitte personer, samt en tilgangsgruppe. 
