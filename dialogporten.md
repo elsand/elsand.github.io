@@ -333,10 +333,6 @@ sequenceDiagram
     participant TEGUI as Tjenestetilbyders GUI
 note over SB,GUI: Bruker logger inn i Felles Arbeidsflate og finner elementet
 SB->>GUI: Bruker klikker på elementet
-opt
-    GUI->>TEAPI: Bakkanal kall for å hente oppdatert dialogelement
-    TEAPI->>GUI: Returnere dialogelement
-end
 GUI->>SB: Viser innhold i dialogelement med aktuelle handlinger
 SB->>TEGUI: Sluttbruker følger lenke for ønsket operasjon med dialogelementtoken til tjenestetilbyders portal
     TEGUI->>TEGUI: Validerer dialogelementtoken
@@ -380,10 +376,6 @@ note over SBS,TEAPI: SBS abonnerer på hendelser for opprettelse av dialogelemen
 SBS->>EID: Autentisering/autorisering
 EID->>SBS: access_token
 SBS->>API: Hent dialogelement
-opt
-    API->>TEAPI: Bakkanal kall for å hente oppdatert dialogelement
-    TEAPI->>API: Returne dialogelement
-end
 API->>SBS: Returnere dialogelement med liste over aktuelle handlinger og URI-er
 SBS->>TEAPI: Foreta endringer
 opt
