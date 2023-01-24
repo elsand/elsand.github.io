@@ -143,6 +143,9 @@ Det finnes andre scenarioer rundt oppslag/innsynstjenester og filoverføringer s
 
 # Autorisasjon
 
+{% include note.html type="warning" content="I dette kapitlet legges konseptet \"dialogtoken\" til grunn, som er en høyst uavklart mekanisme. Det av utredes om man ønsker å introdusere Dialogporten som en egen issuer av token på tvers av alle brukertyper, eller om man ønsker å tilgjengeliggjøre finkornet autorisasjonsinformasjon til tjenestetilbydere på andre måter (f.eks. oppslag)" %}
+
+
 ## Bruk av Dialogportens API-er
 
 Tjenesteressursen og/eller inline autorisasjonspolicy på enkelte dialoger bestemmer hvilke autorisasjonskontroller som skal legges til grunn for å få tilgang. Typisk innebærer dette at konsumenten innehar en spesiell rolle eller tilhører en spesifikk forhåndsdefinert tilgangsgruppe, eller er blitt delegert tilgang til tjenesteressursen dialogen refererer av en tilgangsstyrer/hovedadministrator hos den aktuelle parten.

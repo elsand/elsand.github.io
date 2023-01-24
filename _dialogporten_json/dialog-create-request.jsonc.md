@@ -47,6 +47,9 @@
     // "cancelled"      = Dialogen ble avbrutt. Dette gjør at dialogen typisk fjernes fra normale GUI-visninger.
     // "completed"      = Dialigen ble fullført. Dette gjør at dialogen typisk flyttes til et GUI-arkiv eller lignende.
     "status": "under-progress", 
+    
+    // En vilkårlig streng som er tjenestespesifikk
+    "extendedStatus": "SKE-ABC",
     "dates": {
         // Hvis oppgitt blir dialogen satt med en frist 
         // (i Altinn2 er denne bare retningsgivende og har ingen effekt, skal dette fortsette?)
@@ -174,9 +177,48 @@
             "notificationClickUrl": "https://example.com/some/deep/link/to/dialogues/123456789"
         }
     },
+    // Dette er en logg vedlikeholdt av tjenesteeier som indikerer hva som logisk har skjedd gjennom den aktuelle 
+    // dialogen. Dette tilgjengeliggjøres sluttbruker gjennom GUI og API, og vil  slås sammen med aktivitet foretatt i 
+    // dialogporten, som kan være:
+    // - videredelegering av instansen
+    // - dialogen åpnes for første gang
+    // - sletting
+    // 
+    // Loggen er immuterbar - det kan bare legges til innslag gjennom PATCH-kall. 
+    //
+    // Se dialogporten-get-single-response.json for flere eksempler.
     "activityLog": [
-        {
-            // Typisk tom ved opprettelse, men kan populeres av tjenesteeier etter eget forgodtbefinnende
+        { 
+            "activityDateTime": "2022-12-01T10:00:00.000Z",
+            // Her kan det være ulike typer som medfører ulik visning i GUI. Følgende typer gjenkjennes:
+            // - feedback:      Brukes for å indikere en tilbakemelding på en innsending. Kan innebære at party må
+            //                  foreta seg noe.
+            // - error:         Brukes for å indikere en feilsituasjon, f.eks. på en innsending. Innebærer alltid at 
+            //                  party må foreta seg noe. Hvis satt, settes også activityErrorCode.
+            // - information:   Generell informasjon, som er normalt for prosessen, men som ikke innebærer at party må
+            //                  foreta seg noe. Kan være en bekreftelse på at noe er mottatt.
+            // - closed:        Indikerer at dialogen er lukket for videre endring. Dette skjer typisk ved fullføring
+            //                  av dialogen, eller sletting.
+            //
+            // Statuser som kun kan settes av Dialogporten selv som følge av handlinger utført av bruker:
+            // - opened:        Når dialogen først ble åpenet og av hvem
+            // - forwarded:     Når dialogen blir videresendt (tilgang delegert) av noen med tilgang til andre
+            "activityType": "information",
+            
+            // Vilkårlig streng som er ment å være maskinlesbar, og er en tjenestespesifikk kode som gir ytterligere
+            // informasjon om hva slags aktivitetstype dette innslaget er
+            "activityExtendedType": "SKE-1234",
+            "activityDescription": [ { "code": "nb_NO", "value": "Innsending er mottatt og sendt til behandling" } ],
+
+            // Ytterligere informasjon som bruker/SBS kan aksessere for å hente mer informasjon om det aktuelle innslaget.
+            "activityDetailsUrls": {
+                // Brukes av API-integrasjoner for å hente ytterligere informasjon. Dokumentert av den enkelte tjeneste,
+                // innhold/format er typisk bestemt av activityExtendedType og/eller activityErrorCode
+                "api": "https://example.com/api/dialogues/123456789/activitylog/1",
+                
+                // Brukes av GUI-implementasjoner som bruker kan videresendes til. 
+                "gui": "https://example.com/some/deep/link/to/dialogues/123456789/activitylog/1"
+            }
         }
     ],
     // Dette er ulike innstillinger som kun kan oppgis og er synlig for tjenesteeier

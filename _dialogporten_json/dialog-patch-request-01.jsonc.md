@@ -65,10 +65,10 @@
     "activityLog": [
         { 
             "activityDateTime": "2022-12-01T10:00:00.000Z",
-            "activityType": "change",
+            "activityType": "information",
+            "activityType": "SKE-34355",
             "performedBy": "person:12018212345",
-            "activityDescription": [ { "code": "nb_NO", "value": "Dokumentet 'X' ble signert og kan sendes inn" } ],
-            "activityDetailsUrl": "https://example.com/some/deep/link/to/dialogues/123456789/activitylog/1"
+            "activityDescription": [ { "code": "nb_NO", "value": "Dokumentet 'X' ble signert og kan sendes inn" } ]
         }
     ]
 }
