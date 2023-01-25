@@ -179,7 +179,6 @@ Dialogtokenet benyttes som et "bearer token", altså noe som indikerer at ihende
 | s                | Valgfritt. Hvis det er benyttet et leverandørtoken i Maskinporten, vil autentisert leverandørs organisasjonsnummer oppgis her. Prefiks er alltid `org:`.           | `"org:991825827"`                                                                  |
 | p                | Hvem konsument opptrer på vegne av (om ikke seg selv), altså hvem som eier det aktuelle dialogen.                                                           | `"person:12018212345"`, `"org:991825827"` eller `"username:someemail@example.com"` |
 | i                | Unik identifikator til dialog.                                                                                                                              | `"e0300961-85fb-4ef2-abff-681d77f9960e"`                                           |
-| e                | Ekstern referanse til dialogen                                                                                                                                    | `"123456789"`                                                                      |
 | a                | Liste over autoriserte actions. Kan være prefixet med `<ressurs>:` hvis actionen omfatter en navngitt ressurs i XACML policy som ikke er tjenesteressursen         | `[ "open", "attachment1:open", "confirm" ]`                                        |
 
 ### Eksempel på dekodet token
@@ -192,16 +191,16 @@ Dialogtokenet benyttes som et "bearer token", altså noe som indikerer at ihende
 }
 // .
 {
-  "l": 4,
-  "p": "org:991825827",
-  "i": "e0300961-85fb-4ef2-abff-681d77f9960e",
-  "e": "123456789",
-  "a": [
+  "l": 4, // Sikkerhetsnivå
+  "c": "person:12018212345", // Autentisert part
+  "p": "org:991825827", // Party
+  "i": "e0300961-85fb-4ef2-abff-681d77f9960e", // Dialog-ID
+  "a": [ // Actions
     "open",
-    "attachment1:open",
+    "attachment1:open", // For subressurs
     "confirm"
   ],
-  "exp": 1672772834, // Tokenet er her gyldig i 15 minutter og caches deretter
+  "exp": 1672772834,
   "iss": "https://dialogporten.no",
   "nbf": 1672771934,
   "iat": 1672771934 
