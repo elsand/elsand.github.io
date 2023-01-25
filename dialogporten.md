@@ -194,6 +194,7 @@ Dialogtokenet benyttes som et "bearer token", altså noe som indikerer at ihende
   "l": 4, // Sikkerhetsnivå
   "c": "person:12018212345", // Autentisert part
   "p": "org:991825827", // Party
+  "s": "org:825827991", // Supplier (hvis MP-leverandørtoken)
   "i": "e0300961-85fb-4ef2-abff-681d77f9960e", // Dialog-ID
   "a": [ // Actions
     "open",
