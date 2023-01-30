@@ -148,35 +148,6 @@
             }
         ]
     },
-    // Hvis en ønsker varsling, kan dette spesifiseres under på ulike endepunkter ref KRR / KoFuVI / varslingsadresser 
-    /// oppgitt i Altinn. Ytterligere notifications kan sendes med å gjøre et PATCH-kall til 
-    "notifications": {
-        "sms": {
-                "text": [ { "code": "nb_NO", "value": "dette kommer på sms" } ],
-                
-                // Hvis avsender-felt skal være noe annet enn navn på tjenesteeier kan dette oppgis her. 
-                // Valideres opp mot whitelist knyttet til autentisert org.
-                "from": [ { "code": "nb_NO", "value": "Etaten" } ]
-        },
-        "email": {
-                "subject": [ { "code": "nb_NO", "value": "emnefeltet på e-post" } ],
-                //
-                "template": "some-email-template",
-                "tokens": [
-                    { "name": "header", "value": [ { "code": "nb_NO", "value": "dette er en header" } ] },
-                    { "name": "body", "value": [ { "code": "nb_NO", "value": "Hei {{party.fullname}}!" } ] } 
-                ]
-        },
-        "push": {
-            // Basert på https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/showNotification
-            "title": [ { "code": "nb_NO", "value": "Tittel på notifikasjon" } ],
-            "body": [ { "code": "nb_NO", 
-                "value": "Dette er første linje\nDette er andre linje, sendt til {{party.fullname}}" } ],
-            "icon": "https://example.com/some-icon-atleast-192x192.png",
-            // Valgfri URL som bruker blir sendt til hvis notifikasjonen klikkes på. Blir utvidet med sesjonstoken.
-            "notificationClickUrl": "https://example.com/some/deep/link/to/dialogues/123456789"
-        }
-    },
     // Dette er en logg vedlikeholdt av tjenesteeier som indikerer hva som logisk har skjedd gjennom den aktuelle 
     // dialogen. Dette tilgjengeliggjøres sluttbruker gjennom GUI og API, og vil  slås sammen med aktivitet foretatt i 
     // dialogporten, som kan være:
@@ -201,7 +172,10 @@
             //                  av dialogen, eller sletting.
             //
             // Statuser som kun kan settes av Dialogporten selv som følge av handlinger utført av bruker:
-            // - opened:        Når dialogen først ble åpenet og av hvem
+            // - seen:         Når dialogen først ble hentet og av hvem. Kan brukes for å avgjøre om purring 
+            //                  skal sendes ut, eller internt i virksomheten for å tracke tilganger/bruker.
+            //                  Merk at dette ikke er det samme som "lest", dette må tjenestetilbyder selv håndtere 
+            //                  i egne løsninger.
             // - forwarded:     Når dialogen blir videresendt (tilgang delegert) av noen med tilgang til andre
             "activityType": "information",
             
@@ -223,73 +197,13 @@
     ],
     // Dette er ulike innstillinger som kun kan oppgis og er synlig for tjenesteeier
     "configuration": {
-        // Hvis tjenesteeieren ønsker en "rekommandert" sending, kan dette flagget settes til true. Det vil da genereres 
-        // en event om at dialogen er lest til tjenestetilbyder. 
-        "requireReadNotification": true,
 
         // Tjenestetilbyder kan oppgi et selvpålagt tokenkrav, som innebærer at dette dialogen vil kreve at det 
         // autoriseres med et Maskinporten-token som inneholder følgende scopes i tillegg til 
-        "serviceProviderScopesRequired": [ "serviceprovider:myservice" ]
+        "serviceProviderScopesRequired": [ "serviceprovider:myservice" ],
 
-        // Når blir dialogen synlig hos party
-        "visibleDateTime": "2022-12-01T12:00:00.000Z",
-        "authorization": {
-            // Policy defineres av serviceResourceIdentifier, men det kan også legges på en ytterligere policy, som i 
-            // tillegg til/i stedet for referert service resource sin policy må etterleves for kun dette ene objektet. 
-            // Dette muliggjør individuell tilgangsstyring på dialognivå, som f.eks. når bare nærmeste leder til 
-            // en ansatt skal ha kunne se dialoger fra NAV ifm en sykmelding. 
-            // Basert på en forenklet variant av XACML, se https://github.com/Altinn/altinn-studio/issues/5016. 
-     
-            // I dette eksemplet gis tilgang til to eksplisitt oppgitte personer, samt en tilgangsgruppe. 
-            // "Subjects" kan være organisasjoner, innehavere av roller (eksterne), medlemmer av tilgangsgrupper. Se
-            // https://altinn.github.io/docs/utviklingsguider/styring-av-tilgang/for-tjenesteeier/forslag-tilgangsgrupper/
-
-            // "Both"         = både inline policy og policy refert til av serviceResource må gi "Permit" for at en gitt 
-            //                  action skal godkjennes for det aktuelle subjectet (AND-ing)
-            // "Either"       = enten inline policy eller policy refert til av serviceResource (eller begge) må gi 
-            //                  "Permit" for at en gitt action skal godkjennes for det aktuelle subjectet (OR-ing). 
-            //                  Dette er default.
-            // "InlineOnly"   = kun "Permit" fra inline policy gjør at en gitt action godkjennes for det aktuelle 
-            //                  subjectet.
-            "requirePermitFrom": "Both",  
-            "xacmlPolicy": [
-                {
-                    "Effect": "Permit",
-                    "Subjects": [
-                        "person:12345678901"
-                    ],
-                    "Resources": [
-                        "serviceresource:example_dialogue_service",
-                        "serviceresource:example_dialogue_service/attachment1",
-                    ],
-                    "Actions": [
-                        "open",
-                        "confirm",
-                        "submit",
-                        "delete"
-                    ],
-                    "Description": "Nærmeste leder har alle tilganger",
-                    "IsDelegable": true
-                },
-                {
-                    "Effect": "Permit",
-                    "Subjects": [
-                        "person:23456789012",
-                        "accessgroup:taushetsbelagt",
-                        "scope:someprefix:somescopeinmaskinportenoridporten"
-                    ],
-                    "Resources": [
-                        // Har ikke tilgang til "attachment1"
-                        "serviceresource:example_dialogue_service",
-                    ],
-                    "Actions": [
-                        "open"
-                    ],
-                    "Description": "Den aktuelle ansatte, samt bemyndigede medarbeidere, har kun lesetilgang",
-                    "IsDelegable": false
-                }
-            ]
-        }
+        // Når blir dialogen synlig hos party. Muliggjør opprettelse i forveien og samtidig tilgjengeliggjøring for mange parties.
+        "visibleDateTime": "2022-12-01T12:00:00.000Z"
     }
 }
 ```

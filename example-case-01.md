@@ -135,7 +135,7 @@ PATCH dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111
 }
 ```
 
-## 6. Dialogporten genererer events
+## 6. Dialogporten genererer events basert på endringen
  
 En PATCH kan medføre at flere events blir generert, som muliggjør finkornet filtering på events en bryr seg om (filter kan settes med prefix-match på "type" og/eller source, og på subject). Ikke alle endringer genererer events (f.eks. endring på `content` er ikke i seg selv noe som genererer en event)
 

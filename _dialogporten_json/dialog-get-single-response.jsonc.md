@@ -30,6 +30,9 @@
         "body": [ { "code": "nb_NO", 
             "value": "Innhold med <em>begrenset</em> HTML-støtte. Dette innholdet vises når dialogen ekspanderes." } ],
         "title": [ { "code": "nb_NO", "value": "En eksempel på en tittel" } ],
+
+        // Overstyrt tittel til bruk i søke/liste-visning. Kan potensielt være synlig uten tilgang til dialogen.
+        "searchTitle": [ { "code": "nb_NO", "value": "En eksempel på en tittel brukt i listevisning" } ],
         "senderName": [ { "code": "nb_NO", "value": "Overstyrt avsendernavn (bruker default tjenesteeiers navn)" } ]            
     },
     // Dialogtoken som benyttes mot tjenestetilbyders endepunkter, enten som en HTTP header eller via query parameter
@@ -96,91 +99,6 @@ WFsb2dwb3J0ZW4ubm8iLCJuYmYiOjE2NzI3NzI1NTcsImlhdCI6MTY3Mjc3MjU1N30.UXvmH4L6NATJ8
             }
         ]
     },
-    // Dette er ulike innstillinger som kun kan oppgis og er synlig for tjenesteeier. Se de-create-request for informasjon om feltene.
-    "configuration": {        
-        "requireReadNotification": true,
-        "serviceProviderScopesRequired": [ "serviceprovider:myservice" ],
-        "visibleDateTime": "2022-12-01T12:00:00.000Z",
-        "authorization": {
-            "requirePermitFrom": "Both",  
-            "xacmlPolicy": [
-                {
-                    "Effect": "Permit",
-                    "Subjects": [
-                        "person:12345678901"
-                    ],
-                    "Resources": [
-                        "serviceresource:example_dialogue_service",
-                        "serviceresource:example_dialogue_service/attachment1",
-                    ],
-                    "Actions": [
-                        "open",
-                        "confirm",
-                        "submit",
-                        "delete"
-                    ],
-                    "Description": "Nærmeste leder har alle tilganger",
-                    "IsDelegable": true
-                },
-                {
-                    "Effect": "Permit",
-                    "Subjects": [
-                        "person:23456789012",
-                        "accessgroup:taushetsbelagt"
-                    ],
-                    "Resources": [
-                        "serviceresource:example_dialogue_service",
-                    ],
-                    "Actions": [
-                        "open"
-                    ],
-                    "Description": "Den aktuelle ansatte, samt bemyndigede medarbeidere, har kun lesetilgang",
-                    "IsDelegable": false
-                }
-            ]
-        }
-    },
-    // Skilles ut i egen modell / endepunkt
-    // Slå sammen med activitylog? 
-    "notificationLog": {
-        "sms": [
-            { 
-                "sentDateTime": "2022-12-01T10:00:00.000Z",
-                "status": "pending",
-                "notification": {
-                    "text": "dette kommer på sms",
-                    "from": "Etaten" 
-               }
-            }
-        ],
-        "email": [
-            {
-                "sentDateTime": "2022-12-01T10:00:00.000Z",
-                "status": "ok",
-                "notification": {
-                    "subject": "emnefeltet på e-post" ,
-                    "template": "some-email-template",
-                    "tokens": [
-                        { "name": "header", "value": "dette er en header" },
-                        { "name": "body", "value": "Hei {{party.fullname}}!" } 
-                    ]
-                }
-            }
-        ],
-        "push": [
-            {
-                "sentDateTime": "2022-12-01T10:00:00.000Z",
-                "status": "ok",
-                "notification": {            
-                    "title": "Notification title",
-                    "body": "Simple piece of body text.\nSecond line of body text :)",
-                    "icon": "https://example.com/some-icon-atleast-192x192.png",
-                    "notificationClickUrl": "https://example.com/some/deep/link/to/dialogues/123456789"
-                }
-            }    
-        ]
-    },
-
     "activityLog": [
         { 
             "activityDateTime": "2022-12-01T10:00:00.000Z",
@@ -195,7 +113,7 @@ WFsb2dwb3J0ZW4ubm8iLCJuYmYiOjE2NzI3NzI1NTcsImlhdCI6MTY3Mjc3MjU1N30.UXvmH4L6NATJ8
             //                  av dialogen, eller sletting.
             //
             // Statuser som kun kan settes av Dialogporten selv som følge av handlinger utført av bruker:
-            // - opened:        Når dialogen først ble åpenet (hentet) i Dialogporten og av hvem
+            // - seen:          Når dialogen først ble åpnet (hentet) i Dialogporten og av hvem
             // - forwarded:     Når dialogen blir videresendt (tilgang delegert) av noen med tilgang til andre. 
             //                  Disse innslagene er ikke synlig for tjenestetilbyder.
             "activityType": "information",
@@ -217,7 +135,7 @@ WFsb2dwb3J0ZW4ubm8iLCJuYmYiOjE2NzI3NzI1NTcsImlhdCI6MTY3Mjc3MjU1N30.UXvmH4L6NATJ8
         },
         { 
             "activityDateTime": "2022-12-01T10:15:00.000Z",
-            "activityType": "opened",
+            "activityType": "seen",
             "performedBy": "person:12018212345",
         },
         { 
@@ -318,6 +236,11 @@ WFsb2dwb3J0ZW4ubm8iLCJuYmYiOjE2NzI3NzI1NTcsImlhdCI6MTY3Mjc3MjU1N30.UXvmH4L6NATJ8
             } ]
         }
     ],
+    // Dette er ulike innstillinger som kun kan oppgis og er synlig for tjenesteeier. Se de-create-request for informasjon om feltene.
+    "configuration": {        
+        "serviceProviderScopesRequired": [ "serviceprovider:myservice" ],
+        "visibleDateTime": "2022-12-01T12:00:00.000Z"
+    },
     // HAL til relaterte ressurser
     "_links": {
         "self": { "href": "/dialogporten/api/v1/dialogs/e0300961-85fb-4ef2-abff-681d77f9960e" },        
