@@ -37,3 +37,4 @@
         "notificationClickUrl": "https://example.com/some/deep/link/to/dialogues/123456789"
     }
 }
+```
