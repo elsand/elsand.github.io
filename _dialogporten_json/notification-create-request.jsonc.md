@@ -11,6 +11,8 @@
     // Valgfri identifikator som tjenestetilbyder kan oppgi. Kan brukes for å unngå duplikatutsending.
     "notificationId": "79921fae-631a-4f8b-8db5-e359f2336658",
 
+    // Ressurs i XACML som det kreves tilgang til
+    "resource": "some-xaml-resouce",
     "sms": {
             "text": [ { "code": "nb_NO", "value": "dette kommer på sms" } ],
             
