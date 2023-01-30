@@ -202,7 +202,8 @@
         // autoriseres med et Maskinporten-token som inneholder følgende scopes i tillegg til 
         "serviceProviderScopesRequired": [ "serviceprovider:myservice" ],
 
-        // Når blir dialogen synlig hos party. Muliggjør opprettelse i forveien og samtidig tilgjengeliggjøring for mange parties.
+        // Når blir dialogen synlig hos party. Muliggjør opprettelse i forveien og samtidig tilgjengeliggjøring 
+        // for mange parties.
         "visibleDateTime": "2022-12-01T12:00:00.000Z"
     }
 }

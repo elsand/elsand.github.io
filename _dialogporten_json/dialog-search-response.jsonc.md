@@ -21,6 +21,7 @@
         "extendedStatus": "SKE-ABC",
         // Inneholder ikke body, denne må hentes i detailsUrl
         "content": {
+            // Bruker searchTitle hvis definert, se create-request
             "title": [ { "code": "nb_NO", "value": "En eksempel på en tittel" } ],
             "senderName": [ { "code": "nb_NO", "value": "Overstyrt avsendernavn (bruker default tjenesteeiers navn)" } ]            
         },  

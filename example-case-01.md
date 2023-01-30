@@ -92,7 +92,7 @@ Mens Skatteetaten behandler oppgaven går en eller annen ansatt for VIRKSOMHET A
 { 
     "activityId": "387cfaa8-8113-43c1-a457-603be651ecb9", // Dialogporten genererer en activityId
     "activityDateTime": "2022-12-01T10:15:00.000Z",
-    "activityType": "opened",
+    "activityType": "seen",
     "performedBy": "person:12018212345",
 }
 ```
@@ -102,14 +102,14 @@ Mens Skatteetaten behandler oppgaven går en eller annen ansatt for VIRKSOMHET A
 ```
 {
     "specversion": "1.0",
-    "type": "urn:dialogporten:dialog:activity:opened",
+    "type": "urn:dialogporten:dialog:activity:seen",
     "source": "urn:altinn:serviceresource:super-simple-service:11111111-1111-1111-1111-111111111111",
     "subject: "org/91234578",
     "affectedentityuri": "https://dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111/activitylog/387cfaa8-8113-43c1-a457-603be651ecb9",
 }   
 ```
 
-`opened`-aktiviteter oppstår første gang dialog åpnes/lastes etter opprettelse, og første gang dialogen åpnes/lastes etter et `feedback`-innslag er lagt i aktivitetsloggen. Tjenestetilbyder har tilgang til å abonnerere på disse hendelsene.
+`seen`-aktiviteter oppstår første gang dialog åpnes/lastes etter opprettelse, og første gang dialogen åpnes/lastes etter et `feedback`-innslag er lagt i aktivitetsloggen. Tjenestetilbyder har tilgang til å abonnerere på disse hendelsene. Merk at dette ikke må forstås som at elementet er _lest_, da dette er informasjon Dialogporten ikke sitter på.
 
 ## 5. Skatt har behandlet innsendingen
 
@@ -187,7 +187,7 @@ Actionen 'fill-in' som har dukket opp gir SBS-et informasjon om hvilket endepunk
 Gjennom SBS-et sender medarbeideren inn opplysningene som manglet:
 
 ```
-POST skatt.api.no/skattemeldingsdialog/11111111-aaaa-bbbb-cccc-222222222222/ytterligere-innsending/ 
+POST skatt.api.no/skattemeldingsdialog/11111111-1111-1111-1111-111111111111/ytterligere-innsending/ 
 {
     ... en eller annen modell
 }

@@ -5,7 +5,7 @@
 {
     "status": "completed",
     "activityLog": [
-{ 
+        { 
             "activityDateTime": "2022-12-22T15:00:00.000Z",
             "activityType": "closed",
             "activityExtendedType": "SKE-5678",
