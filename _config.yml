@@ -39,8 +39,11 @@ toc:
   list_class: sticky
 
 collections:
+  dialogporten_case:
+    output: true
   dialogporten_json:
     output: true
+
 
 # Exclude from processing.
 # The following items will not be processed, by default.

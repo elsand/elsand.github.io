@@ -3,6 +3,7 @@ menutitle: Dialogporten
 title: Dialogporten - konsept for felles nasjonal arbeidsflate for både API- og GUI-konsumenter av offentlige tjenester
 toc: true
 layout: page
+topmenu: true
 ---
 
 Versjon 0.3 - Bjørn Dybvik Langfors, sist endret: {{ page.last_modified_at  | date: '%d. %b %Y, kl. %H:%M:%S' }} [(se git-historikk)](https://github.com/elsand/elsand.github.io/commits/master/dialogporten.md)
@@ -570,9 +571,17 @@ En foreløpig OpenAPI 3.0.1 specification (OAS) basert på modellene beskrevet u
 Under er utkast til JSON-modeller slik de kan fremstå i API-ene som må implementeres gitt beskrivelsene over, med kommentarer.
 
 {% for dpj in site.dialogporten_json %}
-  {% assign jsonPageName = dpj.url | split: "/" | last | remove: ".html"| remove: ".jsonc" %}
+  {% assign jsonPageName = dpj.url | split: "/" | last | remove: ".html" | remove: ".jsonc" %}
   {% assign jsonPageId = jsonPageName | remove: "." %}
   <h2 id="{{ jsonPageId }}">{{ jsonPageName }}</h2>
   {{ dpj.content | markdownify }}
 {% endfor %}
 
+# Eksempel-case
+
+{% for dpc in site.dialogporten_case %}
+  {% assign casePageId = dpc.url | split: "/" | last | remove: ".html" %}
+  <h2 id="{{ casePageId }}">{{ dpc.menutitle }}</h2>
+  <p>{{ dpc.title | escape }}</p>
+  <a class="page-link" href="{{ dpc.url | relative_url }}">Gå til case</a>
+{% endfor %}
