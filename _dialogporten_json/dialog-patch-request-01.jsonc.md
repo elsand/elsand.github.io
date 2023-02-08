@@ -63,7 +63,7 @@
         ]
     },
     // Merk at vi her bryter med vanlig PATCH/merge-semantikk, så her legges bare til et nytt innslag
-    "activityLog": [
+    "activityHistory": [
         { 
             "activityDateTime": "2022-12-01T10:00:00.000Z",
             "activityType": "information",

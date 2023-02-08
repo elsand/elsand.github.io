@@ -148,50 +148,61 @@
             }
         ]
     },
-    // Dette er en logg vedlikeholdt av tjenesteeier som indikerer hva som logisk har skjedd gjennom den aktuelle 
-    // dialogen. Dette tilgjengeliggjøres sluttbruker gjennom GUI og API, og vil  slås sammen med aktivitet foretatt i 
-    // dialogporten, som kan være:
+    // Dette er en lineær, "append-only" historikk vedlikeholdt av tjenesteeier som indikerer hva som logisk har skjedd 
+    // gjennom den aktuelle dialogen. 
+    //
+    // En rekke ulike typer aktivitet gjenkjennes, og kan brukes for å indikere innsendinger, utsendinger (enten som 
+    // tilbakemelding på en innsending, eller frittstående), feilsituasjoner og annen generell informasjon.
+    //
+    // Dette tilgjengeliggjøres sluttbruker gjennom GUI og API, og vil  slås sammen med 
+    // aktivitet foretatt i dialogporten, som kan være:
     // - videredelegering av instansen
     // - dialogen åpnes for første gang
-    // - sletting
-    // 
-    // Loggen er immuterbar - det kan bare legges til innslag gjennom PATCH-kall. 
     //
     // Se dialogporten-get-single-response.json for flere eksempler.
-    "activityLog": [
+    "activityHistory": [
         { 
+            // Tjenestetilbyder kan selv oppgi identifikator
+            "activityId": "fc6406df-6163-442a-92cd-e487423f2fd5",
+
             "activityDateTime": "2022-12-01T10:00:00.000Z",
-            // Her kan det være ulike typer som medfører ulik visning i GUI. Følgende typer gjenkjennes:
-            // - feedback:      Brukes for å indikere en tilbakemelding på en innsending. Kan innebære at party må
-            //                  foreta seg noe.
-            // - error:         Brukes for å indikere en feilsituasjon, f.eks. på en innsending. Innebærer alltid at 
-            //                  party må foreta seg noe. Hvis satt, settes også activityErrorCode.
-            // - information:   Generell informasjon, som er normalt for prosessen, men som ikke innebærer at party må
-            //                  foreta seg noe. Kan være en bekreftelse på at noe er mottatt.
-            // - closed:        Indikerer at dialogen er lukket for videre endring. Dette skjer typisk ved fullføring
-            //                  av dialogen, eller sletting.
+            // Her kan det være ulike typer som medfører ulik visning i GUI. Følgende typer gjenkjennes:            
+            // - submission:     Refererer en innsending utført av party som er mottatt hos tjenestetilbyder.
+            // - feedback:       Indikerer en tilbakemelding fra tjenestetilbyder på en innsending. Inneholder 
+            //                   referanse til den aktuelle innsendingen.
+            // - information:    Informasjon fra tjenestetilbyder, ikke (direkte) relatert til noen innsending.  
+            // - error:          Brukes for å indikere en feilsituasjon, typisk på en innsending. Inneholder en
+            //                   tjenestespesifikk activityErrorCode.
+            // - closed:         Indikerer at dialogen er lukket for videre endring. Dette skjer typisk ved fullføring
+            //                   av dialogen, eller sletting.
             //
-            // Statuser som kun kan settes av Dialogporten selv som følge av handlinger utført av bruker:
-            // - seen:         Når dialogen først ble hentet og av hvem. Kan brukes for å avgjøre om purring 
-            //                  skal sendes ut, eller internt i virksomheten for å tracke tilganger/bruker.
-            //                  Merk at dette ikke er det samme som "lest", dette må tjenestetilbyder selv håndtere 
-            //                  i egne løsninger.
-            // - forwarded:     Når dialogen blir videresendt (tilgang delegert) av noen med tilgang til andre
-            "activityType": "information",
+            // Typer som kun kan settes av Dialogporten selv som følge av handlinger utført av bruker:
+            // - seen:           Når dialogen først ble hentet og av hvem. Kan brukes for å avgjøre om purring 
+            //                   skal sendes ut, eller internt i virksomheten for å tracke tilganger/bruker.
+            //                   Merk at dette ikke er det samme som "lest", dette må tjenestetilbyder selv håndtere 
+            //                   i egne løsninger.
+            // - forwarded:      Når dialogen blir videresendt (tilgang delegert) av noen med tilgang til andre
+            "activityType": "submission",
+
+            // Indikerer hvem som står bak denne aktiviteten. Fravær av dette feltet indikerer at det er tjenesteilbyder
+            // som har utført aktiviteten.
+            "performedBy": "person:12018212345",
             
             // Vilkårlig streng som er ment å være maskinlesbar, og er en tjenestespesifikk kode som gir ytterligere
             // informasjon om hva slags aktivitetstype dette innslaget er
-            "activityExtendedType": "SKE-1234",
+            "activityExtendedType": "SKE-1234-received-precheck-ok",
             "activityDescription": [ { "code": "nb_NO", "value": "Innsending er mottatt og sendt til behandling" } ],
 
             // Ytterligere informasjon som bruker/SBS kan aksessere for å hente mer informasjon om det aktuelle innslaget.
+            // Semantikk rundt disse er tjenestespesifikke, men skal henge sammen med activityType. Tilbyder kan oppgi én 
+            // av dem, eller begge. GUI-lenker er ment for å sende sluttbrukere til en lenke som gir innsyn og/eller mer
+            // informasjon knyttet til den aktuelle aktivitet. API-lenker er ment for å kunne gi SBS-er strukturerte 
+            // data relatert til aktiviteten. 
             "activityDetailsUrls": {
-                // Brukes av API-integrasjoner for å hente ytterligere informasjon. Dokumentert av den enkelte tjeneste,
-                // innhold/format er typisk bestemt av activityExtendedType og/eller activityErrorCode
-                "api": "https://example.com/api/dialogues/123456789/activitylog/1",
-                
-                // Brukes av GUI-implementasjoner som bruker kan videresendes til. 
-                "gui": "https://example.com/some/deep/link/to/dialogues/123456789/activitylog/1"
+                // Når activityType er "submission" refererer API-lenken her typisk til den mottatte innsendingen
+                "api": "https://example.com/api/dialogues/123456789/received_submissions/fc6406df-6163-442a-92cd-e487423f2fd5",
+                // ... mens GUI-lenken typisk tar brukeren til en innsynsside hvor hen kan se hva som ble sendt inn
+                "gui": "https://example.com/dialogues/123456789/view_submission/fc6406df-6163-442a-92cd-e487423f2fd5"
             }
         }
     ],

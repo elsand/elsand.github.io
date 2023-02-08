@@ -562,9 +562,12 @@ end
 7.  Tjenestetilbyderen validerer innsendingen
 8.  Tjenestetilbyder returner OK til SBS-et. Parallelt (asynkront) opprettes dialog i Dialogporten, og tjenesteeier oppgir å bruke samme identifikator for dialogen.
 9. På et senere tidspunkt kan SBS-er jobbe videre med dialogen gjennom dialogen i Dialogporten, eller fortsette å benytte API-ene til tjenestetilbuder direkte.
+
 # OpenAPI
 
 En foreløpig OpenAPI 3.0.1 specification (OAS) basert på modellene beskrevet under kan sees på [https://app.swaggerhub.com/apis-docs/Altinn/Dialogporten](https://app.swaggerhub.com/apis-docs/Altinn/Dialogporten). 
+
+{% include note.html type="warning" content="OpenAPI-spesifikasjonen kan være ute av synk med modellene som vises på denne siden. Det er modellene som ligger på denne siden som skal legges til grunn." %}
 
 # Eksempel-modeller
 

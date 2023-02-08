@@ -49,7 +49,7 @@ POST dialogporten.no/api/v1/de/
     "activityLog": [
         {            
             "activityId": "22222222-2222-2222-2222-222222222222",
-            "activityType": "information",
+            "activityType": "submission",
             "activityDescription": "Søknad sendt til behandling",
             "activityDetailsUrl": "<referanse til innsending>"
         }
@@ -127,6 +127,7 @@ PATCH dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111
         {
             "activityId": "33333333-3333-3333-3333-333333333333",
             "activityType": "feedback",
+            "activityRelatedId": "22222222-2222-2222-2222-222222222222",
             "activityExtendedType": "form-rf1234-required", // maskinlesbar
             "activityDescription": "Behandling foretatt, mer informasjon forespurt",
             "activityDetailsUrl": <evt. referanse som gir mer informasjon om hva som har skjedd>

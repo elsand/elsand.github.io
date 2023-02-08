@@ -99,46 +99,28 @@ WFsb2dwb3J0ZW4ubm8iLCJuYmYiOjE2NzI3NzI1NTcsImlhdCI6MTY3Mjc3MjU1N30.UXvmH4L6NATJ8
             }
         ]
     },
-    "activityLog": [
-        { 
+    // Se dialogporten-create-request.json for feltforklaringer
+    "activityHistory": [
+        {
+            "activityId": "fc6406df-6163-442a-92cd-e487423f2fd5",
             "activityDateTime": "2022-12-01T10:00:00.000Z",
-            // Her kan det være ulike typer som medfører ulik visning i GUI. Følgende typer gjenkjennes:
-            // - feedback:      Brukes for å indikere en tilbakemelding på en innsending. Kan innebære at party må
-            //                  foreta seg noe.
-            // - error:         Brukes for å indikere en feilsituasjon, f.eks. på en innsending. Innebærer alltid at 
-            //                  party må foreta seg noe. Hvis satt, settes også activityErrorCode.
-            // - information:   Generell informasjon, som er normalt for prosessen, men som ikke innebærer at party må
-            //                  foreta seg noe. Kan være en bekreftelse på at noe er mottatt.
-            // - closed:        Indikerer at dialogen er lukket for videre endring. Dette skjer typisk ved fullføring
-            //                  av dialogen, eller sletting.
-            //
-            // Statuser som kun kan settes av Dialogporten selv som følge av handlinger utført av bruker:
-            // - seen:          Når dialogen først ble åpnet (hentet) i Dialogporten og av hvem
-            // - forwarded:     Når dialogen blir videresendt (tilgang delegert) av noen med tilgang til andre. 
-            //                  Disse innslagene er ikke synlig for tjenestetilbyder.
-            "activityType": "information",
-
-            // Indikerer hvem som står bak denne aktiviteten. Fravær av dette feltet indikerer at det er tjenesteilbyder
-            // som har utført aktiviteten.
+            "activityType": "submission",
             "performedBy": "person:12018212345",
-            
-            // Vilkårlig streng som er ment å være maskinlesbar, og er en tjenestespesifikk kode som gir ytterligere
-            // informasjon om hva slags aktivitetstype dette innslaget er
-            "activityExtendedType": "SKE-1234",
+            "activityExtendedType": "SKE-1234-received-precheck-ok",
             "activityDescription": [ { "code": "nb_NO", "value": "Innsending er mottatt og sendt til behandling" } ],
             "activityDetailsUrls": {
-                // Dette kan f.eks. være en eller annen innsynsmekanisme, som lar brukeren se hva som er blitt sendt
-                // inn og se ytterligere detaljert knyttet til saksgangen.
-                "api": "https://example.com/api/dialogues/123456789/receivedform/1",
-                "gui": "https://example.com/some/deep/link/to/dialogues/123456789/receivedform/1"
-            }
-        },
+                "api": "https://example.com/api/dialogues/123456789/received_submissions/fc6406df-6163-442a-92cd-e487423f2fd5",
+                "gui": "https://example.com/dialogues/123456789/view_submission/fc6406df-6163-442a-92cd-e487423f2fd5"
+            },
+        }
         { 
+            "activityId": "7f91fb5e-4c79-4c01-82aa-84911ef13b75",
             "activityDateTime": "2022-12-01T10:15:00.000Z",
             "activityType": "seen",
             "performedBy": "person:12018212345",
         },
         { 
+            "activityId": "e13b308b-3873-460b-8486-205ce934f4b0",
             "activityDateTime": "2022-12-01T10:16:00.000Z",
             "activityType": "forwarded",
             "performedBy": "person:12018212345",
@@ -146,9 +128,12 @@ WFsb2dwb3J0ZW4ubm8iLCJuYmYiOjE2NzI3NzI1NTcsImlhdCI6MTY3Mjc3MjU1N30.UXvmH4L6NATJ8
             "recipient": "person:24058412345",
         },
         { 
+            "activityId": "ab06af62-6067-477f-b18c-bf54222273b9",            
             "activityDateTime": "2022-12-01T11:00:00.000Z",
             "activityType": "feedback",
-            "activityExtendedType": "SKE-2456",
+            // Feedback-typer har vanligvis en referanse til en submission-aktivitet som dette er feedback for
+            "activityRelatedId": "fc6406df-6163-442a-92cd-e487423f2fd5",
+            "activityExtendedType": "SKE-2456-need-form-RF1337",
             "activityDescription": [ { "code": "nb_NO", "value": "Behandling er utført. Ytterligere opplysninger kreves." } ],
             "activityDetailsUrls": {
                 // Feltene "api" og "gui" er begge valgfrie, såvel som feltet activityDetailsUrls i seg selv. I dette
@@ -160,25 +145,26 @@ WFsb2dwb3J0ZW4ubm8iLCJuYmYiOjE2NzI3NzI1NTcsImlhdCI6MTY3Mjc3MjU1N30.UXvmH4L6NATJ8
             }
         },
         { 
+            "activityId": "f6ef1a96-df3a-4d38-830f-853b5d090e16",
             "activityDateTime": "2022-12-01T12:00:00.000Z",
-            "activityType": "information",
-            "activityExtendedType": "SKE-1234",
+            "activityType": "submission",
+            "activityExtendedType": "SKE-2456-received-precheck-ok",
             "activityDescription": [ { 
                 "code": "nb_NO", 
                 "value": "Innsending av ytterligere opplysninger er mottatt og sendt til behandling." 
             } ],
             "activityDetailsUrls": {
-                // Dette kan f.eks. være en eller annen innsynsmekanisme, som lar brukeren se hva som er blitt sendt
-                // inn og se ytterligere detaljert knyttet til saksgangen.
-                "api": "https://example.com/api/dialogues/123456789/receivedform/2",
-                "gui": "https://example.com/some/deep/link/to/dialogues/123456789/receivedform/2"
+                "api": "https://example.com/api/dialogues/123456789/received_submissions/f6ef1a96-df3a-4d38-830f-853b5d090e16",
+                "gui": "https://example.com/dialogues/123456789/view_submission/f6ef1a96-df3a-4d38-830f-853b5d090e16"
             }
         },
         { 
+            "activityId": "7d971b46-fb66-4a97-8f5e-333c1df54678",
             "activityDateTime": "2022-12-01T13:00:00.000Z",
             "activityType": "error",
+            // Feilmeldinger har også vanligvis en referanse til en tidligere aktivitet som var årsak til at feilsituasjonen oppstod
+            "activityRelatedId": "f6ef1a96-df3a-4d38-830f-853b5d090e16",
             "activityErrorCode": "SKE-error-12345",
-            "activityExtendedType": "SKE-2456",
             "activityDescription": [ { 
                 "code": "nb_NO", 
                 "value": "Saksbehandling har avdekket feil i innsending. Følg lenken for mer detaljer." 
@@ -186,7 +172,7 @@ WFsb2dwb3J0ZW4ubm8iLCJuYmYiOjE2NzI3NzI1NTcsImlhdCI6MTY3Mjc3MjU1N30.UXvmH4L6NATJ8
             "activityDetailsUrls": {
                 // For API-brukere kan denne f.eks. inneholde en eller annen modell som inneholder en 
                 // strukturert liste over feil som har oppstått.
-                "api": "https://example.com/api/dialogues/123456789/receivedform/2/errors",
+                "api": "https://example.com/api/dialogues/123456789/received_submissions/f6ef1a96-df3a-4d38-830f-853b5d090e16/errors",
 
                 // Her kan det for GUI-brukere lenkes til en eller annen dokumentasjon som forklarer mer om hva som
                 // er feil. Siden dialogtoken sendes med, kan feilmeldingen gjøres rikere med å knytte den 
@@ -195,24 +181,25 @@ WFsb2dwb3J0ZW4ubm8iLCJuYmYiOjE2NzI3NzI1NTcsImlhdCI6MTY3Mjc3MjU1N30.UXvmH4L6NATJ8
             }
         },
         { 
+            "activityId": "4ce2e110-21c5-4783-94ed-b2a8695abb8a",
             "activityDateTime": "2022-12-01T14:00:00.000Z",
-            "activityType": "information",
-            "activityExtendedType": "SKE-1234",
+            "activityType": "submission",
+            "activityExtendedType": "SKE-2456-received-precheck-ok",
             "activityDescription": [ { 
                 "code": "nb_NO", 
                 "value": "Innsending av ytterligere opplysninger er mottatt og sendt til behandling." 
             } ],
             "activityDetailsUrls": {
-                // Dette kan f.eks. være en eller annen innsynsmekanisme, som lar brukeren se hva som er blitt sendt
-                // inn og se ytterligere detaljert knyttet til saksgangen.
-                "api": "https://example.com/api/dialogues/123456789/receivedform/2",
-                "gui": "https://example.com/some/deep/link/to/dialogues/123456789/receivedform/2"
+                "api": "https://example.com/api/dialogues/123456789/received_submissions/4ce2e110-21c5-4783-94ed-b2a8695abb8a",
+                "gui": "https://example.com/dialogues/123456789/view_submission/4ce2e110-21c5-4783-94ed-b2a8695abb8a"
             }
         },
         { 
+            "activityId": "20c94e10-b95d-4cd0-b469-b4caa4532c4e",
             "activityDateTime": "2022-12-01T15:00:00.000Z",
             "activityType": "feedback",
-            "activityExtendedType": "SKE-1234",
+            "activityRelatedId": "4ce2e110-21c5-4783-94ed-b2a8695abb8a",
+            "activityExtendedType": "SKE-2456-final-ok",
             "activityDescription": [ { 
                 "code": "nb_NO", 
                 "value": "Saksbehandling er utført og vedtak er fattet, se vedlegg. 
@@ -225,11 +212,11 @@ WFsb2dwb3J0ZW4ubm8iLCJuYmYiOjE2NzI3NzI1NTcsImlhdCI6MTY3Mjc3MjU1N30.UXvmH4L6NATJ8
             }
         },
         { 
+            "activityId": "b6d96fc1-edac-407e-aa96-147f07878092",
             "activityDateTime": "2022-12-22T15:00:00.000Z",
             // En "closed"-oppføring knyttes som regel med at en dialog settes som "cancelled" eller "completed", 
             // og indikerer at den konkrete dialogen er avsluttet.
             "activityType": "closed",
-            "activityExtendedType": "SKE-5678",
             "activityDescription": [ { 
                 "code": "nb_NO", 
                 "value": "Klagefrist utløpt, sak avsluttet." 
