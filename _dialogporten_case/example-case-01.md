@@ -46,7 +46,7 @@ POST dialogporten.no/api/v1/de/
     "serviceResourceIdentifier": "super-simple-service",
     "status": "waiting",
     "actions": [ "open", "cancel-application", "read-more-about-process" ],
-    "activityLog": [
+    "activityHistory": [
         {            
             "activityId": "22222222-2222-2222-2222-222222222222",
             "activityType": "submission",
@@ -71,7 +71,7 @@ Opprettelsen av dialogen medfører at det genereres en eller flere events. Denne
 }   
 ```
 
-Ethvert nytt innslag i activityLog genererer også events. Siden dette ble oppgitt i POST-en over, genereres en event:
+Ethvert nytt innslag i activityHistory genererer også events. Siden dette ble oppgitt i POST-en over, genereres en event:
 
 ```
 {
@@ -85,7 +85,7 @@ Ethvert nytt innslag i activityLog genererer også events. Siden dette ble oppgi
 
 ## 4. Medarbeider åpner tilfeldigvis dialogen
 
-Mens Skatteetaten behandler oppgaven går en eller annen ansatt for VIRKSOMHET AS inn Felles arbeidsflate (GUI) og finner dialogen (fordi vedkommende er autorisert gjennom policy), som han/hun åpner. Dette innebærer at Dialogporten gjør et innslag i activityLog på dialogen ...
+Mens Skatteetaten behandler oppgaven går en eller annen ansatt for VIRKSOMHET AS inn Felles arbeidsflate (GUI) og finner dialogen (fordi vedkommende er autorisert gjennom policy), som han/hun åpner. Dette innebærer at Dialogporten gjør et innslag i activityHistory på dialogen ...
 
 
 ```
@@ -123,7 +123,7 @@ PATCH dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111
     "content": "Vi har behandlet søknaden din, og ser vi trenger mer opplysninger.",
     // ny action "fill-in" som leder til et nytt innsendingssteg
     "actions": [ "fill-in, "open", "cancel-application", "read-more-about-process" ],  
-    "activityLog": [
+    "activityHistory": [
         {
             "activityId": "33333333-3333-3333-3333-333333333333",
             "activityType": "feedback",
@@ -214,7 +214,7 @@ PATCH dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111
             "url": "https://api.skatt.no/attachments/11111111-1111-1111-1111-111111111111/vedtaksbrev.pdf",
         }
     ]
-    "activityLog": [
+    "activityHistory": [
         {
             "activityId": "4444444-4444-4444-4444-444444444444",
             "activityType": "closed",
