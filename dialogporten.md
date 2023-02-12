@@ -628,7 +628,7 @@ opt Hvis leverandør
 MP->>AA: Sjekke delegeringer på scopes
 AA->>MP: Returner autorisasjonsbeslutning
 end
-MP->>SBS: Utsteder tokens for MP-scopes
+MP->>SBS: Utsteder MP-token m/scope for Dialogporten + MP-token m/scope for tjeneste
 SBS->>AX: Ber om Altinn-token for virksomhetsbruker
 AX->>AR: Autentiserer virksomhetsbruker
 AR->>AX: Returner autentiseringsbeslutning (virksomhetsbruker-ID)
@@ -677,8 +677,7 @@ AA->>MP: Returner autorisasjonsbeslutning
 end
 MP->>AR: Autentiserer virksomhetsbruker
 AR->>MP: Returner autentiseringsbeslutning (virksomhetsbruker-ID)
-MP->>SBS: Utsteder tokens for MP-scopes inkl. virksomhetsbruker
-
+MP->>SBS: Utsteder MP-token m/scope for Dialogporten inkl. virksomhetsbruker + MP-token m/scope for tjeneste 
 SBS->>DP: Henter dialog med MP-token m/claims om virksomhetsbruker-id
 DP->>AA: Forespør autorisasjon for dialog for virksomhetsbruker
 AA->>DP: Returnerer autorisasjonsbeslutning for dialog
