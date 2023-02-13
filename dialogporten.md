@@ -744,7 +744,7 @@ Autentisering av virksomhetsbruker kan gjøres av Maskinporten i stedet for Alti
 * SBS kan klare seg med ett token hvis det ikke er behov for oppslag i Dialogporten (som vil kreve en egen `aud`)
 
 ### Ulemper
-* Krever omfattende(?) endringer i Maskinporten
+* Krever omfattende endringer i Maskinporten
 * Krever endring i Altinn Autorisasjon (eller Maskinporten, hvis den skal håndtere det) for å håndtere autentisering av virksomhetsbrukere
 * Krever `aud`-validering hos både Dialogporten og Tjenestetilbyder. 
 
@@ -789,7 +789,7 @@ TT->>SBS: Returner respons på handling
 * Kun én issuer for tjenestetilbyder å forholde seg til
 
 ### Ulemper
-* Krever omfattende(?) endringer i Maskinporten
+* Krever endringer i Maskinporten
 * Krever at tjenestetilbyder foretar oppslag for å autorisere forespørsler
 * Krever `aud`-validering hos både Dialogporten og Tjenestetilbyder. 
 
