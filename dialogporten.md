@@ -595,21 +595,24 @@ Dokumentet over legger til grunn variant A som beskrevet under, men det er behov
 
 ## Ting som legges til grunn / avgrensninger
 * Det finnes en "bruker"-mekanisme (virksomhetsbruker/system) som en beskrankningsmekanisme for virksomheter
-* Hvem som "eier" denne, eller hvordan den provisjoneres er out-of-scope for Dialogporten - Dialogporten vil bare forespørre Altinn Autorisasjon om autentisert (virksomhets)bruker er autoriserert for en gitt ressurs
+* Hvem som "eier" denne, eller hvordan den provisjoneres er out-of-scope for Dialogporten - Dialogporten vil bare forespørre Altinn Autorisasjon om autentisert (virksomhets)bruker er autorisert for en gitt ressurs
 * Det opereres med tre nivåer av autorisasjon
   * Scope-nivå
     * I Dialogporten er denne grovkornet (f.eks. `digdir:dialogporten`), og autoriserer kun for å kunne kalle API-et. Gir i seg selv ikke tilgang til noen tjenester. 
     * Scopes tolkes typisk mer finkornet hos tjenestetilbyder, som gjerne har scopes per tjeneste (f.eks. `skatteetaten:summertskattegrunnlag`).
   * Tjenestenivå
-    * Har tilgang til en eller flere actions på en tjeneste og/eller definert subressurs ("resource" i XACML) av tjeneste
+    * Har tilgang til en eller flere actions på en tjeneste og/eller definert subressurs ("resource" i XACML, tradisjonelt "prosessteg" i Altinn2) av tjeneste
   * Dialognivå
     * Tilgang til konkret instans, aka "instansdelegering". 
-    * Tilgang på tjenestenivå gir tilgang til alle dialoger, men noen kan ha tilgang (til en eller flere actions til enkelte dialoger og/eller tilhørende definerte subsressurser.
+    * Tilgang på tjenestenivå gir tilgang til alle dialoger, men noen kan ha tilgang (til en eller flere actions til enkelte dialoger og/eller tilhørende definerte subressurser.
  * Variantene under beskriver ikke-interaktive, virksomhetsautentiserte flyter med Maskinporten som IDP. Det er derfor fem prinsipielle aktører; sluttbrukersystemet, Dialogporten, Maskinporten, Altinn Autorisasjon og Tjenestetilbyders API for tjenesten, samt Altinn Token Exchange + Altinn Registry for håndtering av virksomhetsbrukere. 
- * Varianter med ID-porten vil kunne fungere annerledes (f.eks. faller Token Exchange ut, siden man umiddelbart har en "bruker"), avhengig av grad av interaktivtet. Disse er ikke tegnet inn i denne omgang.
+ * Varianter med ID-porten vil kunne fungere annerledes (f.eks. faller Token Exchange ut, siden man umiddelbart har en "bruker"), avhengig av grad av interaktivitet. Disse er ikke tegnet inn i denne omgang.
  * Bruk av flere tokens eller `aud`-claim forutsettes for å unngå problematikk rundt replay-angrep.
 
+
 ## Variant A: Dialogtoken
+
+Dette er varianten som lagt til grunn i løsningsforslaget, som altså introduserer "dialogtoken" som en mekanisme for autentisering og finkornet, innbakt autorisasjon.
 
 ### Sekvensdiagram
 
@@ -651,12 +654,12 @@ TT->>SBS: Returner respons på handling
 * SBS får dialogtokens "på kjøpet" når den henter dialoger
 
 ### Ulemper
-* SBS må forholde seg til fire ulike tokens: 1) MP-token for tjenestetilbyders API, 2) MP-token for Dialogporten, som berikes til 3) Altinn-token med claims for virksomhetsbruker, som igjen brukes for å hente 4) dialogtoken som brukes mot tjenestetilbyder
+* Kompleksitet knyttet til at SBS må forholde seg til fire ulike tokens: 1) MP-token for tjenestetilbyders API, 2) MP-token for Dialogporten, som berikes til 3) Altinn-token med claims for virksomhetsbruker, som igjen brukes for å hente 4) dialogtoken som brukes mot tjenestetilbyder
 * Tjenestetilbyder må forholde seg til to issuers (Maskinporten og Dialogporten)
 
 ## Variant B: Dialogtoken + beriket virksomhetsbruker-token fra Maskinporten
 
-Denne er som variant A, men innebærer at Maskinporten foretar autentisering av virksomhetsbruker.
+Denne er som variant A, men innebærer at Maskinporten foretar autentisering av virksomhetsbruker. Dette gjør at SBS ikke trenger å forholde seg til Altinn Token Exchange direkte, men oppgir autentiseringsmidler for virksomhetsbrukeren i forespørselen til Maskinporten. Maskinporten foretar da oppslag mot Altinn Register, og beriker tokenet med et claim for autentisert virksomhetsbruker-id.
 
 ### Sekvensdiagram
 
@@ -695,14 +698,14 @@ TT->>SBS: Returner respons på handling
 * Ett token mindre for SBS å forholde seg til ift den første dialogtoken-varianten
 
 ### Ulemper
-* SBS må forholde seg til tre ulike tokens: 1) MP-token for tjenestetilbyders API, 2) MP-token for Dialogporten, beriket med claims for virksomhetsbruker, som igjen brukes for å hente 3) dialogtoken som brukes mot tjenestetilbyder
+* Kompleksitet knyttet til at SBS må forholde seg til tre ulike tokens: 1) MP-token for tjenestetilbyders API, 2) MP-token for Dialogporten, beriket med claims for virksomhetsbruker, som igjen brukes for å hente 3) dialogtoken som brukes mot tjenestetilbyder
 * Tjenestetilbyder må forholde seg til to issuers (Maskinporten og Dialogporten)
 * Krever endringer i Maskinporten
 
 
 ## Variant C: Beriket Maskinportentoken med innbakt autorisasjon
 
-Dette beskriver en flyt hvor SBS oppgir virksomhetsbruker + passord, samt oppgir tjenesteressurs i forespørsel til Maskinporten som da foretar både grov- og finkornet autorisasjon. Samme token-type kan benyttes mot både Tjenestetilbyder og Dialogporten, men `aud`-claim må settes i token og valideres.
+Dette beskriver en flyt hvor SBS oppgir virksomhetsbruker + passord, samt oppgir tjenesteressurs i forespørsel til Maskinporten som da foretar både grov- og finkornet autorisasjon. Dette krever trolig innføring av RAR (Rich Authorization Requests) for Maskinporten, og en tettere kobling mellom Maskinporten og Altinn Autorisasjon. Samme token-type kan benyttes mot både Tjenestetilbyder og Dialogporten, men `aud`-claim må settes i token og valideres for å unngå å åpne for replay-attacks.
 
 ```mermaid!
 sequenceDiagram
@@ -747,7 +750,7 @@ Autentisering av virksomhetsbruker kan gjøres av Maskinporten i stedet for Alti
 
 ## Variant D: Beriket Maskinporten-token med kun virksomhetsbruker-ID
 
-I denne varianten foretar ikke Maskinporten autorisasjonsoppslag mot, men gjør kun autentisering av virksomhetsbrukernavn/passord og beriker tokenet med identifikator for virksomhetsbrukeren. Både tjenestetilbyder og Dialogporten må foreta oppslag mot Altinn Autorisasjon for å autorisere den oppgitt virksomhetsbrukeren.
+I denne varianten foretar ikke Maskinporten autorisasjonsoppslag mot Altinn Autorisasjon, men gjør kun autentisering av virksomhetsbrukernavn/passord og beriker tokenet med identifikator for virksomhetsbrukeren (tilsvarende alternativ B, men uten dialogtoken). Både tjenestetilbyder og Dialogporten må foreta oppslag mot Altinn Autorisasjon for å autorisere den oppgitt virksomhetsbrukeren.
 
 ```mermaid!
 sequenceDiagram
@@ -776,7 +779,7 @@ end
 SBS->>TT: Foretar handling for dialog med beriket MP-token imkl virksomhetsbruker + MP-token m/scope for tjeneste
 TT->>TT: Validerer beriket MP-token og MP-token m/scope for tjeneste
 TT->>AA: Forespør autorisasjon for dialog for virksomhetsbruker
-AA->TT: Returnerer autorisasjonsbeslutning for dialog
+AA->>TT: Returnerer autorisasjonsbeslutning for dialog
 TT->>SBS: Returner respons på handling
 ```
 
