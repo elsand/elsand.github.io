@@ -35,6 +35,13 @@ plugins:
   - jekyll-last-modified-at
 
 
+kramdown:
+  syntax_highlighter_opts:
+    block:
+      line_numbers: true
+    span:
+      line_numbers: false
+
 toc:
   list_class: sticky
 

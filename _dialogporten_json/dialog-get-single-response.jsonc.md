@@ -8,7 +8,8 @@
 // GET /dialogporten/api/v1/dialogs/e0300961-85fb-4ef2-abff-681d77f9960e
 {
     "id": "e0300961-85fb-4ef2-abff-681d77f9960e",
-    "serviceResourceIdentifier": "example_dialogue_service", // Her kan det være en lenke 
+    "org": "digdir", // Identifikator for tjenestetilbyder
+    "serviceResourceIdentifier": "example_dialogue_service", 
     "externalReference": "123456789",
     "dialogueGroup": {
         "id": "some-arbitrary-id",
@@ -35,9 +36,6 @@
         "searchTitle": [ { "code": "nb_NO", "value": "En eksempel på en tittel brukt i listevisning" } ],
         "senderName": [ { "code": "nb_NO", "value": "Overstyrt avsendernavn (bruker default tjenesteeiers navn)" } ]            
     },
-    // Dialogtoken som benyttes mot tjenestetilbyders endepunkter, enten som en HTTP header eller via query parameter
-    "dialogToken": "eyJhbGciOiJFZERTQSIsImtpZCI6ImRwLTIwMjMtMDEiLCJ0eXAiOiJKV1QifQ.eyJjIjoicGVyc29uOjEyMDE4MjEyMzQ1IiwibCI6NCwicCI6Im9yZzo5OTE4MjU4MjciLCJpIjoiZTAzMDA5NjEtODVmYi00ZWYyLWFiZmYtNjgxZDc3Zjk5NjBlIiwiZSI6IjEyMzQ1Njc4OSIsImEiOlsib3BlbiIsImF0dGFjaG1lbnQxOm9wZW4iLCJjb25maXJtIl0sImV4cCI6MTY3Mjc3Mjg1NywiaXNzIjoiaHR0cHM6Ly9ka
-WFsb2dwb3J0ZW4ubm8iLCJuYmYiOjE2NzI3NzI1NTcsImlhdCI6MTY3Mjc3MjU1N30.UXvmH4L6NATJ8ZNWDIfWcf7-BO2c4eQQ3HK0RRmFhzkE5SSc6oV4hxCnsR2MAePLEdDSeCdP6yr5xlJ9Rzt_Dg",
     "attachments": [
         {
             "displayName": [ { "code": "nb_NO", "value": "dette er et vedlegg" } ],
@@ -175,8 +173,7 @@ WFsb2dwb3J0ZW4ubm8iLCJuYmYiOjE2NzI3NzI1NTcsImlhdCI6MTY3Mjc3MjU1N30.UXvmH4L6NATJ8
                 "api": "https://example.com/api/dialogues/123456789/received_submissions/f6ef1a96-df3a-4d38-830f-853b5d090e16/errors",
 
                 // Her kan det for GUI-brukere lenkes til en eller annen dokumentasjon som forklarer mer om hva som
-                // er feil. Siden dialogtoken sendes med, kan feilmeldingen gjøres rikere med å knytte den 
-                // til den konkrete dialogen feilen oppstod i
+                // er feil. 
                 "gui": "https://docs.example.com/forms/errors/SKE-error-12345"
             }
         },

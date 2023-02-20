@@ -6,7 +6,7 @@ layout: page
 topmenu: true
 ---
 
-Versjon 0.3 - Bjørn Dybvik Langfors, sist endret: {{ page.last_modified_at  | date: '%d. %b %Y, kl. %H:%M:%S' }} [(se git-historikk)](https://github.com/elsand/elsand.github.io/commits/master/dialogporten.md)
+Versjon 0.4 - Bjørn Dybvik Langfors, sist endret: {{ page.last_modified_at  | date: '%d. %b %Y, kl. %H:%M:%S' }} [(se git-historikk)](https://github.com/elsand/elsand.github.io/commits/master/dialogporten.md)
 
 # Introduksjon
 
@@ -37,6 +37,10 @@ _Felles Arbeidsflate_ refererer til en tenkt implementasjon av et GUI som benytt
 ## Sluttbrukersystem (SBS) og fagsystem
 
 _Sluttbrukersystemer_ og _fagsystemer_ er begge applikasjoner som benytter seg API for å tilby et skreddersydd GUI for en eller flere grupper brukere i ulike kontekster. 
+
+## Systembruker
+
+Tilsvarede "systembruker" i Altinn 2, er en systembruker  en ikke-menneskelig identitet knyttet til en virksomhet (i praksis et organisasjonsnummer) som virksomheten kan fritt opprette for å aksessere tjenester og utføre handlinger på vegne av virksomheten selv eller en eller flere av virksomhetens kunder uten menneskelig interaksjon, gjennom at den gis rettigheter i Altinn på samme måte som vanlige ansatte/personer. Kan sammenlignes med en "service principal" i Azure Active Directory. 
 
 ## Tjenestetilbyder
 
@@ -108,12 +112,6 @@ Handlinger og andre deler (typisk referanser til vedlegg) av i dialogen kan ogs�
 
 På samme måte vil API-handlinger som ikke er tilgjengelige for SBS-et (med den identiteten SBS-et oppgir) ikke returneres. 
 
-Opplysninger om hvem som er den autoriserte parten overføres gjennom et _dialogtoken._
-
-## Dialogtoken (DT)
-
-Et dialogtoken er et signert JSON Web Token (JWT) som inneholder informasjon om den autentiserte brukeren/organisasjonen, hvilken aktør som er valgt, identifikator til dialogen, dato og andre opplysninger. Les mer i avsnittet  [Autorisasjon](#autorisasjon).
-
 # Scenarioer som påvirker Dialogporten
 
 Det er typisk tre scenarioer som innebærer behov for interaksjon med Dialogporten og dialoger.
@@ -144,81 +142,118 @@ Det finnes andre scenarioer rundt oppslag/innsynstjenester og filoverføringer s
 
 # Autorisasjon
 
-{% include note.html type="warning" content="I dette kapitlet legges konseptet \"dialogtoken\" til grunn, som er en høyst uavklart mekanisme. Det av utredes om man ønsker å introdusere Dialogporten som en egen issuer av token på tvers av alle brukertyper, eller om man ønsker å tilgjengeliggjøre finkornet autorisasjonsinformasjon til tjenestetilbydere på andre måter (f.eks. oppslag)" %}
-
-
 ## Bruk av Dialogportens API-er
 
 Tjenesteressursen og/eller inline autorisasjonspolicy på enkelte dialoger bestemmer hvilke autorisasjonskontroller som skal legges til grunn for å få tilgang. Typisk innebærer dette at konsumenten innehar en spesiell rolle eller tilhører en spesifikk forhåndsdefinert tilgangsgruppe, eller er blitt delegert tilgang til tjenesteressursen dialogen refererer av en tilgangsstyrer/hovedadministrator hos den aktuelle parten.
 
-For API-konsumenter krever Dialogporten at klienten oppgir et token med et spesifikt scope; `digdir:dialogporten`. Dette scopet kan for SBS-er/GUI-implementasjoner være tildelt klienten gjennom brukerstyrt datadeling i ID-porten (OAuth2/OIDC) eller ved hjelp av Maskinporten (ren OAuth2). Ved bruk av Maskinporten-token, vil det typisk kreves at det i tillegg autentiseres en virksomhetsbruker (systemidentitet i Altinn med tildelte rettigheter som gir tilgang til tjenesteressursen), som innbærer en tokenutveksling og utstedelse av et beriket Maskinporten-token som benyttes mot Dialogporten. Tjenestetilbydere blir tildelt et eget scope; `digdir:dialogporten.serviceprovider` som kun er tilgjengelig for Maskinporten-integrasjoner. Dette gir skrivetilgang til Dialogporten og mulighet til å hente ut (og oppdatere) alle dialoger som er opprettet av tjenestetilbyderen. Liste/søke-API-et krever et ytterligere scope; `digdir:dialogporten.serviceprovider.search`. Tjenestetilbyder kan også konfigurere [ytterligere scopekrav for dialoger](#selvpålagt-scopekrav-på-dialog).
+For API-konsumenter krever Dialogporten at klienten oppgir et token med et spesifikt scope; `digdir:dialogporten`. Dette scopet kan for SBS-er/GUI-implementasjoner være tildelt klienten gjennom brukerstyrt datadeling i ID-porten (OAuth2/OIDC) eller ved hjelp av Maskinporten (ren OAuth2). Ved bruk av Maskinporten-token, vil det typisk kreves at det i tillegg autentiseres en systembruker, som innbærer utstedelse av et beriket Maskinporten-token som benyttes mot Dialogporten og/eller tjenestetilbyders API-er. Tjenestetilbydere blir tildelt et eget scope; `digdir:dialogporten.serviceprovider` som kun er tilgjengelig for Maskinporten-integrasjoner. Dette gir skrivetilgang til Dialogporten og mulighet til å hente ut (og oppdatere) alle dialoger som er opprettet av tjenestetilbyderen. Liste/søke-API-et krever et ytterligere scope; `digdir:dialogporten.serviceprovider.search`. Tjenestetilbyder kan også konfigurere [ytterligere scopekrav for dialoger](#selvpålagt-scopekrav-på-dialog) som egne integrasjoner må inneha for å kunne aksessere dialoger.
 
 Felles arbeidsflate vil av hensyn til brukskvalitet ikke kreve eksplisitt autorisasjon fra sluttbrukeren for tilgang til Dialogporten-API-ene; dette skjer implisitt gjennom innlogging i ID-porten, og Felles arbeidsflate vil bruke et internt scope for å autorisere seg mot Dialogportens API-er.
 
 ## Bruk av samme token mot både Dialogporten og tjenestetilbyders API
 
-I de fleste tilfeller vil det imidlertid være tilstrekkelig å benytte dialogtoken (beskrevet under), som gir tjenestetilbyder finkornet autorisasjonsinformasjon som vil kunne brukes subsidiært ordinære Maskinporten/ID-porten tokens.
-
-Men tjenestetilbyders API-er vil potensielt kreve egne scopes som grovkornet autorisasjon. I disse tilfellene vil det kunne utstedes tokens som benyttes mot både Dialogportens API såvel som tjenestetilbyderen, altså scopes for begge API-ene. Dialogporten vil ikke kreve eller verifisere "aud"-claims i tokens, men disse kan benyttes hvis tokenet også skal benyttes mot tjenestetilbyders endepunkter. Klienter må imidlertid vurdere sikkerhetsrisikoen knyttet til at tjenestetilbyder da vil kunne gjenbruke tokenet mot Dialogporten (replay attack). For høyest sikkerhet må klienten hente ut to tokens for bruk mot hhv. Dialogporten API og tjenestetilbyder.
+Tjenestetilbyders API-er vil typisk kreve egne scopes som grovkornet autorisasjon. I disse tilfellene vil det kunne utstedes tokens som benyttes mot både Dialogportens API såvel som tjenestetilbyderen, altså scopes for begge API-ene. Dialogporten vil ikke kreve eller verifisere "aud"-claims i tokens, men disse kan benyttes hvis tokenet også skal benyttes mot tjenestetilbyders endepunkter. Klienter må imidlertid vurdere sikkerhetsrisikoen knyttet til at tjenestetilbyder da vil kunne gjenbruke tokenet mot Dialogporten (replay attack). For høyest sikkerhet må klienten hente ut to tokens for bruk mot hhv. Dialogporten API og tjenestetilbyder.
 
 ## Selvpålagt scopekrav på dialog
 
 Tjenestetilbydere med et stort antall tjenester implementert over ulike systemer kan av sikkerhetshensyn ønske å begrense hver enkelt integrasjons tilgang til Dialogportens privilegerte API-er for å isolere dialoger tilhørende ulike tjenester (eller sikkerhetsdomener) fra hverandre. Ved opprettelse/endring av dialogen, kan et felt i `configuration`-feltet settes som inneholder en liste over ytterligere Maskinporten-scopes som tjenestetilbyder må ha i oppgitt token for å kunne aksessere den aktuelle dialogen. Dette scopet må også være oppgitt i token ved opprettelse, og ved endring må alle scopes som både i eksisterende og ny liste være oppgitt. På denne måten kan tjenestetilbyder provisjonere ulike Maskinporten-klienter som kan ha tilgang til ulike subsets av dialoger eid av tjenestetilbyderen.
 
-## Bruk av dialogtoken 
+## Håndhevelse av autorisasjon hos tjenestetilbyder
 
-Det legges opp til at hver dialog blir utstyrt med et eget token (dialogtoken) som Felles Arbeidsflate og SBS-er benytter i alle URL-er mot tjenestetilbyder. Dette gjør det mulig å overføre sesjoner og autorisasjonsdata utover det som finnes i ID-porten/Maskinportet-tokens mellom Dialogporten og den aktuelle tjenestetilbyderen. Ved bruk av omdirigeringer i GUI-handlinger vil tjenestetilbyderen også kunne lene seg på SSO fra ID-porten for å autentisere brukeren, og validere at informasjonen i dialogtokenet stemmer overens.
+Tokens utstedt av Maskinporten vil inneholde en systembruker-id, mens tokens utstedt av ID-porten vil inneholde et fnr/dnr. Det pålegges tjenestetilbyder å håndheve autorisasjon mot egne endepunkter gjennom at det foretas oppslag mot Altinn Autorisasjon hvor man verifiserer tilgangen en gitt systembruker-id eller fnr/dnr har for ressursen som er forsøkt aksessert. For GUI-endepunkter som aksesserer av sluttbruker gjennom felles arbeidsflate, vil single-sign-on (SSO) i ID-porten sørge for at tjenestetilbyder får autentisert fnr/dnr som står bak requesten og kan foreta autoriasjonsoppslag/håndhevelse som oppleves sømløst for sluttbruker. 
 
-Dialogtokenet benyttes som et "bearer token", altså noe som indikerer at ihendehaveren er autorisert av Dialogporten til en liste med påstander (claims) som ligger i tokenet. [Standard JWT-claims](https://www.rfc-editor.org/rfc/rfc7519#section-4.1) og [JWS-parametere](https://www.rfc-editor.org/rfc/rfc7515#section-4.1) som definert i RFC7519 og RFC7515 vil inkluderes, i tillegg til de Dialogporten-spesifikke påstandene under:
+Tokens mottatt fra Maskinporten eller ID-porten vil på sikt kunne berikes med finkornede autorisasjonsopplysninger basert på Rich Authorization Requests (RAR) fra SBS-et som Maskinporten/ID-porten verifiserer opp mot Altinn Autorisasjon som foretar en autorisasjonsbeslutning. Hvis tilgang er gitt, populeres tokenet med opplysninger som vil kunne brukes av både Dialogporten og tjenestetilbyder for å håndheve tilgangskontroll uten videre oppslag mot Altinn Autorisasjon (innenfor levetiden av tokenet).
 
-### Dialogporten-spesifikke claims
+## Integrasjonsmønster for SBS-er
 
-| Claim            | Beskrivelse                                                                                                                                                        | Eksempel                                                                           |
-|------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------- |----------------------------------------------------------------------------------- |
-| c                | Autentisert som konsument av Dialogporten. Prefikset for  hhv. personer (typisk ID-porten), organisasjoner (typisk Maskinporten) eller selvregistrerte brukere.    | `"person:12018212345"`, `"org:991825827"` eller `"username:someemail@example.com"` |
-| l                | Sikkerhetsnivå på autentisering (4)                                                                                                                                | `4`                                                                                |
-| s                | Valgfritt. Hvis det er benyttet et leverandørtoken i Maskinporten, vil autentisert leverandørs organisasjonsnummer oppgis her. Prefiks er alltid `org:`.           | `"org:991825827"`                                                                  |
-| p                | Hvem konsument opptrer på vegne av (om ikke seg selv), altså hvem som eier det aktuelle dialogen.                                                           | `"person:12018212345"`, `"org:991825827"` eller `"username:someemail@example.com"` |
-| i                | Unik identifikator til dialog.                                                                                                                              | `"e0300961-85fb-4ef2-abff-681d77f9960e"`                                           |
-| a                | Liste over autoriserte actions. Kan være prefixet med `<ressurs>:` hvis actionen omfatter en navngitt ressurs i XACML policy som ikke er tjenesteressursen         | `[ "open", "attachment1:open", "confirm" ]`                                        |
+{% include note.html type="info" content="Dette er avsnittet som tidligere var kalt &quot;Varianter for autorisasjon&quot;" %}
 
-### Eksempel på dekodet token
+{% include note.html type="info" content="Under beskrives autentiserings- og autorisasjonsmønstre som involverer Maskinporten/ID-porten og Altinn Autorisasjon. Avsnittet beskriver hvordan dette vil kunne implementeres med Dialogporten, men ingenting representerer Dialogporten-spesifikk funksjonalitet" %}
 
-```jsonc
-{
-  "alg": "EdDSA",
-  "typ": "JWT",
-  "kid" : "dp-2023-01" 
-}
-// .
-{
-  "l": 4, // Sikkerhetsnivå
-  "c": "person:12018212345", // Autentisert part
-  "p": "org:991825827", // Party
-  "s": "org:825827991", // Supplier (hvis MP-leverandørtoken)
-  "i": "e0300961-85fb-4ef2-abff-681d77f9960e", // Dialog-ID
-  "a": [ // Actions
-    "open",
-    "attachment1:open", // For subressurs
-    "confirm"
-  ],
-  "exp": 1672772834,
-  "iss": "https://dialogporten.no",
-  "nbf": 1672771934,
-  "iat": 1672771934 
-}
- 
-// .
-// <signatur>
+Under beskrives hvordan SBS-er foretar autentisering for å kunne autoriseres i både Dialogporten og hos tjenestetilbyders API-er.
+
+### Ting som legges til grunn / avgrensninger
+* Det finnes en "bruker"-mekanisme (systembruker/system) som en beskrankningsmekanisme for virksomheter
+* Hvem som "eier" denne, eller hvordan den provisjoneres er out-of-scope.
+* Det opereres med tre nivåer av autorisasjon
+  * Scope-nivå
+    * I Dialogporten er denne grovkornet (f.eks. `digdir:dialogporten` eller `altinn:instances.read`), og autoriserer kun for å kunne kalle API-et. Gir i seg selv ikke tilgang til noen tjenester. 
+    * Scopes tolkes typisk mer finkornet hos tjenestetilbyder, som gjerne har scopes per tjeneste (f.eks. `skatteetaten:summertskattegrunnlag`).
+  * Tjenestenivå
+    * Har tilgang til en eller flere actions på en tjeneste og/eller definert subressurs ("resource" i XACML, tradisjonelt "prosessteg" i Altinn2) av tjeneste
+  * Dialognivå
+    * Tilgang til konkret instans, aka "instansdelegering". 
+    * Tilgang på tjenestenivå gir tilgang til alle dialoger, men noen kan ha tilgang (til en eller flere actions til enkelte dialoger og/eller tilhørende definerte subressurser.
+ * Det tas utgangspunkt i ikke-interaktive, virksomhetsautentiserte flyter med Maskinporten som IDP. Det er derfor fem prinsipielle aktører; sluttbrukersystemet, Dialogporten, Maskinporten, Altinn Autorisasjon og Tjenestetilbyders API for tjenesten, samt Altinn Token Exchange + Altinn Registry for håndtering av systembrukere. 
+ * Varianter med ID-porten vil kunne fungere annerledes (f.eks. faller Token Exchange ut, siden man umiddelbart har en "bruker"), avhengig av grad av interaktivitet. Disse er ikke tegnet inn i denne omgang.
+ * Bruk av flere tokens eller `aud`-claim forutsettes for å unngå problematikk rundt replay-angrep.
+
+### Maskinporten-token med systembruker-ID
+
+{% include note.html type="info" content="Dette er tidligere omtalt som &quot;Variant D&quot;, og er det mønsteret Dialogporten vil implementere først" %}
+
+Maskinporten foretar autentisering av systembruker/passord og utsteder et beriket token med identifikator for systembrukeren. Både tjenestetilbyder og Dialogporten må foreta oppslag mot Altinn Autorisasjon for å autorisere den oppgitte systembrukeren på tjenestenivå.
+
+```mermaid!
+sequenceDiagram
+autonumber
+    participant SBS as Sluttbrukersystem
+    participant MP as Maskinporten
+    participant DP as Dialogporten
+    participant AA as Altinn Autorisasjon    
+    participant AR as Altinn Registry
+    participant TT as Tjenestetilbyder
+SBS->>MP: Forespør MP-token (med RAR?) for Dialogporten inkl. systembruker + MP-token m/scope for tjeneste
+opt Hvis leverandør
+    MP->>AA: Sjekke delegeringer på scopes
+    AA->>MP: Returner autorisasjonsbeslutning
+end
+MP->>AR: Autentiserer systembruker
+AR->>MP: Returner autentiseringsbeslutning
+MP->>SBS: Utsteder beriket MP-token for Dialogporten/systembruker + MP-token m/scope for tjeneste
+opt Hvis ikke SBS kjenner til dialog-ID / actions
+    SBS->>DP: Henter dialog med beriket MP-token
+    DP->>AA: Forespør autorisasjon for dialog for systembruker
+    AA->>DP: Returnerer autorisasjonsbeslutning for dialog
+    DP->>SBS: Returnerer dialog
+end 
+SBS->>TT: Foretar handling for dialog med beriket MP-token imkl systembruker + MP-token m/scope for tjeneste
+TT->>TT: Validerer beriket MP-token og MP-token m/scope for tjeneste
+TT->>AA: Forespør autorisasjon for dialog for systembruker
+AA->>TT: Returnerer autorisasjonsbeslutning for dialog
+TT->>SBS: Returner respons på handling
 ```
 
-Tokenet kan verifiseres på vanlig vis gjennom at det publiseres et nøkkelsett (JWK) på et kjent endepunkt. Med å hente den offentlige nøkkelen definert av `kid` kan tjenestetilbyder verifisere at tokenet er gyldig. 
+### Maskinporten-token med innbakt autorisasjon 
 
-### Overføring av token til tjenestetilbyder
+{% include note.html type="info" content="Dette er tidligere omtalt som &quot;Variant C&quot;, og representerer et mulig fremtidig målbilde hvor Maskinporten har en større rolle knyttet til å foreta finkornet autorisasjon. Ved første iterasjon av Dialogporten vil ikke dette mønsteret være realisert." %}
 
-Tokenet vil inkluderes i responsmodellen som returneres til SBS-er og Felles arbeidsflate i feltet `dialogToken`. For GUI-handlinger, eller andre dyplenker til dialog hos tjenestetilbyder hvor bruker omdirigeres i nettleser, vil Felles arbeidsflate overføre tokenet gjennom en POST request til den oppgitte URL-en. `Content-Type` vil være `application/x-www-form-urlencoded` og tokenet overføres i body i formen `X-DialogToken=<token>`.
+I dette mønsteret oppgir SBS systembruker + passord, samt tjenesteressurs i forespørselen til Maskinporten, som da foretar både grov- og finkornet autorisasjon. Dette krever innføring av RAR (Rich Authorization Requests) for Maskinporten, og en tettere kobling mellom Maskinporten og Altinn Autorisasjon. Samme token-type kan benyttes mot både Tjenestetilbyder og Dialogporten, men `aud`-claim må settes i token og valideres for å unngå å åpne for replay-attacks.
 
-For URL-er som aksesseres via bakkanal eller andre mekanismer kan alternativt token overføres gjennom HTTP headeren `X-DialogToken: <token>`. Tjenestetilbydere må håndtere begge mekanismene for å autorisere kall fra nettlesere og andre klienter.
+```mermaid!
+sequenceDiagram
+autonumber
+    participant SBS as Sluttbrukersystem
+    participant MP as Maskinporten
+    participant DP as Dialogporten
+    participant AA as Altinn Autorisasjon    
+    participant AR as Altinn Registry
+    participant TT as Tjenestetilbyder
+SBS->>MP: Forespør MP-token med RAR for Dialogporten inkl. systembruker og tjenesteressurs + MP-token m/scope for tjeneste
+MP->>AA: Forespør delegering på scope + autorisasjon for dialog for systembruker
+AA->>AR: Autentiserer systembruker
+AR->>AA: Returner autentiseringsbeslutning (systembruker-ID)
+AA->>MP: Returner autorisasjonsbeslutning
+MP->>SBS: Utsteder beriket MP-token for Dialogporten/systembruker/tjeneste + MP-token m/scope for tjeneste
+opt Hvis ikke SBS kjenner til dialog-ID / actions
+    SBS->>DP: Henter dialog med beriket MP-token
+    DP->>DP: Validerer beriket MP-token
+    DP->>SBS: Returner dialog
+end 
+SBS->>TT: Foretar handling for dialog med beriket MP-token + MP-token m/scope for tjeneste
+TT->>TT: Validerer beriket MP-token og MP-token m/scope for tjeneste
+TT->>SBS: Returner respons på handling
+```
 
 
 # Sekvensbeskrivelser
@@ -333,19 +368,23 @@ sequenceDiagram
     actor SB as Sluttbruker
     participant GUI as Felles Arbeidsflate
     participant API as Dialogporten API
-    participant TEAPI as Tjenestetilbyders API
+    participant AA as Altinn Autorisasjon
     participant TEGUI as Tjenestetilbyders GUI
-note over SB,GUI: Bruker logger inn i Felles Arbeidsflate og finner dialogen
-SB->>GUI: Bruker klikker på dialogen
+note over SB,GUI: Bruker autentiseres via ID-porten og blir logget<br>inn i Felles Brukerflate, hvor hen autoriseres for<br>en liste med dialoger
+SB->>GUI: Bruker klikker på en bestemt dialog
 GUI->>SB: Viser innhold i dialog med aktuelle handlinger
-SB->>TEGUI: Sluttbruker følger lenke for ønsket operasjon med dialogtoken til tjenestetilbyders portal
-    TEGUI->>TEGUI: Validerer dialogtoken
-TEGUI->>TEGUI: Opprette/oppdatere sesjon
+SB->>TEGUI: Sluttbruker følger lenke for ønsket operasjon til tjenestetilbyders portal
+note over TEGUI: Tjenestetilbyder får fnr/dnr<br>fra ID-porten gjennom SSO
+TEGUI->>AA: Sjekke om fnr/dnr er autorisert for handling/ressurs
+AA->>TEGUI: Returner autorisasjonsbeslutning
 TEGUI->>SB: Vis arbeidsflate for tjeneste til sluttbruker
 SB->>TEGUI: Foreta endringer
-TEGUI->>API: Oppdater dialog for å reflektere ny tilstand
-API->>TEGUI: Oppdatering OK
-TEGUI->>SB: Vis arbeidsflate med oppdatert tilstand
+par
+    TEGUI->>API: Oppdater dialog for å reflektere ny tilstand
+    API->>TEGUI: Oppdatering OK
+and
+    TEGUI->>SB: Vis arbeidsflate med oppdatert tilstand
+end
 ```
 
 #### Tekstlig beskrivelse av trinn
@@ -354,17 +393,12 @@ TEGUI->>SB: Vis arbeidsflate med oppdatert tilstand
 2.  Dialogen har en grafisk fremstilling som viser overskrift, status og andre metadata
 3.  Bruker klikker på dialogen for å ekspandere den. Ekspandert dialog viser rikt innhold som tjenestetilbyder har definert, sammen med tilgjengelige handlinger. Hvis oppdatering feilet, vises enten feilmelding som tjenestetilbyder oppga, eller en standardfeilmelding.
 4.  Bruker klikker på den definerte primærhandlingen.
-    * Felles Arbeidsflate vil da redirecte brukeren (nettleseren) til oppgitt URI. Det legges på et dialogtoken som parameter i URI-en.
-    * Når tjenestetilbyder mottar forspørsel fra nettleser, verifiseres vedlagt dialogtoken (JWT) som inneholder bl.a.
-        *  autentisert part (f/dnr, orgnr)
-        *  valgt aktør
-        *  tidspunkt
-        *  identifikator for dialogen som ble klikket
-        *  tjenestetilbyders referanse til dialogen
-        *  identifikator for valgt handling
-5.  Ved hjelp av tokenet og SSO i ID-porten blir brukeren umiddelbart logget inn hos tjenestetilbyder og tatt inn til dialogen hos tjenestetilbyder, hvor brukeren interagerer med tjenesten. Etter hvert som dialogen skrider frem, kan tjenestetilbyder gjøre bakkanal-kall til Dialogporten for å oppdatere dialogen slik den fremstår for brukeren.
-6.  Hvis brukeren fullfører dialogen, kan tjenestetilbyder gjøre et bakkanal-kall for å indikere til Dialogporten at dialogen skal markeres som fullført. Dialoget blir da merket som fullført, og vil typsik flyttes til "arkiv"-visning i Felles arbeidsflate. Merk at det fremdeles kun ligger metadata på dialogen i Dialogporten.
-7.  Når brukeren senere ekspanderer dialogen i en arkiv-visning i Felles Arbeidsflate, vises da de data som siste ble lagt inn på dialogen av tjenestetilbyder. Typisk vises da bare en kort tekst og et vedlegg til en PDF-versjon av en kvittering/gjenpart el.l. som ligger hos tjenestetilbyder.
+    * Felles Arbeidsflate vil da redirecte brukeren (nettleseren) til oppgitt URI. 
+    * Hvis ikke sesjon foreligger hos tjenestetilbyder, redirectes bruker innom ID-porten som pga. SSO umiddelbart vil redirecte bruker tilbake. Tjenestetilbyder vil da ha autentisert fnr/dnr
+5. Tjenestetilbyder identifiserer {handling, part, tjenesteressurs} eller {handling, dialog-id} utfra URL som er forsøkt aksessert, og foretar en autorisasjonsforespørsel til Altinn Autorisasjon.
+6.  Ved positiv autorisasjonbeslutning blir brukeren logget inn hos tjenestetilbyder og tatt inn til dialogen hos tjenestetilbyder, hvor brukeren interagerer med tjenesten. Etter hvert som dialogen skrider frem, kan tjenestetilbyder gjøre asynkrone bakkanal-kall til Dialogporten for å oppdatere dialogen slik den fremstår for brukeren.
+7.  Hvis brukeren fullfører dialogen, kan tjenestetilby,der gjøre et bakkanal-kall for å indikere til Dialogporten at dialogen skal markeres som fullført. Dialoget blir da merket som fullført, og vil typisk flyttes til "arkiv"-visning i Felles arbeidsflate. Merk at det fremdeles kun ligger metadata på dialogen i Dialogporten.
+8.  Når brukeren senere ekspanderer dialogen i en arkiv-visning i Felles Arbeidsflate, vises da de data som siste ble lagt inn på dialogen av tjenestetilbyder. Typisk vises da bare en kort tekst og et vedlegg til en PDF-versjon av en kvittering/gjenpart el.l. som ligger hos tjenestetilbyder.
 
 ### Konsum gjennom API
 
@@ -373,28 +407,36 @@ TEGUI->>SB: Vis arbeidsflate med oppdatert tilstand
 ```mermaid!
 sequenceDiagram
     participant SBS as Sluttbrukersystem
-    participant EID as Maskinporten/ID-porten/Altinn Token Exchange
+    participant EID as Maskinporten/ID-porten
     participant API as Dialogporten API
-    participant TEAPI as tjenestetilbyders API
+    participant AA as Altinn Autorisasjon
+    participant TEAPI as Tjenestetilbyders API
 note over SBS,TEAPI: SBS abonnerer på hendelser for opprettelse av dialoger<br>og mottar URI til ny dialog.
 SBS->>EID: Autentisering/autorisering
-EID->>SBS: access_token
+EID->>SBS: access_token med systembruker-id eller fnr/dnr
 SBS->>API: Hent dialog
+API->>AA: Autoriser forespørsel
+AA->>API: Returner autorisasjonssvar
 API->>SBS: Returnere dialog med liste over aktuelle handlinger og URI-er
 SBS->>TEAPI: Foreta endringer
-opt
-    TEAPI->>API: Oppdater dialog for å reflektere ny tilstand
-    API->>TEAPI: Oppdatering OK
+TEAPI->>AA: Autoriser forespørsel
+AA->>TEAPI: Returner autorisasjonssvar
+par
+    opt Hvis endringer som skal reflekteres i Dialogporten
+        TEAPI->>API: Oppdater dialog for å reflektere ny tilstand
+        API->>TEAPI: Oppdatering OK
+    end
+and
+    TEAPI->>SBS: Oppdatering OK
 end
-TEAPI->>SBS: Oppdatering OK
 ```
 
 #### Tekstlig beskrivelse av trinn
 
 1.  SBS abonnerer på hendelser knyttet til opprettelse av dialoger av en eller flere typer for en gitt part, og mottar en notifikasjon om at en ny dialog er opprettet. Notifikasjonen inneholder en URI til dialogen i Dialogportens API. Alternativt kan liste med dialoger hentes/søkes opp gjennom standard Dialogporten-API-er.
 2.  Avhengig av autorisasjonspolicy tilhørende tjenesteressursen, autoriserer SBS-et seg. Les mer i avsnittet [Autorisasjon](#autorisasjon).
-3.  Ved uthenting av dialogen som ble referert av hendelsen, returneres en strukturert modell som langt på vei speiler modellen som tjenestetilbyder opprinnelig sendte inn (typisk har samme identifikator). Listen over handlinger definerer da hva SBS-et kan foreta seg, og hvilke endepunkter som må aksesseres for å utføre handlingene.  Enkelte handlinger kan være synlige/gyldige kun for portal, eller kun for API.  Handlinger kun synlige for API kan også referere JSON schemas el.l. som beskriver datamodellen som forventes på det aktuelle endepunktet. Tilsvarende håndtering av  GUI-handlinger legges det ved et dialogtoken som inneholder informasjon om tidspunkt, autentisert part, valgt avgiver, aktuell dialog, valgt handling.
-4.  SBS-et interagerer med tjenestetilbyders API gjennom endepunktene som dialogen beskriver, og/eller i tråd med swagger/annen dokumentasjon som tjenestetilbyder har tilgjengeliggjort f.eks. via API-katalogen. Dialogtoken oppgis i forespørslene som beskrevet i avsnittet [Autorisasjon](#autorisasjon). Etter hvert som dialogen skrider frem, kan tjenestetilbyder gjøre bakkanal-kall til Dialogporten for å oppdatere dialogen slik den fremstår for brukeren både i portal og API.
+3.  Ved uthenting av dialogen som ble referert av hendelsen, returneres en strukturert modell som langt på vei speiler modellen som tjenestetilbyder opprinnelig sendte inn (typisk har samme identifikator). Listen over handlinger definerer da hva SBS-et kan foreta seg, og hvilke endepunkter som må aksesseres for å utføre handlingene.  Enkelte handlinger kan være synlige/gyldige kun for portal, eller kun for API.  Handlinger kun synlige for API kan også referere JSON schemas el.l. som beskriver datamodellen som forventes på det aktuelle endepunktet. 
+4.  SBS-et interagerer med tjenestetilbyders API gjennom endepunktene som dialogen beskriver, og/eller i tråd med swagger/annen dokumentasjon som tjenestetilbyder har tilgjengeliggjort f.eks. via API-katalogen. Tjenestetilbyder foretar autorisasjonsoppslag mot Altinn Autorisasjon. Etter hvert som dialogen skrider frem, kan tjenestetilbyder gjøre asynkrone bakkanal-kall til Dialogporten for å oppdatere dialogen slik den fremstår for brukeren både i portal og API.
 
 ## Sluttbruker-initiert dialog
 
@@ -461,12 +503,15 @@ sequenceDiagram
     participant SBS as Sluttbrukersystem
     participant EID as Maskinporten/ID-porten/Altinn Token Exchange
     participant API as Dialogporten API
+    participant AA as Altinn Autorisasjon
     participant TEAPI as Tjenestetilbyders API
 SBS->>EID: Autentisering/autorisering
 EID->>SBS: access_token
 SBS->>API: Opprett dialog
 activate SBS
 activate API
+API->>AA: Autoriser forespørsel
+AA->>API: Returner autorisasjonssvar
 API->>TEAPI: Bakkanal kall til tjenestetilbyder (URI fra tjenesteressurs) for å opprette dialog
 activate TEAPI
 TEAPI->>TEAPI: Opprette dialog
@@ -483,6 +528,8 @@ API->>SBS: Returnere dialog med liste over aktuelle handlinger med URI-er
 deactivate API
 deactivate SBS
 SBS->>TEAPI: Foreta oppslag/endringer
+TEAPI->>AA: Autoriser forespørsel
+AA->>TEAPI: Returner autorisasjonssvar
 opt
     TEAPI->>API: Oppdater dialog for å reflektere ny tilstand
     API->>TEAPI: Oppdatering OK
@@ -491,11 +538,11 @@ TEAPI->>SBS: Return av oppslag/oppdatering OK
 
 ```
 
-1.  ("Design-time") SBS oppdager API gjennom API-katalog eller annen dokumentasjon, og foretar merkantil og teknisk onboarding (setter opp Maskinporten-klient med rette scopes, oppretter virksomhetsbruker etc)
-2.  SBS autoriserer seg (tilsvarende "tjenestetilbyder-initiert dialog / Konsum gjennom API", trinn 2.
+1.  ("Design-time") SBS oppdager API gjennom API-katalog eller annen dokumentasjon, og foretar merkantil og teknisk onboarding (setter opp Maskinporten-klient med rette scopes, oppretter systembruker etc)
+2.  SBS autentiserer seg (tilsvarende "tjenestetilbyder-initiert dialog / Konsum gjennom API", trinn 2.
 3.  SBS gjør et kall til et standard API i Dialogporten ("createinstance" el.l) som oppgir aktør og tjenesteressurs
 4.  Dialogporten foretar autorisasjon basert på policy knyttet til tjenesteressurs, og hvis godkjent gjør et bakkanal kall til et instansierings-endepunkt som er definert på tjenesteressurs. Kallet inneholder en standard modell som beskriver autentisert part, valgt aktør, og tjenesteressurs.
-5.  Tjenestetilbyder oppretter instans (el.l) i egne systemer, og gjør kall tilbake til Dialogporten i ny kanal for å opprette dialog som beskrevet i "tjenestetilbyder-initert dialog", trinn 2.
+5.  Tjenestetilbyder oppretter instans (el.l) i egne systemer, og gjør kall tilbake til Dialogporten i ny kanal for å opprette dialog som beskrevet i "tjenestetilbyder-initert dialog / opprettelse av dialog", trinn 2.
 6.  Tjenestetilbyder mottar fra Dialogporten bekreftelse på at dialogen er opprettet
 7.  Tjenestetilbyder returnerer identifikator til dialog til Dialogporten i tråd som startet i trinn 3
 8.  Dialogporten laster den nyopprettede dialogen, og returner dette til SBS
@@ -514,9 +561,8 @@ SBS->>EID: Autentisering/autorisering
 EID->>SBS: access_token
 note over SBS,TEAPI: Mange tjenester vil ikke ha behov for noe eget initierings-trinn, men kan fullføre en innsending i ett kall.<br>Andre tjenester vil ha behov for dette, kanskje fordi en innsending skal prefilles med data av tilbyder.<br>I dette eksemplet er det et eget instansieringstrinn, og dialogen opprettes ikke før etter at SBS-et har foretatt en innsending.
 SBS->>TEAPI: Initier dialogtjeneste
-note over AA,TEAPI: Siden vi bare har et ID-porten/Maskinporten-token,<br>mangler finkornet autorisasjon som må slås opp i Altinn.
-TEAPI->>AA: Sjekk om fnr/orgnr/virksomhetsbruker er autorisert
-AA->>TEAPI: Autorisasjon OK
+TEAPI->>AA: Autoriser forespørsel
+AA->>TEAPI: Returner autorisasjonsbeslutning
 TEAPI->>TEAPI: Opprette dialog
 TEAPI->>SBS: Returner OK + referanse til dialog / prefill-data
 opt
@@ -544,7 +590,8 @@ opt
     API->>SBS: Returner liste over aktuelle handlinger
 
     SBS->>TEAPI: Foreta oppslag/endringer
-
+    TEAPI->>AA: Autoriser forespørsel
+    AA->>TEAPI: Returner autorisasjonsbeslutning
     TEAPI->>API: Oppdater dialog for å reflektere ny tilstand
     API->>TEAPI: Oppdatering OK
 
@@ -555,7 +602,7 @@ end
 
 1.  SBS autentiserer/autoriserer seg mot Maskinporten/ID-porten og får ut access tokens med nødvendige scopes
 2.  SBS gjør et eller annet kall for å initiere (og potensielt samtidig fullføre) en dialogtjeneste hos tjenestetilbyder
-3.  Tjenestetilbyder foretar et oppslag mot Altinn Autorisasjon for å sjekke om forespørselen (fnr/orgnr/virksomhetsbruker/SI-bruker) er autorisert for den aktuelle tjenesteressursen
+3.  Tjenestetilbyder foretar et oppslag mot Altinn Autorisasjon for å sjekke om forespørselen (fnr/systembruker) er autorisert for den aktuelle tjenesteressursen
 4.  Tjenestetilbyder oppretter dialogen i egne systemer, og returnerer en referanse til SBS-et
 5.  SBS-et kan ved behov gjøre et oppslag for å hente prefill-data, hvis ikke dette er inkludert i responsen på forrige trinn
 6.  SBS-et foretar en innsending basert på hva sluttbrukeren oppgir 
@@ -588,209 +635,4 @@ Under er utkast til JSON-modeller slik de kan fremstå i API-ene som må impleme
   <p>{{ dpc.title | escape }}</p>
   <a class="page-link" href="{{ dpc.url | relative_url }}">Gå til case</a>
 {% endfor %}
-
-# Varianter for autorisasjon
-
-Dokumentet over legger til grunn variant A som beskrevet under, men det er behov for å vurdere fordeler og ulemper med denne og andre varianter.
-
-## Ting som legges til grunn / avgrensninger
-* Det finnes en "bruker"-mekanisme (virksomhetsbruker/system) som en beskrankningsmekanisme for virksomheter
-* Hvem som "eier" denne, eller hvordan den provisjoneres er out-of-scope for Dialogporten - Dialogporten vil bare forespørre Altinn Autorisasjon om autentisert (virksomhets)bruker er autorisert for en gitt ressurs
-* Det opereres med tre nivåer av autorisasjon
-  * Scope-nivå
-    * I Dialogporten er denne grovkornet (f.eks. `digdir:dialogporten`), og autoriserer kun for å kunne kalle API-et. Gir i seg selv ikke tilgang til noen tjenester. 
-    * Scopes tolkes typisk mer finkornet hos tjenestetilbyder, som gjerne har scopes per tjeneste (f.eks. `skatteetaten:summertskattegrunnlag`).
-  * Tjenestenivå
-    * Har tilgang til en eller flere actions på en tjeneste og/eller definert subressurs ("resource" i XACML, tradisjonelt "prosessteg" i Altinn2) av tjeneste
-  * Dialognivå
-    * Tilgang til konkret instans, aka "instansdelegering". 
-    * Tilgang på tjenestenivå gir tilgang til alle dialoger, men noen kan ha tilgang (til en eller flere actions til enkelte dialoger og/eller tilhørende definerte subressurser.
- * Variantene under beskriver ikke-interaktive, virksomhetsautentiserte flyter med Maskinporten som IDP. Det er derfor fem prinsipielle aktører; sluttbrukersystemet, Dialogporten, Maskinporten, Altinn Autorisasjon og Tjenestetilbyders API for tjenesten, samt Altinn Token Exchange + Altinn Registry for håndtering av virksomhetsbrukere. 
- * Varianter med ID-porten vil kunne fungere annerledes (f.eks. faller Token Exchange ut, siden man umiddelbart har en "bruker"), avhengig av grad av interaktivitet. Disse er ikke tegnet inn i denne omgang.
- * Bruk av flere tokens eller `aud`-claim forutsettes for å unngå problematikk rundt replay-angrep.
-
-
-## Variant A: Dialogtoken
-
-Dette er varianten som lagt til grunn i løsningsforslaget, som altså introduserer "dialogtoken" som en mekanisme for autentisering og finkornet, innbakt autorisasjon.
-
-### Sekvensdiagram
-
-```mermaid!
-sequenceDiagram
-autonumber
-    participant SBS as Sluttbrukersystem
-    participant MP as Maskinporten
-    participant DP as Dialogporten
-    participant AA as Altinn Autorisasjon    
-    participant AX as Altinn Token Exchange
-    participant AR as Altinn Registry
-    participant TT as Tjenestetilbyder
-SBS->>MP: Forespør MP-token m/scope til Dialogporten + MP-token m/scope for tjeneste
-opt Hvis leverandør
-MP->>AA: Sjekke delegeringer på scopes
-AA->>MP: Returner autorisasjonsbeslutning
-end
-MP->>SBS: Utsteder MP-token m/scope for Dialogporten + MP-token m/scope for tjeneste
-SBS->>AX: Ber om Altinn-token for virksomhetsbruker
-AX->>AR: Autentiserer virksomhetsbruker
-AR->>AX: Returner autentiseringsbeslutning (virksomhetsbruker-ID)
-AX->>SBS: Utsteder beriket Altinn-token for virksomhetsbruker
-
-SBS->>DP: Henter dialog med Altinn-token
-DP->>AA: Forespør autorisasjon for dialog for virksomhetsbruker
-AA->>DP: Returnerer autorisasjonsbeslutning for dialog
-DP->>SBS: Returnerer dialog + dialogtoken
-SBS->>TT: Foretar handling for dialog m/dialogtoken + MP-token m/tjenestescope
-TT->>TT: Validerer dialogtoken + MP-token m/tjenestescope
-TT->>SBS: Returner respons på handling
-```
-
-### Fordeler
-* Alt-i-ett-token kan erstatte behov for at tjenestetilbyders behov for tjenestescope
-* Samme flyt uavhengig av om SBS kjenner til dialog-ID/actions fra før eller ikke
-* Krever ingen endringer i Maskinporten/ID-porten
-* Tjenestetilbyder trenger ikke gjøre oppslag
-* SBS får dialogtokens "på kjøpet" når den henter dialoger
-
-### Ulemper
-* Kompleksitet knyttet til at SBS må forholde seg til fire ulike tokens: 1) MP-token for tjenestetilbyders API, 2) MP-token for Dialogporten, som berikes til 3) Altinn-token med claims for virksomhetsbruker, som igjen brukes for å hente 4) dialogtoken som brukes mot tjenestetilbyder
-* Tjenestetilbyder må forholde seg til to issuers (Maskinporten og Dialogporten)
-
-## Variant B: Dialogtoken + beriket virksomhetsbruker-token fra Maskinporten
-
-Denne er som variant A, men innebærer at Maskinporten foretar autentisering av virksomhetsbruker. Dette gjør at SBS ikke trenger å forholde seg til Altinn Token Exchange direkte, men oppgir autentiseringsmidler for virksomhetsbrukeren i forespørselen til Maskinporten. Maskinporten foretar da oppslag mot Altinn Register, og beriker tokenet med et claim for autentisert virksomhetsbruker-id.
-
-### Sekvensdiagram
-
-```mermaid!
-sequenceDiagram
-autonumber
-    participant SBS as Sluttbrukersystem
-    participant MP as Maskinporten
-    participant DP as Dialogporten
-    participant AA as Altinn Autorisasjon    
-    participant AX as Altinn Token Exchange
-    participant AR as Altinn Registry
-    participant TT as Tjenestetilbyder
-SBS->>MP: Forespør MP-token m/scope til Dialogporten inkl. virksomhetsbruker + MP-token m/scope for tjeneste
-opt Hvis leverandør
-MP->>AA: Sjekke delegeringer på scopes
-AA->>MP: Returner autorisasjonsbeslutning
-end
-MP->>AR: Autentiserer virksomhetsbruker
-AR->>MP: Returner autentiseringsbeslutning (virksomhetsbruker-ID)
-MP->>SBS: Utsteder MP-token m/scope for Dialogporten inkl. virksomhetsbruker + MP-token m/scope for tjeneste 
-SBS->>DP: Henter dialog med MP-token m/claims om virksomhetsbruker-id
-DP->>AA: Forespør autorisasjon for dialog for virksomhetsbruker
-AA->>DP: Returnerer autorisasjonsbeslutning for dialog
-DP->>SBS: Returnerer dialog + dialogtoken
-SBS->>TT: Foretar handling for dialog m/dialogtoken + MP-token m/tjenestescope
-TT->>TT: Validerer dialogtoken + MP-token m/tjenestescope
-TT->>SBS: Returner respons på handling
-```
-
-### Fordeler
-* Alt-i-ett-token kan erstatte behov for at tjenestetilbyders behov for tjenestescope
-* Samme flyt uavhengig av om SBS kjenner til dialog-ID/actions fra før eller ikke
-* Tjenestetilbyder trenger ikke gjøre oppslag
-* SBS får dialogtokens "på kjøpet" når den henter dialoger
-* Ett token mindre for SBS å forholde seg til ift den første dialogtoken-varianten
-
-### Ulemper
-* Kompleksitet knyttet til at SBS må forholde seg til tre ulike tokens: 1) MP-token for tjenestetilbyders API, 2) MP-token for Dialogporten, beriket med claims for virksomhetsbruker, som igjen brukes for å hente 3) dialogtoken som brukes mot tjenestetilbyder
-* Tjenestetilbyder må forholde seg til to issuers (Maskinporten og Dialogporten)
-* Krever endringer i Maskinporten
-
-
-## Variant C: Beriket Maskinportentoken med innbakt autorisasjon
-
-Dette beskriver en flyt hvor SBS oppgir virksomhetsbruker + passord, samt oppgir tjenesteressurs i forespørsel til Maskinporten som da foretar både grov- og finkornet autorisasjon. Dette krever trolig innføring av RAR (Rich Authorization Requests) for Maskinporten, og en tettere kobling mellom Maskinporten og Altinn Autorisasjon. Samme token-type kan benyttes mot både Tjenestetilbyder og Dialogporten, men `aud`-claim må settes i token og valideres for å unngå å åpne for replay-attacks.
-
-```mermaid!
-sequenceDiagram
-autonumber
-    participant SBS as Sluttbrukersystem
-    participant MP as Maskinporten
-    participant DP as Dialogporten
-    participant AA as Altinn Autorisasjon    
-    participant AX as Altinn Token Exchange
-    participant AR as Altinn Registry
-    participant TT as Tjenestetilbyder
-SBS->>MP: Forespør MP-token med RAR for Dialogporten inkl. virksomhetsbruker og tjenesteressurs + MP-token m/scope for tjeneste
-MP->>AA: Forespør delegering på scope + autorisasjon for dialog for virksomhetsbruker
-AA->>AR: Autentiserer virksomhetsbruker
-AR->>AA: Returner autentiseringsbeslutning (virksomhetsbruker-ID)
-AA->>MP: Returner autorisasjonsbeslutning
-MP->>SBS: Utsteder beriket MP-token for Dialogporten/virksomhetsbruker/tjeneste + MP-token m/scope for tjeneste
-opt Hvis ikke SBS kjenner til dialog-ID / actions
-    SBS->>DP: Henter dialog med beriket MP-token
-    DP->>DP: Validerer beriket MP-token
-    DP->>SBS: Returner dialog
-end 
-SBS->>TT: Foretar handling for dialog med beriket MP-token + MP-token m/scope for tjeneste
-TT->>TT: Validerer beriket MP-token og MP-token m/scope for tjeneste
-TT->>SBS: Returner respons på handling
-```
-
-### Undervarianter
-Autentisering av virksomhetsbruker kan gjøres av Maskinporten i stedet for Altinn Autorisasjon. Hva blir hensiktsmessig rekkefølge her mht tjenesteautorisasjon, hvis leverandør-token-forespørsel? Skal virksomhetsbrukernavn/passord være uavhengig av hvem som eier den?
-
-### Fordeler
-* Færre tokens for SBS å forholde seg til ift begge dialogtoken-variantene
-* Mønster for beriket Maskinporten-token (som inkluderer informasjon om virksomhetsbruker og tjenesteautorisasjon) har gjenbruksverdi utover Dialogporten
-* Tjenestetilbyder trenger ikke gjøre oppslag
-* Kun én issuer for tjenestetilbyder å forholde seg til
-* SBS kan klare seg med ett token hvis det ikke er behov for oppslag i Dialogporten (som vil kreve en egen `aud`)
-
-### Ulemper
-* Krever omfattende endringer i Maskinporten
-* Krever endring i Altinn Autorisasjon (eller Maskinporten, hvis den skal håndtere det) for å håndtere autentisering av virksomhetsbrukere
-* Krever `aud`-validering hos både Dialogporten og Tjenestetilbyder. 
-
-## Variant D: Beriket Maskinporten-token med kun virksomhetsbruker-ID
-
-I denne varianten foretar ikke Maskinporten autorisasjonsoppslag mot Altinn Autorisasjon, men gjør kun autentisering av virksomhetsbrukernavn/passord og beriker tokenet med identifikator for virksomhetsbrukeren (tilsvarende alternativ B, men uten dialogtoken). Både tjenestetilbyder og Dialogporten må foreta oppslag mot Altinn Autorisasjon for å autorisere den oppgitt virksomhetsbrukeren.
-
-```mermaid!
-sequenceDiagram
-autonumber
-    participant SBS as Sluttbrukersystem
-    participant MP as Maskinporten
-    participant DP as Dialogporten
-    participant AA as Altinn Autorisasjon    
-    participant AX as Altinn Token Exchange
-    participant AR as Altinn Registry
-    participant TT as Tjenestetilbyder
-SBS->>MP: Forespør MP-token (med RAR?) for Dialogporten inkl. virksomhetsbruker + MP-token m/scope for tjeneste
-opt Hvis leverandør
-    MP->>AA: Sjekke delegeringer på scopes
-    AA->>MP: Returner autorisasjonsbeslutning
-end
-MP->>AR: Autentiserer virksomhetsbruker
-AR->>MP: Returner autentiseringsbeslutning
-MP->>SBS: Utsteder beriket MP-token for Dialogporten/virksomhetsbruker + MP-token m/scope for tjeneste
-opt Hvis ikke SBS kjenner til dialog-ID / actions
-    SBS->>DP: Henter dialog med beriket MP-token
-    DP->>AA: Forespør autorisasjon for dialog for virksomhetsbruker
-    AA->>DP: Returnerer autorisasjonsbeslutning for dialog
-    DP->>SBS: Returnerer dialog
-end 
-SBS->>TT: Foretar handling for dialog med beriket MP-token imkl virksomhetsbruker + MP-token m/scope for tjeneste
-TT->>TT: Validerer beriket MP-token og MP-token m/scope for tjeneste
-TT->>AA: Forespør autorisasjon for dialog for virksomhetsbruker
-AA->>TT: Returnerer autorisasjonsbeslutning for dialog
-TT->>SBS: Returner respons på handling
-```
-
-### Fordeler
-* Sammenlignet med variant C krever denne mindre endringer i Maskinporten (kun autentiseringsoppslag av virksomhetsbruker)
-* SBS kan klare seg med ett token hvis det ikke er behov for oppslag i Dialogporten (som vil kreve en egen `aud`)
-* Kun én issuer for tjenestetilbyder å forholde seg til
-
-### Ulemper
-* Krever endringer i Maskinporten
-* Krever at tjenestetilbyder foretar oppslag for å autorisere forespørsler
-* Krever `aud`-validering hos både Dialogporten og Tjenestetilbyder. 
-
 

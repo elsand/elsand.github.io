@@ -169,7 +169,7 @@
             // Her kan det være ulike typer som medfører ulik visning i GUI. Følgende typer gjenkjennes:            
             // - submission:     Refererer en innsending utført av party som er mottatt hos tjenestetilbyder.
             // - feedback:       Indikerer en tilbakemelding fra tjenestetilbyder på en innsending. Inneholder 
-            //                   referanse til den aktuelle innsendingen.
+            //                   vanligvis referanse til den aktuelle innsendingen.
             // - information:    Informasjon fra tjenestetilbyder, ikke (direkte) relatert til noen innsending.  
             // - error:          Brukes for å indikere en feilsituasjon, typisk på en innsending. Inneholder en
             //                   tjenestespesifikk activityErrorCode.

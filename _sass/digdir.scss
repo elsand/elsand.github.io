@@ -26,7 +26,7 @@
 
     aside {
         flex: 25%;
-        padding: $spacing-unit #{$spacing-unit/2} 0 0;
+        padding: $spacing-unit #{calc($spacing-unit/2)} 0 0;
         position: relative;
 
 
@@ -216,3 +216,23 @@ article.home {
     width: 100vw;
     padding: 3rem 0 4rem;
 }
+
+.rouge-table {
+    border: none;
+    margin: 0;
+    td {
+        border: none;
+        padding: 0;
+    }
+
+    
+    pre {
+        border: none;
+        &.lineno {
+            padding: 0 4px 0 0;
+            text-align: right;
+        }
+    }
+}
+
+
