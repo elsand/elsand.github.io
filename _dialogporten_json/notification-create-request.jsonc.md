@@ -11,7 +11,7 @@
     // Valgfri identifikator som tjenestetilbyder kan oppgi. Kan brukes for å unngå duplikatutsending.
     "notificationId": "79921fae-631a-4f8b-8db5-e359f2336658",
 
-    // Ressurs i XACML som det kreves tilgang til
+    // Ressurs i XACML som det tilgang til (vilkårlig action) for å motta 
     "resource": "some-xaml-resouce",
     "sms": {
             "text": [ { "code": "nb_NO", "value": "dette kommer på sms" } ],
@@ -26,16 +26,16 @@
             "template": "some-email-template",
             "tokens": [
                 { "name": "header", "value": [ { "code": "nb_NO", "value": "dette er en header" } ] },
-                { "name": "body", "value": [ { "code": "nb_NO", "value": "Hei {{party.fullname}}!" } ] } 
+                { "name": "body", "value": [ { "code": "nb_NO", "value": "Hei {{recipient.fullname}}!" } ] } 
             ]
     },
     "push": {
         // Basert på https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/showNotification
         "title": [ { "code": "nb_NO", "value": "Tittel på notifikasjon" } ],
         "body": [ { "code": "nb_NO", 
-            "value": "Dette er første linje\nDette er andre linje, sendt til {{party.fullname}}" } ],
+            "value": "Dette er første linje\nDette er andre linje, sendt til {{recipient.fullname}}" } ],
         "icon": "https://example.com/some-icon-atleast-192x192.png",
-        // Valgfri URL som bruker blir sendt til hvis notifikasjonen klikkes på. Blir utvidet med sesjonstoken.
+        // Valgfri URL som bruker blir sendt til hvis notifikasjonen klikkes på. 
         "notificationClickUrl": "https://example.com/some/deep/link/to/dialogues/123456789"
     }
 }

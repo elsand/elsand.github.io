@@ -168,8 +168,7 @@
             "activityDateTime": "2022-12-01T10:00:00.000Z",
             // Her kan det være ulike typer som medfører ulik visning i GUI. Følgende typer gjenkjennes:            
             // - submission:     Refererer en innsending utført av party som er mottatt hos tjenestetilbyder.
-            // - feedback:       Indikerer en tilbakemelding fra tjenestetilbyder på en innsending. Inneholder 
-            //                   vanligvis referanse til den aktuelle innsendingen.
+            // - feedback:       Indikerer en tilbakemelding fra tjenestetilbyder på en innsending.
             // - information:    Informasjon fra tjenestetilbyder, ikke (direkte) relatert til noen innsending.  
             // - error:          Brukes for å indikere en feilsituasjon, typisk på en innsending. Inneholder en
             //                   tjenestespesifikk activityErrorCode.

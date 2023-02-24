@@ -173,7 +173,7 @@ Tokens mottatt fra Maskinporten eller ID-porten vil på sikt kunne berikes med f
 Under beskrives hvordan SBS-er foretar autentisering for å kunne autoriseres i både Dialogporten og hos tjenestetilbyders API-er.
 
 ### Ting som legges til grunn / avgrensninger
-* Det finnes en "bruker"-mekanisme (systembruker/system) som en beskrankningsmekanisme for virksomheter
+* Det finnes en systembruker-mekanisme som en beskrankningsmekanisme for virksomheter
 * Hvem som "eier" denne, eller hvordan den provisjoneres er out-of-scope.
 * Det opereres med tre nivåer av autorisasjon
   * Scope-nivå
