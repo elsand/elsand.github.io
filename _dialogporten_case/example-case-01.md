@@ -39,7 +39,7 @@ Dialogen opprettes i DP, og settes i en tilstand som indikerer at den er under b
 
 ```    
 // Merk! Forenklet modell
-POST dialogporten.no/api/v1/de/ 
+POST dialogporten.no/api/v1/dialogs/ 
 {
     "id": "11111111-1111-1111-1111-111111111111",
     "party": "org:91234578",
@@ -67,7 +67,7 @@ Opprettelsen av dialogen medfører at det genereres en eller flere events. Denne
     "type": "urn:dialogporten:dialog:created",
     "source": "urn:altinn:serviceresource:super-simple-service:11111111-1111-1111-1111-111111111111", 
     "subject: "org/91234578",
-    "affectedentityuri": "https://dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111",
+    "affectedentityuri": "https://dialogporten.no/api/v1/dialogs/11111111-1111-1111-1111-111111111111",
 }   
 ```
 
@@ -76,10 +76,10 @@ Ethvert nytt innslag i activityHistory genererer også events. Siden dette ble o
 ```
 {
     "specversion": "1.0",
-    "type": "urn:dialogporten:dialog:activity:information",
+    "type": "urn:dialogporten:dialog:activity:submission",
     "source": "urn:altinn:serviceresource:super-simple-service:11111111-1111-1111-1111-111111111111", 
     "subject: "org/91234578",
-    "affectedentityuri": "https://dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111/activitylog/22222222-2222-2222-2222-222222222222",
+    "affectedentityuri": "https://dialogporten.no/api/v1/dialogs/11111111-1111-1111-1111-111111111111/activityhistory/22222222-2222-2222-2222-222222222222",
 }   
 ```
 
@@ -105,7 +105,7 @@ Mens Skatteetaten behandler oppgaven går en eller annen ansatt for VIRKSOMHET A
     "type": "urn:dialogporten:dialog:activity:seen",
     "source": "urn:altinn:serviceresource:super-simple-service:11111111-1111-1111-1111-111111111111",
     "subject: "org/91234578",
-    "affectedentityuri": "https://dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111/activitylog/387cfaa8-8113-43c1-a457-603be651ecb9",
+    "affectedentityuri": "https://dialogporten.no/api/v1/dialogs/11111111-1111-1111-1111-111111111111/activityhistory/387cfaa8-8113-43c1-a457-603be651ecb9",
 }   
 ```
 
@@ -117,7 +117,7 @@ Saksbehandlingen har avdekket at det er behov for å innhente ytterligere opplys
 
 ```    
 // Merk! Forenklet modell
-PATCH dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111
+PATCH dialogporten.no/api/v1/dialogs/11111111-1111-1111-1111-111111111111
 {
     "status": "in-progress",
     "content": "Vi har behandlet søknaden din, og ser vi trenger mer opplysninger.",
@@ -146,7 +146,7 @@ En PATCH kan medføre at flere events blir generert, som muliggjør finkornet fi
     "type": "urn:dialogporten:dialog:activity:feedback",
     "source": "urn:altinn:serviceresource:super-simple-service:11111111-1111-1111-1111-111111111111",
     "subject: "org/91234578",
-    "affectedentityuri": "https://dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111/activitylog/33333333-3333-3333-3333-333333333333",
+    "affectedentityuri": "https://dialogporten.no/api/v1/dialogs/11111111-1111-1111-1111-111111111111/activityhistory/33333333-3333-3333-3333-333333333333",
 }
 
 {
@@ -154,7 +154,7 @@ En PATCH kan medføre at flere events blir generert, som muliggjør finkornet fi
     "type": "urn:dialogporten:dialog:change:status",
     "source": "urn:altinn:serviceresource:super-simple-service:11111111-1111-1111-1111-111111111111",
     "subject: "org/91234578",
-    "affectedentityuri": "https://dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111",
+    "affectedentityuri": "https://dialogporten.no/api/v1/dialogs/11111111-1111-1111-1111-111111111111",
 }
 
 {
@@ -162,23 +162,23 @@ En PATCH kan medføre at flere events blir generert, som muliggjør finkornet fi
     "type": "urn:dialogporten:dialog:change:actions",
     "source": "urn:altinn:serviceresource:super-simple-service:11111111-1111-1111-1111-111111111111",
     "subject: "org/91234578",
-    "affectedentityuri": "https://dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111",
+    "affectedentityuri": "https://dialogporten.no/api/v1/dialogs/11111111-1111-1111-1111-111111111111",
 }
 
 ```
 
 ## 7. SBS mottar hendelse, laster dialogen, og sender inn ytterligere opplysninger
 
-SBS-et har et abonnement som plukker opp at det har kommet en tilbakemelding i dialogen. SBS-et laster activitylog-innslaget referert i eventen, 
+SBS-et har et abonnement som plukker opp at det har kommet en tilbakemelding i dialogen. SBS-et laster activityhistory-innslaget referert i eventen, 
 
 ```
-GET https://dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111/activitylog/33333333-3333-3333-3333-333333333333
+GET https://dialogporten.no/api/v1/dialogs/11111111-1111-1111-1111-111111111111/activityhistory/33333333-3333-3333-3333-333333333333
 ```
 
 og ser utfra `activityExtendedType` at det er behov for å sende inn et ytterligere skjema (tjenestespesifikk logikk).  En medarbeider varsles, som laster/åpner dialogen gjennom SBS-et, 
 
 ```
-GET https://dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111/
+GET https://dialogporten.no/api/v1/dialogs/11111111-1111-1111-1111-111111111111/
 ```
 
 og ser at det er kommet et svar med forespørsel om mer informasjon. Siden det er mottatt en feedback siden forrige gang dialogen ble åpnet, vil lastingen av dialogen (forrige request) igjen føre til at det genereres en hendelse som i trinn 4.
@@ -200,7 +200,7 @@ POST skatt.api.no/skattemeldingsdialog/11111111-1111-1111-1111-111111111111/ytte
 Skatteetaten mottar innsendingen, som valideres maskinelt. Dialogen kan nå avsluttes. 
 
 ```
-PATCH dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111
+PATCH dialogporten.no/api/v1/dialogs/11111111-1111-1111-1111-111111111111
 {
     "status": "completed",
     "content": "Søknaden er behandlet og vedtaksbrev er vedlagt.",
@@ -233,7 +233,7 @@ PATCH dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111
     "type": "urn:dialogporten:dialog:activity:closed",
     "source": "urn:altinn:serviceresource:super-simple-service:11111111-1111-1111-1111-111111111111",
     "subject: "org/91234578",
-    "affectedentityuri": "https://dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111/activitylog/4444444-4444-4444-4444-444444444444",
+    "affectedentityuri": "https://dialogporten.no/api/v1/dialogs/11111111-1111-1111-1111-111111111111/activityhistory/4444444-4444-4444-4444-444444444444",
 }
 
 {
@@ -241,7 +241,7 @@ PATCH dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111
     "type": "urn:dialogporten:dialog:change:status",
     "source": "urn:altinn:serviceresource:super-simple-service:11111111-1111-1111-1111-111111111111",
     "subject: "org/91234578",
-    "affectedentityuri": "https://dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111",
+    "affectedentityuri": "https://dialogporten.no/api/v1/dialogs/11111111-1111-1111-1111-111111111111",
 }
 
 {
@@ -249,7 +249,7 @@ PATCH dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111
     "type": "urn:dialogporten:dialog:change:actions",
     "source": "urn:altinn:serviceresource:super-simple-service:11111111-1111-1111-1111-111111111111",
     "subject: "org/91234578",
-    "affectedentityuri": "https://dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111",
+    "affectedentityuri": "https://dialogporten.no/api/v1/dialogs/11111111-1111-1111-1111-111111111111",
 }
 
 {
@@ -257,7 +257,7 @@ PATCH dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111
     "type": "urn:dialogporten:dialog:change:attachments",
     "source": "urn:altinn:serviceresource:super-simple-service:11111111-1111-1111-1111-111111111111",
     "subject: "org/91234578",
-    "affectedentityuri": "https://dialogporten.no/api/v1/de/11111111-1111-1111-1111-111111111111",
+    "affectedentityuri": "https://dialogporten.no/api/v1/dialogs/11111111-1111-1111-1111-111111111111",
 }
 
 ```
