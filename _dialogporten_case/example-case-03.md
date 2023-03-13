@@ -107,17 +107,17 @@ Partene er Rørlegger AS, Regnskapsfører AS og Etaten, som tilbyr denne innsend
         "gui": [ 
             { 
                 "action": "sign",
-                "resource": "general_manager_signature", // Krever tilgang til "sign" på ressursen "general_manager_signature"
+                "resource": "general_manager_tasks", // Krever tilgang til "sign" på ressursen "general_manager_tasks"
                 "type": "primary",
                 "title": [ { "code": "nb_NO", "value": "Se over og signer" } ],
-                "url": "https://www.etaten.no/tjenester/omsetningsrapportering/b13bb496-e6ab-4444-8442-e15be9f96e9c/sign_gm"
+                "url": "https://www.etaten.no/tjenester/omsetningsrapportering/b13bb496-e6ab-4444-8442-e15be9f96e9c/sign_gm?latest_submission=12031cd2-5eb5-4ddf-b4f9-9d30e403d92c"
             }
         ],
         "api": [ 
             { 
                 "action": "sign",
-                "resource": "general_manager_signature", // Krever tilgang til "sign" på ressursen "general_manager_signature"
-                "actionUrl": "https://api.etaten.no/tjenester/omsetningsrapportering/b13bb496-e6ab-4444-8442-e15be9f96e9c/sign",
+                "resource": "general_manager_tasks", // Krever tilgang til "sign" på ressursen "general_manager_tasks"
+                "actionUrl": "https://api.etaten.no/tjenester/omsetningsrapportering/b13bb496-e6ab-4444-8442-e15be9f96e9c/sign?latest_submission=12031cd2-5eb5-4ddf-b4f9-9d30e403d92c",
                 "method": "POST",
                 // Dialogporten har her ikke noe spesielt forhold til signering som handling. Her kan man kanskje se for seg 
                 // en generell signeringsmekanisme som omfatter bruk av et felles schema.
@@ -150,7 +150,7 @@ Partene er Rørlegger AS, Regnskapsfører AS og Etaten, som tilbyr denne innsend
     "notificationId": "79921fae-631a-4f8b-8db5-e359f2336658",
 
     // Ressurs i XACML som det kreves tilgang til
-    "resource": "general_manager_signature",
+    "resource": "general_manager_tasks",
     "sms": {
             "text": [ { "code": "nb_NO", "value": "Du har mottatt et signeringsoppdrag for Omsetningsrapportering. Logg inn i Dialogporten for å signere." } ],
             
@@ -172,7 +172,7 @@ Partene er Rørlegger AS, Regnskapsfører AS og Etaten, som tilbyr denne innsend
         "body": [ { "code": "nb_NO", 
             "value": "Du er bedt om å signere for {{party.fullname}} i Dialogporten" } ],
         // Valgfri URL som bruker blir sendt til hvis notifikasjonen klikkes på. 
-        "notificationClickUrl": "https://www.etaten.no/tjenester/omsetningsrapportering/b13bb496-e6ab-4444-8442-e15be9f96e9c/sign_gm"
+        "notificationClickUrl": "https://www.etaten.no/tjenester/omsetningsrapportering/b13bb496-e6ab-4444-8442-e15be9f96e9c/sign_gm?latest_submission=12031cd2-5eb5-4ddf-b4f9-9d30e403d92c"
     }
 }
 
@@ -195,17 +195,17 @@ Partene er Rørlegger AS, Regnskapsfører AS og Etaten, som tilbyr denne innsend
         "gui": [ 
             { 
                 "action": "sign",
-                "resource": "accountant_signature", // Krever tilgang til "sign" på ressursen "accountant_signature"
+                "resource": "accountant_tasks", // Krever tilgang til "sign" på ressursen "accountant_tasks"
                 "type": "primary",
                 "title": [ { "code": "nb_NO", "value": "Se over og signer" } ],
-                "url": "https://www.etaten.no/tjenester/omsetningsrapportering/b13bb496-e6ab-4444-8442-e15be9f96e9c/sign_ac"
+                "url": "https://www.etaten.no/tjenester/omsetningsrapportering/b13bb496-e6ab-4444-8442-e15be9f96e9c/sign_ac?latest_submission=12031cd2-5eb5-4ddf-b4f9-9d30e403d92c"
             }
         ],
         "api": [ 
             { 
                 "action": "sign",
-                "resource": "accountant_signature", // Krever tilgang til "sign" på ressursen "accountant_signature"
-                "actionUrl": "https://api.etaten.no/tjenester/omsetningsrapportering/b13bb496-e6ab-4444-8442-e15be9f96e9c/sign_ac",
+                "resource": "accountant_tasks", // Krever tilgang til "sign" på ressursen "accountant_tasks"
+                "actionUrl": "https://api.etaten.no/tjenester/omsetningsrapportering/b13bb496-e6ab-4444-8442-e15be9f96e9c/sign_ac?latest_submission=12031cd2-5eb5-4ddf-b4f9-9d30e403d92c",
                 "method": "POST",
                 // Dialogporten har her ikke noe spesielt forhold til signering som handling. Her kan man kanskje se for seg 
                 // en generell signeringsmekanisme som omfatter bruk av et felles schema.
@@ -232,7 +232,7 @@ Partene er Rørlegger AS, Regnskapsfører AS og Etaten, som tilbyr denne innsend
     "notificationId": "a61c66f5-1dcf-4a27-8c17-633cd2eb8b8d",
 
     // Ressurs i XACML som det kreves tilgang til
-    "resource": "accountant_signature",
+    "resource": "accountant_tasks",
     "sms": {
             "text": [ { "code": "nb_NO", "value": "Du har mottatt et signeringsoppdrag for Omsetningsrapportering. Logg inn i Dialogporten for å signere." } ],
             
@@ -254,7 +254,7 @@ Partene er Rørlegger AS, Regnskapsfører AS og Etaten, som tilbyr denne innsend
         "body": [ { "code": "nb_NO", 
             "value": "Du er bedt om å signere for {{party.fullname}} i Dialogporten" } ],
         // Valgfri URL som bruker blir sendt til hvis notifikasjonen klikkes på. 
-        "notificationClickUrl": "https://www.etaten.no/tjenester/omsetningsrapportering/b13bb496-e6ab-4444-8442-e15be9f96e9c/sign_ac"
+        "notificationClickUrl": "https://www.etaten.no/tjenester/omsetningsrapportering/b13bb496-e6ab-4444-8442-e15be9f96e9c/sign_ac?latest_submission=12031cd2-5eb5-4ddf-b4f9-9d30e403d92c"
     }
 }
 
@@ -334,7 +334,7 @@ Her vises en XACML-policy i et tenkt JSON-basert format. Se https://github.com/A
             "role:DAGL",
         ],
         "Resources": [
-            "serviceresource:omsetningsrapportering/general_manager_signature",
+            "serviceresource:omsetningsrapportering/general_manager_tasks",
         ],
         "Actions": [
             "sign"
@@ -347,7 +347,7 @@ Her vises en XACML-policy i et tenkt JSON-basert format. Se https://github.com/A
             "role:A0239",
         ],
         "Resources": [
-            "serviceresource:omsetningsrapportering/accountant_signature",
+            "serviceresource:omsetningsrapportering/accountant_tasks",
         ],
         "Actions": [
             "sign"
